@@ -57,14 +57,14 @@ def register(request):
         
         <div style="background-color: #002147; padding: 30px; text-align: center;">
             <h1 style="color: #FFD700; margin: 0; font-size: 22px; letter-spacing: 2px; text-transform: uppercase;">
-                Eldoret Polytechnic SACCO
+                Eldoret Polytechnic welfare Limited - Account Verification
             </h1>
         </div>
 
         <div style="padding: 40px; color: #333333; line-height: 1.6;">
             <h2 style="color: #002147; margin-top: 0;">Account Verification</h2>
             <p style="font-size: 16px;">Hello,</p>
-            <p style="font-size: 16px;">Thank you for registering with <strong>Eldopoly SACCO</strong>. To secure your account and complete your membership setup, please use the verification code below:</p>
+            <p style="font-size: 16px;">Thank you for registering with <strong>Eldoret Polytechnic welfare Limited</strong>. To secure your account and complete your membership setup, please use the verification code below:</p>
             
             <div style="margin: 30px 0; text-align: center; background-color: #f9f9f9; border: 2px dashed #FFD700; border-radius: 10px; padding: 20px;">
                 <p style="margin: 0; font-size: 14px; color: #777; text-transform: uppercase; letter-spacing: 1px;">Your OTP Code</p>
@@ -78,13 +78,13 @@ def register(request):
             <p style="font-size: 13px; color: #888; text-align: center; margin-bottom: 0;">
                 Best Regards,<br>
                 <strong>The Treasury Team</strong><br>
-                Eldoret Polytechnic SACCO
+                Eldoret Polytechnic welfare Limited
             </p>
         </div>
 
         <div style="background-color: #fcfcfc; padding: 20px; text-align: center; border-top: 1px solid #eeeeee;">
             <p style="font-size: 11px; color: #aaa; margin: 0;">
-                &copy; 2026 Eldoret Polytechnic SACCO | All Rights Reserved.
+                &copy; 2026 Eldoret Polytechnic welfare Limited | All Rights Reserved.
             </p>
         </div>
     </div>
