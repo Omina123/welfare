@@ -15,7 +15,7 @@ BREVO_API_KEY = env('BREVO_API_KEY')
 
 # You can also use it for your Django Secret Key
 SECRET_KEY = env('SECRET_KEY')
-DEBUG = env.bool('DEBUG', default=True)
+DEBUG = env.bool('DEBUG', default=False)  # Set to False in production
 # DEBUG = False # Set to False in production  
 # In settings.py:
 ALLOWED_HOSTS = ['*', 'scallop-epic-sandlot.ngrok-free.dev'] # or set your Render URL
