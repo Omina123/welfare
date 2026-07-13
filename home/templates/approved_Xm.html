@@ -1,0 +1,646 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Approved Holiday Support | ELDOPOLY WELFARE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --sidebar-width: 260px;
+            --top-nav-height: 70px;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+        }
+
+        body { 
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            z-index: 1100;
+            padding: 1.5rem;
+            color: white;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 204, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--welfare-gold);
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar-brand i {
+            color: var(--welfare-gold);
+        }
+
+        .nav-link-side {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: 0.3s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-link-side i {
+            font-size: 1.1rem;
+            margin-right: 12px;
+            width: 20px;
+        }
+
+        .nav-link-side:hover, 
+        .nav-link-side.active {
+            background: rgba(255, 204, 0, 0.08);
+            color: var(--welfare-gold);
+            border-left-color: var(--welfare-gold);
+        }
+
+        .nav-link-side.text-danger {
+            color: rgba(255, 100, 100, 0.7) !important;
+        }
+        .nav-link-side.text-danger:hover {
+            color: #ff6b6b !important;
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .label-text {
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            padding-left: 12px;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .top-navbar {
+            height: var(--top-nav-height);
+            background: var(--welfare-white);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+            transition: left 0.3s ease;
+        }
+
+        .top-navbar h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        .top-navbar .fw-800 {
+            color: var(--welfare-dark-green);
+        }
+
+        .top-navbar .text-muted {
+            color: var(--welfare-maroon) !important;
+        }
+
+        .top-navbar .bg-light.rounded-circle {
+            background: rgba(0, 77, 38, 0.06) !important;
+            border: 2px solid rgba(255, 204, 0, 0.15) !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-navbar .bg-light.rounded-circle i {
+            color: var(--welfare-dark-green) !important;
+        }
+
+        .top-navbar .btn-toggle-sidebar {
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            padding: 6px 12px;
+            background: transparent !important;
+            color: var(--welfare-dark-green);
+            font-size: 1.5rem;
+            display: none;
+        }
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--top-nav-height);
+            padding: 2.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ===== CONTENT CARD ===== */
+        .content-card {
+            background: var(--welfare-white);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--welfare-shadow);
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            border-color: rgba(255, 204, 0, 0.12);
+        }
+
+        .content-card h2 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        /* ===== REPORT CARD ===== */
+        .report-card {
+            background: var(--welfare-white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        /* ===== TABLE ===== */
+        .table thead th {
+            background: rgba(0, 77, 38, 0.03);
+            color: var(--welfare-dark-green);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 16px 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.06);
+            vertical-align: middle;
+            color: #1e293b;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .table .fw-bold {
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== STATUS BADGES ===== */
+        .status-badge {
+            padding: 6px 14px;
+            border-radius: 8px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .status-badge.funded {
+            background: rgba(0, 77, 38, 0.08);
+            color: var(--welfare-dark-green);
+        }
+
+        .status-badge.ready {
+            background: rgba(255, 204, 0, 0.15);
+            color: #856404;
+        }
+
+        .status-badge.review {
+            background: #f8fafc;
+            color: #64748b;
+            border: 1px solid #e9edf2;
+        }
+
+        .status-badge.disbursed {
+            background: rgba(0, 77, 38, 0.08);
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== PROGRESS ===== */
+        .progress {
+            background-color: #e9edf2;
+            border-radius: 10px;
+            height: 8px;
+        }
+
+        .progress .progress-bar {
+            background: var(--welfare-dark-green);
+            border-radius: 10px;
+        }
+
+        .progress .progress-bar.bg-warning {
+            background: var(--welfare-gold) !important;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            border: none;
+            font-weight: 700;
+            border-radius: 10px;
+            padding: 8px 18px;
+            transition: 0.3s;
+            font-size: 0.8rem;
+        }
+
+        .btn-gold:hover {
+            background: #f5d742;
+            color: var(--welfare-dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.25);
+        }
+
+        .btn-dark {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-dark:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-dark i {
+            margin-right: 8px;
+        }
+
+        .btn-light {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            background: transparent;
+            padding: 6px 16px;
+            border-radius: 8px;
+            font-size: 0.8rem;
+        }
+
+        .btn-light:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .top-navbar {
+                left: 0;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+            .top-navbar .btn-toggle-sidebar {
+                display: inline-block !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-wrapper { padding: 1rem; }
+            .content-card { padding: 1.25rem; }
+            .report-card { padding: 1rem; }
+            .top-navbar { padding: 0 1rem; }
+            .top-navbar h5 { font-size: 0.9rem; }
+            .table { font-size: 0.8rem; }
+            .table thead th { font-size: 0.6rem; padding: 10px; }
+            .table tbody td { padding: 10px; }
+            .btn-gold { font-size: 0.7rem; padding: 6px 12px; }
+            .btn-dark { font-size: 0.8rem; padding: 8px 16px; }
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.1);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        /* ===== METRIC CARD ===== */
+        .metric-card {
+            background: var(--welfare-white);
+            border-radius: 16px;
+            padding: 1rem;
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            box-shadow: var(--welfare-shadow);
+        }
+
+        .metric-card .label-text {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value-text {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <a href="#" class="sidebar-brand"><i class="bi bi-bank2"></i> ELDOPOLY</a>
+    
+    <div class="label-text mb-2">Main Menu</div>
+    <a href="{% url 'treasurer_dashboard' %}" class="nav-link-side"><i class="bi bi-speedometer2"></i> Dashboard</a>
+    <a href="{% url 'Members' %}" class="nav-link-side"><i class="bi bi-people"></i> Members</a>
+    <a href="{% url 'all_savings' %}" class="nav-link-side"><i class="bi bi-piggy-bank"></i> Member Savings</a>
+    <a href="{% url 'sacco_reportings' %}" class="nav-link-side"><i class="bi bi-graph-up"></i> Welfare Report</a>
+    
+    <div class="label-text mb-2 mt-4">Loan Management</div>
+    <a href="{% url 'pending_loans' %}" class="nav-link-side"><i class="bi bi-hourglass-split"></i> Pending Standard</a>
+    <a href="{% url 'Xm_approved' %}" class="nav-link-side active"><i class="bi bi-gift"></i> Approved Holiday</a>
+    <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Approved History</a>
+    <a href="{% url 'Completed_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Completed Support</a>
+    <a href="{% url 'monthly_sacco_report' %}" class="nav-link-side"><i class="bi bi-gift"></i> Monthly Report</a>
+    <a href="{% url 'active_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Support</a>
+    <a href="{% url 'active_xmas_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Holiday</a>
+    
+    <div class="label-text mb-2 mt-4">Archives</div>
+    <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-archive"></i> Approved History</a>
+    <a href="{% url 'rejected_loans' %}" class="nav-link-side"><i class="bi bi-x-circle"></i> Rejected Support</a>
+
+    <a href="{% url 'Logout' %}" class="nav-link-side text-danger mt-5"><i class="bi bi-power"></i> Sign Out</a>
+</aside>
+
+<!-- ===== TOP NAVBAR ===== -->
+<header class="top-navbar">
+    <div class="d-flex align-items-center">
+        <button class="btn-toggle-sidebar me-3 d-lg-none" id="toggleSidebar">
+            <i class="bi bi-list"></i>
+        </button>
+        <h5 class="mb-0 fw-800 d-none d-sm-block">Executive Treasury Suite</h5>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+            <div class="fw-800 small">{{ request.user.get_full_name|default:request.user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Verified Treasurer</div>
+        </div>
+        <div class="bg-light rounded-circle p-2 border">
+            <i class="bi bi-person-fill"></i>
+        </div>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-wrapper">
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+        <div>
+            <h5 class="fw-800 mb-1" style="color: var(--welfare-dark-green);">Seasonal Disbursements</h5>
+            <p class="text-muted small mb-0">Tracking internal approvals for Holiday Support</p>
+        </div>
+        <button class="btn btn-dark shadow-sm px-4 fw-bold" onclick="window.print()">
+            <i class="bi bi-file-pdf me-2"></i> EXPORT REPORT
+        </button>
+    </div>
+
+    <!-- ===== METRIC CARDS ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="metric-card">
+                <div class="label-text">Total Approved</div>
+                <div class="value-text" style="color: var(--welfare-dark-green);">{{ approved_loans|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card">
+                <div class="label-text">Total Amount</div>
+                <div class="value-text" style="color: var(--welfare-maroon);">KES 0</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card">
+                <div class="label-text">Ready for Payout</div>
+                <div class="value-text" style="color: var(--welfare-gold);">0</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card">
+                <div class="label-text">Disbursed</div>
+                <div class="value-text" style="color: var(--welfare-dark-green);">0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APPROVED LOANS TABLE ===== -->
+    <div class="content-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">Holiday Support Pool</h5>
+                <p class="text-muted small">Approved loans awaiting disbursement</p>
+            </div>
+            <span class="badge rounded-pill px-3 py-2" style="background: var(--welfare-dark-green); color: var(--welfare-gold);">{{ approved_loans|length }} APPROVED</span>
+        </div>
+
+        <div class="report-card">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>Member Details</th>
+                            <th>Amount Requested</th>
+                            <th>Internal Sign-offs</th>
+                            <th>Status</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for loan in approved_loans %}
+                        <tr>
+                            <td>
+                                <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                                <div class="text-muted small">Account: #{{ loan.member.id }} | Season: {{ loan.year }}</div>
+                            </td>
+                            <td>
+                                <div class="fw-800" style="color: var(--welfare-dark-green);">KES {{ loan.amount_requested|floatformat:2 }}</div>
+                                <div class="small text-muted">
+                                    {% if loan.interest_rate %}
+                                        {{ loan.interest_rate }}% Interest
+                                    {% else %}
+                                        20% Interest
+                                    {% endif %}
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center gap-2">
+                                    <div class="progress flex-grow-1" style="height: 8px; width: 100px;">
+                                        <div class="progress-bar {% if loan.approval_progress >= 3 %}bg-success{% else %}bg-warning{% endif %}" 
+                                             role="progressbar" 
+                                             style="width: {% if loan.approval_progress == 1 %}33{% elif loan.approval_progress == 2 %}66{% elif loan.approval_progress >= 3 %}100{% else %}0{% endif %}%;">
+                                        </div>
+                                    </div>
+                                    <span class="fw-bold small" style="color: var(--welfare-dark-green);">{{ loan.approval_progress }}/3</span>
+                                </div>
+                            </td>
+                            <td>
+                                {% if loan.is_disbursed %}
+                                    <span class="status-badge disbursed"><i class="bi bi-check-all me-1"></i> Disbursed</span>
+                                {% elif loan.approval_progress >= 3 %} 
+                                    <span class="status-badge ready"><i class="bi bi-check-circle me-1"></i> Ready</span>
+                                {% else %}
+                                    <span class="status-badge review"><i class="bi bi-clock-history me-1"></i> In Review</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-end">
+                                {% if not loan.is_disbursed %}
+                                    {% if loan.approval_progress >= 3 %} 
+                                        <a href="{% url 'disburse_loan_xmass' loan.id %}" 
+                                           class="btn btn-gold shadow-sm"
+                                           onclick="return confirm('Disburse KES {{ loan.amount_requested|floatformat:2 }} to {{ loan.member.user.get_full_name }}?')">
+                                            <i class="bi bi-cash-stack me-1"></i> PAY OUT
+                                        </a>
+                                    {% else %}
+                                        <button class="btn btn-light btn-sm" disabled>
+                                            <i class="bi bi-lock-fill me-1"></i> LOCKED
+                                        </button>
+                                    {% endif %}
+                                {% else %}
+                                    <span class="text-success fw-bold small"><i class="bi bi-check-all"></i> COMPLETED</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="text-center py-5">
+                                <i class="bi bi-clipboard-x fs-1 d-block mb-2" style="color: #cbd5e0;"></i>
+                                <span class="text-muted">No fully approved holiday support requests found.</span>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // =========================
+    // SIDEBAR TOGGLE (MOBILE)
+    // =========================
+    const sidebar = document.getElementById('sidebar');
+    const toggleBtn = document.getElementById('toggleSidebar');
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', function() {
+            sidebar.classList.toggle('show');
+        });
+    }
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992) {
+            if (sidebar && !sidebar.contains(event.target) && toggleBtn && !toggleBtn.contains(event.target)) {
+                sidebar.classList.remove('show');
+            }
+        }
+    });
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    // ===== AUTO-DISMISS ALERTS =====
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
+</body>
+</html>

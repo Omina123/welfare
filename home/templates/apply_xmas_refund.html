@@ -1,0 +1,390 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Welfare Refund | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 15px 35px rgba(0, 77, 38, 0.1);
+        }
+
+        body { 
+            background: var(--welfare-light-bg); 
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif; 
+            color: #333; 
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar { 
+            position: fixed; 
+            top: 0; 
+            left: 0; 
+            height: 100vh; 
+            width: 260px; 
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%); 
+            color: white; 
+            padding-top: 1.5rem; 
+            z-index: 1050; 
+            overflow-y: auto; 
+            transition: all 0.3s ease; 
+        }
+
+        .sidebar-brand h4 {
+            color: var(--welfare-gold);
+        }
+
+        .sidebar a { 
+            display: flex; 
+            align-items: center; 
+            color: rgba(255,255,255,0.7); 
+            padding: 14px 25px; 
+            text-decoration: none; 
+            transition: all 0.3s ease; 
+            font-weight: 500;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a i { width: 25px; }
+
+        .sidebar a:hover, 
+        .sidebar a.active { 
+            background: rgba(255, 204, 0, 0.08); 
+            color: var(--welfare-gold) !important; 
+            border-left: 3px solid var(--welfare-gold); 
+        }
+
+        .sidebar .collapse { background: rgba(0, 0, 0, 0.15); }
+        .sidebar .ps-5 { padding-left: 3.5rem !important; font-size: 0.85rem; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { margin-left: 260px; padding: 40px; min-height: 100vh; }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-header {
+            display: none;
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: white;
+            padding: 15px 20px;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            border-bottom: 3px solid var(--welfare-gold);
+        }
+
+        .mobile-header h5 {
+            color: var(--welfare-gold);
+        }
+
+        /* ===== REFUND CARD ===== */
+        .refund-card {
+            border: none; 
+            border-radius: 20px; 
+            overflow: hidden;
+            box-shadow: var(--welfare-shadow); 
+            background: var(--welfare-white);
+        }
+
+        .refund-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green) 0%, #1a4a2a 50%, var(--welfare-maroon) 100%);
+            color: white; 
+            padding: 40px 20px; 
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .refund-header .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px;
+            height: 70px;
+            background: var(--welfare-gold);
+            border-radius: 50%;
+            color: var(--welfare-dark-green);
+            font-size: 2rem;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.25);
+        }
+
+        .refund-header h2 {
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .refund-header p {
+            color: rgba(255, 204, 0, 0.85);
+        }
+
+        /* ===== AMOUNT DISPLAY ===== */
+        .amount-display {
+            background: rgba(0, 77, 38, 0.04);
+            border: 2px dashed var(--welfare-gold);
+            border-radius: 15px; 
+            padding: 20px; 
+            margin: 20px 0;
+        }
+
+        .amount-display h1 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-success {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            padding: 14px 28px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #e2e8f0;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 12px 28px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-outline-secondary:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0, 77, 38, 0.04);
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.1);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-warning {
+            background: rgba(255, 204, 0, 0.06);
+            border: 1px solid rgba(255, 204, 0, 0.15);
+            border-left: 4px solid var(--welfare-gold);
+            border-radius: 12px;
+            color: #856404;
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        .alert i {
+            margin-right: 8px;
+        }
+
+        /* ===== INFO BOX ===== */
+        .info-box {
+            background: rgba(0, 77, 38, 0.03);
+            border-radius: 12px;
+            padding: 16px 20px;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .info-box i {
+            color: var(--welfare-gold);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .sidebar { left: -260px; }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding: 20px; }
+            .mobile-header { display: flex; }
+        }
+
+        @media (max-width: 576px) {
+            .main-content { padding: 15px; }
+            .refund-header { padding: 30px 15px; }
+            .refund-header h2 { font-size: 1.3rem; }
+            .amount-display h1 { font-size: 1.8rem; }
+            .card-body { padding: 1.25rem !important; }
+            .btn-success, .btn-outline-secondary { font-size: 0.9rem; padding: 12px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== MOBILE HEADER ===== -->
+<div class="mobile-header">
+    <h5 class="mb-0 fw-bold"><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h5>
+    <button class="btn text-white fs-4" id="sidebarToggle"><i class="fas fa-bars"></i></button>
+</div>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand p-3 mb-4 text-center">
+        <h4 class="fw-bold"><i class="fas fa-hands-helping"></i> ELDOPOLY</h4>
+        <small class="text-white-50 d-block" style="font-size: 0.65rem; margin-top: -10px;">WELFARE PORTAL v2.0</small>
+    </div>
+
+    {% if request.user.user_type != '4' %}
+    <div class="px-3 mb-3">
+        {% if 'admin' in request.path or 'management' in request.path or 'staff' in request.path %}
+            <a href="{% url 'member_dashboard' %}" class="btn btn-sm w-100 btn-outline-light fw-bold py-2 shadow-sm">
+                <i class="fas fa-user me-2"></i> My Member View
+            </a>
+        {% else %}
+            <a href="{% url 'management_index' %}" class="btn btn-sm w-100 btn-gold fw-bold py-2 shadow-sm text-dark" style="background: var(--welfare-gold); border:none; color: var(--welfare-dark-green) !important;">
+                <i class="fas fa-user-shield me-2"></i> Management Hub
+            </a>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <a href="{% url 'member_dashboard' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+    <a href="{% url 'deposit_savings' %}"><i class="fas fa-piggy-bank"></i> Welfare Savings</a>
+    <a href="{% url 'purchase_shares' %}"><i class="fas fa-chart-pie"></i> Shares</a>
+    <a href="{% url 'apply_loan' %}"><i class="fas fa-file-invoice-dollar"></i> Apply Support</a>
+    <a href="{% url 'pay_loan' %}"><i class="fas fa-hand-holding-usd"></i> Repay Support</a>
+    <a href="{% url 'my_loans' %}"><i class="fas fa-exchange-alt"></i> My Support</a>
+    
+    <a class="d-flex justify-content-between align-items-center active" data-bs-toggle="collapse" href="#refundSubmenu">
+        <span><i class="fas fa-undo-alt"></i> Refunds</span>
+        <i class="fas fa-chevron-down small"></i>
+    </a>
+    <div class="collapse show" id="refundSubmenu">
+        <a href="{% url 'apply_xmas_refund' %}" class="ps-5 active"><i class="fas fa-gift me-2"></i>Welfare Refunds</a>
+        <a href="{% url 'apply_share_refund' %}" class="ps-5"><i class="fas fa-coins me-2"></i>Share Refunds</a>
+    </div>
+
+    <hr class="mx-3 text-white-50">
+    <a href="{% url 'Logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                
+                <!-- ===== MESSAGES ===== -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-exclamation-circle{% endif %}"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- ===== REFUND CARD ===== -->
+                <div class="refund-card">
+                    <div class="refund-header">
+                        <div class="icon-circle">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <h2 class="fw-bold">Welfare Savings Refund</h2>
+                        <p>Year {{ current_year }} Payout Application</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5">
+                        <!-- ===== MONTHLY RATE ===== -->
+                        <div class="text-center mb-4">
+                            <p class="text-muted text-uppercase fw-bold small">Monthly Saving Rate</p>
+                            <h3 class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ monthly_rate|floatformat:2 }}</h3>
+                        </div>
+
+                        <!-- ===== TOTAL REFUND ===== -->
+                        <div class="amount-display text-center">
+                            <p class="mb-1 text-muted">Estimated Total Refund (12 Months)</p>
+                            <h1 class="display-4 fw-bold mb-0">KES {{ total_eligible_amount|floatformat:0 }}</h1>
+                        </div>
+
+                        <!-- ===== INFO BOX ===== -->
+                        <div class="info-box mb-4">
+                            <div class="d-flex">
+                                <i class="fas fa-info-circle me-3 mt-1"></i>
+                                <small class="text-muted">
+                                    Refunds are calculated as your monthly contribution multiplied by the 12-month cycle. 
+                                    Ensure all 12 contributions for {{ current_year }} are updated in the ledger before final approval.
+                                </small>
+                            </div>
+                        </div>
+
+                        <!-- ===== ACTION BUTTON ===== -->
+                        {% if already_applied %}
+                            <div class="alert alert-warning text-center border-0 py-3 rounded-4">
+                                <i class="fas fa-clock me-2"></i> <strong>Application Pending:</strong> 
+                                You have already submitted a request for this year.
+                            </div>
+                            <a href="{% url 'member_dashboard' %}" class="btn btn-outline-secondary w-100 rounded-pill">
+                                <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+                            </a>
+                        {% else %}
+                            <form method="POST">
+                                {% csrf_token %}
+                                <button type="submit" class="btn btn-success w-100 rounded-pill shadow-lg py-3 fw-bold">
+                                    <i class="fas fa-paper-plane me-2"></i> Submit Refund Request
+                                </button>
+                            </form>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- ===== FOOTER ===== -->
+                <div class="text-center mt-4">
+                    <p class="text-muted small">
+                        <i class="fas fa-headset me-1" style="color: var(--welfare-gold);"></i> 
+                        Need help? Contact the Welfare Treasurer.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== SCRIPTS ===== -->
+<script>
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', () => sidebar.classList.toggle('active'));
+    }
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992 && sidebar && toggleBtn) {
+            if (!sidebar.contains(event.target) && !toggleBtn.contains(event.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        }
+    });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

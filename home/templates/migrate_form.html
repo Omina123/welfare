@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            
+            <div class="borrow-power-banner shadow-sm mb-4" style="background: linear-gradient(45deg, #1a472a, #2d5a3f); border-radius: 15px; padding: 20px;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-file-import text-white fs-3"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold m-0 text-white">Legacy Loan Migration</h3>
+                            <p class="mb-0 text-white-50 small">Importing records for: <strong>{{ member.user.get_full_name }}</strong></p>
+                        </div>
+                    </div>
+                    <div class="text-end d-none d-md-block">
+                        <span class="badge bg-warning text-dark px-3 py-2 rounded-pill fw-bold">
+                            <i class="fas fa-user-shield me-1"></i> ADMIN OVERRIDE
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <form method="POST" id="migrationForm">
+                {% csrf_token %}
+                <div class="row g-4">
+                    
+                    <div class="col-lg-7">
+                        <div class="glass-card h-100 shadow-sm border-0 bg-white p-4" style="border-radius: 15px;">
+                            <h5 class="fw-bold mb-4 text-eldo-deep-green border-bottom pb-2">
+                                <i class="fas fa-edit me-2"></i>Loan Specifications
+                            </h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Loan Purpose</label>
+                                    <select name="purpose" id="id_purpose" class="form-select border-2" required>
+                                        <option value="normal">Normal Loan</option>
+                                        <option value="school fees">School Fees</option>
+                                        <option value="emergency">Emergency</option>
+                                        <option value="personal">Personal</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Original Start Date</label>
+                                    <input type="date" name="start_date" id="start_date" class="form-control border-2" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Principal (Original Amount)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-light border-2">KES</span>
+                                        <input type="number" step="0.01" name="principal" id="principal" class="form-control border-2 fw-bold" placeholder="0.00" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-semibold">Duration (Months)</label>
+                                    <select name="duration_months" id="duration" class="form-select border-2">
+                                        <option value="6">6 Months</option>
+                                        <option value="12" selected>12 Months</option>
+                                        <option value="18">18 Months</option>
+                                        <option value="24">24 Months</option>
+                                        <option value="36">36 Months</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-md-12 mt-4">
+                                    <div class="p-3 rounded-4 bg-light-subtle border">
+                                        <p class="small text-muted mb-3"><i class="fas fa-info-circle me-1"></i> System will estimate Interest and Insurance below:</p>
+                                        <div class="row g-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label text-danger small fw-bold">INTEREST (KES)</label>
+                                                <input type="number" step="0.01" name="interest" id="interest" class="form-control border-2" placeholder="0.00">
+                                                <small class="text-muted" id="rate_info">Rate: 0%</small>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label text-danger small fw-bold">INSURANCE (KES)</label>
+                                                <input type="number" step="0.01" name="insurance" id="insurance" class="form-control border-2" placeholder="0.00">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mt-4">
+                                    <label class="form-label text-success fw-bold">TOTAL PAID ON PAPER (Historical)</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text bg-success-subtle border-success border-2 text-success">KES</span>
+                                        <input type="number" step="0.01" name="paid_on_paper" id="paid" class="form-control border-2 border-success fw-bold" value="0.00">
+                                    </div>
+                                    <small class="text-muted">Enter total repayments made before today.</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="glass-card shadow-sm h-100 bg-white p-4 border-top border-4 border-primary" style="border-radius: 15px;">
+                            <h5 class="fw-bold mb-4 text-eldo-deep-green border-bottom pb-2">
+                                <i class="fas fa-calculator me-2"></i>Migration Audit
+                            </h5>
+
+                            <div class="audit-box p-3 rounded-4 mb-4 border bg-light">
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Global Cap:</span>
+                                    <span class="fw-bold">KES {{ global_cap|floatformat:2 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Other Exposure:</span>
+                                    <span class="text-danger fw-bold">- KES {{ other_exposure|floatformat:2 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-3 border-top pt-2">
+                                    <span class="text-muted small">Current Available:</span>
+                                    <span class="fw-bold text-dark">KES {{ available_limit|floatformat:2 }}</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between mb-3">
+                                    <span class="text-muted small">New Limit After:</span>
+                                    <span class="fw-bold text-primary" id="new_limit_display">KES {{ available_limit|floatformat:2 }}</span>
+                                </div>
+
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Total Debt:</span>
+                                    <span class="fw-bold text-dark" id="total_debt_display">KES 0.00</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2">
+                                    <span class="text-muted small">Already Settled:</span>
+                                    <span class="text-success fw-bold" id="paid_display">- KES 0.00</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <span class="text-dark fw-bold">System Balance:</span>
+                                    <span class="text-primary fs-3 fw-bold" id="balance_display">KES 0.00</span>
+                                </div>
+                            </div>
+
+                            <div class="card bg-info bg-opacity-10 border-0 rounded-4 mb-4">
+                                <div class="card-body p-3">
+                                    <div class="d-flex">
+                                        <i class="fas fa-shield-check text-info mt-1 me-3 fs-4"></i>
+                                        <div>
+                                            <h6 class="fw-bold mb-1 text-info">Migration Mode</h6>
+                                            <p class="small mb-0 opacity-75">Bypassing guarantors and approvals.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 py-3 shadow-lg mt-auto fw-bold" id="submitBtn">
+                                <i class="fas fa-check-double me-2"></i> Finalize Migration
+                            </button>
+                            
+                            <a href="{% url 'admin_dashboard' %}" class="btn btn-link w-100 text-muted mt-2 small text-decoration-none">
+                                <i class="fas fa-arrow-left me-1"></i> Cancel and Return
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        const availableLimit = parseFloat("{{ available_limit }}") || 0;
+        document.getElementById('start_date').valueAsDate = new Date();
+
+        function calculateMigration() {
+            const principal = parseFloat($('#principal').val()) || 0;
+            const months = parseInt($('#duration').val()) || 0;
+            const paid = parseFloat($('#paid').val()) || 0;
+
+            // 1. Calculate Rates
+            let rate = 0;
+            let rateText = "0%";
+            if (months > 0) {
+                if (months <= 12) { rate = 0.091; rateText = "9.1%"; }
+                else if (months <= 24) { rate = 0.175; rateText = "17.5%"; }
+                else if (months <= 36) { rate = 0.259; rateText = "25.9%"; }
+                else { rate = 0.349; rateText = "34.9%"; }
+            }
+
+            const calculatedInterest = principal * rate;
+            const calculatedInsurance = months > 0 ? ((5.03 * months + 3.03) * principal) / 6000 : 0;
+
+            if (principal > 0) {
+                $('#interest').val(calculatedInterest.toFixed(2));
+                $('#insurance').val(calculatedInsurance.toFixed(2));
+                $('#rate_info').text("System Rate: " + rateText);
+            }
+
+            // 2. Totals & Balance
+            const interest = parseFloat($('#interest').val()) || 0;
+            const insurance = parseFloat($('#insurance').val()) || 0;
+            
+            const totalDebt = principal + interest + insurance;
+            const balance = totalDebt - paid;
+            const newLimit = availableLimit - principal;
+
+            // 3. Update Audit Display
+            $('#total_debt_display').text("KES " + totalDebt.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            $('#paid_display').text("- KES " + paid.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            $('#balance_display').text("KES " + balance.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            $('#new_limit_display').text("KES " + newLimit.toLocaleString(undefined, {minimumFractionDigits: 2}));
+
+            // 4. Validation UI
+            if (newLimit < 0) {
+                $('#new_limit_display').addClass('text-danger').removeClass('text-primary');
+            } else {
+                $('#new_limit_display').addClass('text-primary').removeClass('text-danger');
+            }
+
+            const btn = $('#submitBtn');
+            if (balance < 0) {
+                btn.prop('disabled', true).addClass('btn-danger').removeClass('btn-success').text('Error: Overpaid Balance');
+            } else {
+                btn.prop('disabled', false).addClass('btn-success').removeClass('btn-danger').html('<i class="fas fa-check-double me-2"></i> Finalize Migration');
+            }
+        }
+
+        $('#principal, #duration, #paid, #interest, #insurance').on('input change', calculateMigration);
+    });
+</script>
+
+<style>
+    .bg-success-subtle { background-color: #e7f5ee !important; }
+    .bg-light-subtle { background-color: #f1f4f8 !important; }
+    .form-control:focus, .form-select:focus {
+        border-color: #2e7d32;
+        box-shadow: 0 0 0 0.25rem rgba(46, 125, 50, 0.2);
+    }
+</style>
+{% endblock %}

@@ -1,0 +1,557 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Deposit Savings | ELDOPOLY WELFARE</title>
+    <meta name="description" content="Record savings deposits for ELDOPOLY WELFARE members. Manage manual deposits and M-Pesa STK push payments.">
+    <meta name="keywords" content="ELDOPOLY WELFARE deposit savings, member savings, M-Pesa payment, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/deposit-savings/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --mpesa-green: #49B249;
+            --sidebar-width: 260px;
+        }
+
+        body { 
+            background: var(--welfare-light-bg); 
+            font-family: 'Inter', sans-serif; 
+            overflow-x: hidden; 
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar { 
+            height: 100vh; 
+            position: fixed; 
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1000; 
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            transition: var(--transition);
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 204, 0, 0.2); border-radius: 10px; }
+
+        .sidebar-brand { 
+            padding: 2rem 1.5rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+        }
+
+        .sidebar-brand h4 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+        }
+
+        .nav-menu { 
+            padding: 1.5rem 0; 
+            flex-grow: 1; 
+        }
+
+        .sidebar a { 
+            display: flex; 
+            align-items: center; 
+            color: rgba(255,255,255,0.7); 
+            padding: 0.8rem 1.5rem; 
+            text-decoration: none; 
+            margin: 0.2rem 1rem; 
+            border-radius: 8px; 
+            transition: var(--transition);
+            border-left: 3px solid transparent;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .sidebar a i { 
+            width: 25px; 
+            font-size: 1.1rem; 
+            margin-right: 12px; 
+        }
+
+        .sidebar a:hover { 
+            background: rgba(255,204,0,0.08); 
+            color: var(--welfare-gold); 
+            border-left-color: var(--welfare-gold);
+        }
+
+        .sidebar a.active { 
+            background: rgba(255,204,0,0.12); 
+            color: var(--welfare-gold); 
+            border-left-color: var(--welfare-gold);
+            font-weight: 600;
+        }
+
+        .sidebar .menu-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1.5px;
+            padding: 0 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.06);
+            margin: 0.5rem 1.5rem;
+        }
+
+        .sidebar .text-danger:hover {
+            color: #ff6b6b !important;
+            background: rgba(255,0,0,0.05);
+        }
+
+        .btn-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .btn-gold:hover {
+            background: #f5d742;
+            color: var(--welfare-dark-green);
+            transform: translateY(-2px);
+        }
+
+        /* ===== MOBILE TOGGLE ===== */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--welfare-dark-green);
+            border: none;
+            color: var(--welfare-gold);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { 
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .main-content { margin-left: 0; padding: 20px; }
+            .mobile-toggle {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-content { padding: 15px; }
+            .card { padding: 1rem !important; }
+        }
+
+        /* ===== SIDEBAR OVERLAY ===== */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+            z-index: 1040;
+            top: 0;
+        }
+
+        #sidebar-overlay.show { display: block; }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            padding: 40px; 
+            transition: var(--transition);
+        }
+
+        /* ===== CARDS ===== */
+        .payment-card { 
+            border: none; 
+            border-radius: var(--welfare-radius); 
+            box-shadow: var(--welfare-shadow); 
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            transition: var(--transition);
+            padding: 1.5rem;
+        }
+
+        .payment-card:hover {
+            border-color: rgba(255, 204, 0, 0.12);
+            transform: translateY(-2px);
+        }
+
+        .payment-card h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+        }
+
+        .payment-card h5 i {
+            color: var(--welfare-gold);
+        }
+
+        .payment-card .border-top-success {
+            border-top-color: var(--welfare-gold) !important;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-eldo { 
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a); 
+            color: white; 
+            border-radius: 10px; 
+            padding: 12px; 
+            font-weight: 600; 
+            border: none; 
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .btn-eldo:hover { 
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon)); 
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-mpesa { 
+            background: var(--mpesa-green); 
+            color: white; 
+            border-radius: 10px; 
+            padding: 12px; 
+            font-weight: 700; 
+            border: none; 
+            width: 100%;
+            transition: var(--transition);
+        }
+
+        .btn-mpesa:hover { 
+            background: #3d943d; 
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(73, 178, 73, 0.15);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-control {
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            padding: 10px 14px;
+            background: #fafcff;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.1);
+            background: #fff;
+            outline: none;
+        }
+
+        .form-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--welfare-dark-green);
+            letter-spacing: 0.5px;
+        }
+
+        .form-label i {
+            color: var(--welfare-gold);
+            margin-right: 4px;
+        }
+
+        /* ===== BADGES ===== */
+        .badge.bg-primary {
+            background: var(--welfare-dark-green) !important;
+            color: var(--welfare-gold) !important;
+            padding: 6px 16px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.85rem;
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.08);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.08);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== MOBILE TOGGLE ===== -->
+<button class="mobile-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h4 class="fw-bold"><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h4>
+        <small>WELFARE PORTAL v2.0</small>
+    </div>
+    <div class="nav-menu">
+        <div class="menu-label">Main Menu</div>
+        <a href="{% url 'treasurer_dashboard' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+        <a href="{% url 'all_savings' %}" class="active"><i class="fas fa-piggy-bank"></i> Member Savings</a>
+        <a href="{% url 'approved_loans' %}"><i class="fas fa-check-circle"></i> Approved Support</a>
+        <a href="{% url 'pending_loans' %}"><i class="fas fa-hourglass-half"></i> Pending Support</a>
+        <a href="{% url 'Completed_loans' %}"><i class="fas fa-check-double"></i> Completed Support</a>
+        
+        <div class="menu-label">Financials</div>
+        <a href="{% url 'sacco_financial_ledger_view' %}"><i class="fas fa-university"></i> Financial Ledger</a>
+        <a href="{% url 'balance_sheet_view' %}"><i class="fas fa-chart-pie"></i> Balance Sheet</a>
+        <a href="{% url 'Bank_Statement' %}"><i class="fas fa-receipt"></i> Yearly Audits</a>
+        
+        <hr>
+        <a href="{% url 'Logout' %}" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+</div>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-content">
+    <!-- ===== HEADER ===== -->
+    <div class="mb-4 d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div>
+            <h3 class="fw-bold" style="color: var(--welfare-dark-green);">
+                <i class="fas fa-piggy-bank me-2" style="color: var(--welfare-gold);"></i>Record Savings Deposit
+            </h3>
+            <p class="text-muted mb-0">
+                Member: <b style="color: var(--welfare-dark-green);">{{ member.user.get_full_name }}</b> 
+                | ID: #{{ member.id }}
+            </p>
+        </div>
+        <div class="text-end">
+            <span class="badge bg-primary p-2 fs-6">
+                <i class="fas fa-coins me-2"></i> Current Savings: KES {{ member.total_savings|default:"0.00" }}
+            </span>
+        </div>
+    </div>
+
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ===== DEPOSIT FORMS ===== -->
+    <div class="row">
+        <!-- ===== MANUAL DEPOSIT ===== -->
+        <div class="col-lg-6 mb-4">
+            <div class="payment-card h-100 bg-white">
+                <h5 class="fw-bold mb-3">
+                    <i class="fas fa-money-bill-wave me-2"></i> Manual Deposit
+                </h5>
+                <form id="manualForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_method" value="cash">
+                    
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-coins me-1"></i> Deposit Amount</label>
+                        <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-6 mb-3">
+                            <label class="form-label"><i class="fas fa-calendar-alt me-1"></i> For Month</label>
+                            <input type="date" name="month" class="form-control" value="{% now 'Y-m-d' %}" required>
+                        </div>
+                        <div class="col-6 mb-3">
+                            <label class="form-label"><i class="fas fa-receipt me-1"></i> Receipt No.</label>
+                            <input type="text" name="receipt_no" class="form-control" placeholder="E.g. 4567">
+                        </div>
+                    </div>
+
+                    <button type="button" onclick="confirmAction('manualForm', 'Record this cash deposit?')" class="btn-eldo">
+                        <i class="fas fa-save me-2"></i> Save Deposit
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <!-- ===== M-PESA STK PUSH ===== -->
+        <div class="col-lg-6 mb-4">
+            <div class="payment-card h-100 bg-white border-top border-4" style="border-top-color: var(--welfare-gold) !important;">
+                <h5 class="fw-bold mb-3">
+                    <i class="bi bi-phone-vibrate me-2"></i> M-Pesa STK Push
+                </h5>
+                <form id="mpesaForm" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_method" value="mpesa">
+                    <input type="hidden" name="month" value="{% now 'Y-m-d' %}">
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-phone me-1"></i> Phone Number</label>
+                        <input type="text" name="phone" class="form-control" value="{{ member.phone_number }}" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-coins me-1"></i> Amount</label>
+                        <input type="number" name="amount" class="form-control" placeholder="0.00" required>
+                    </div>
+
+                    <button type="button" onclick="confirmAction('mpesaForm', 'Send STK Push prompt to member?')" class="btn-mpesa">
+                        <i class="fas fa-mobile-alt me-2"></i> Send STK Push
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOTER ===== -->
+    <div class="text-center mt-4 text-muted small">
+        <i class="fas fa-lock me-1" style="color: var(--welfare-gold);"></i>
+        All transactions are recorded and encrypted &bull; ELDOPOLY WELFARE
+    </div>
+</div>
+
+<script>
+    // ===== SIDEBAR TOGGLE =====
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', toggleSidebar);
+    }
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            toggleSidebar();
+        }
+    });
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992) {
+            if (sidebar && !sidebar.contains(event.target) && toggleBtn && !toggleBtn.contains(event.target) && !event.target.closest('.mobile-toggle')) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+    });
+
+    // ===== CONFIRM ACTION =====
+    function confirmAction(formId, text) {
+        const form = document.getElementById(formId);
+        const amount = form.querySelector('input[name="amount"]').value;
+
+        if (!amount || parseFloat(amount) <= 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Invalid Amount',
+                text: 'Please enter a valid amount.',
+                confirmButtonColor: '#004d26'
+            });
+            return;
+        }
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: text,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#004d26',
+            cancelButtonColor: '#800000',
+            confirmButtonText: 'Yes, proceed',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Processing...',
+                    text: 'Please wait while we process your request.',
+                    timer: 1500,
+                    showConfirmButton: false
+                });
+                form.submit();
+            }
+        });
+    }
+
+    // ===== AUTO-DISMISS ALERTS =====
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

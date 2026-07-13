@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="sw">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eldopoly SACCO | Management Portal</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --eldo-deep-green: #14452F;
+            --eldo-light-green: #8DC63F;
+            --eldo-gold: #FFD700;
+            --sidebar-width: 280px;
+            --bg-light: #f8fafb;
+        }
+
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg-light);
+            color: #2D3748;
+            overflow-x: hidden;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--eldo-deep-green);
+            min-height: 100vh;
+            position: fixed;
+            transition: all 0.3s;
+            z-index: 1000;
+        }
+
+        .sidebar-brand { padding: 2rem 1.5rem; border-bottom: 1px solid rgba(255,255,255,0.1); }
+
+        .sidebar nav a {
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            margin: 4px 15px;
+            border-radius: 12px;
+            transition: 0.3s;
+        }
+
+        .sidebar nav a:hover, .sidebar nav a.active {
+            background: rgba(255,255,255,0.1);
+            color: var(--eldo-gold);
+        }
+
+        /* Main Content Area */
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            min-height: 100vh;
+            transition: all 0.3s;
+        }
+
+        /* Custom Cards (Eldopoly Style) */
+        .glass-card {
+            background: white;
+            border-radius: 24px;
+            padding: 25px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+        }
+
+        .borrow-power-banner {
+            background: linear-gradient(135deg, var(--eldo-deep-green) 0%, #1a5a3d 100%);
+            border-radius: 24px;
+            padding: 30px;
+            color: white;
+        }
+
+        .btn-eldo {
+            background: var(--eldo-deep-green);
+            color: var(--eldo-gold);
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 12px 24px;
+            border: none;
+            transition: 0.3s;
+        }
+
+        .btn-eldo:hover {
+            background: #0e3322;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 992px) {
+            .sidebar { margin-left: calc(-1 * var(--sidebar-width)); }
+            .sidebar.active { margin-left: 0; }
+            .main-content { margin-left: 0; }
+        }
+    </style>
+    {% block head %}{% endblock %}
+</head>
+<body>
+
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-brand">
+            <h3 class="fw-bold m-0 text-white" style="letter-spacing: 1px;">ELDOPOLY</h3>
+            <span class="small text-white-50">Admin Suite v2.0</span>
+        </div>
+
+        <nav class="mt-4">
+            <a href="#" class="active"><i class="fas fa-chart-line"></i> Dashboard</a>
+            <a href="#"><i class="fas fa-users"></i> Members</a>
+            <a href="#"><i class="fas fa-hand-holding-usd"></i> Loan Approvals</a>
+            <a href="#"><i class="fas fa-database"></i> Data Migration</a>
+            <a href="#"><i class="fas fa-file-invoice"></i> Reports</a>
+            <hr class="mx-3 text-white-50">
+            <a href="#"><i class="fas fa-cog"></i> Settings</a>
+            <a href="#" class="text-danger"><i class="fas fa-sign-out-alt"></i> Logout</a>
+        </nav>
+    </aside>
+
+    <main class="main-content">
+        
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <button class="btn d-lg-none" id="sidebarToggle">
+                <i class="bi bi-list fs-2 text-dark"></i>
+            </button>
+            <div class="ms-auto d-flex align-items-center gap-3">
+                <div class="text-end d-none d-sm-block">
+                    <p class="mb-0 fw-bold small text-dark">{{ request.user.get_full_name }}</p>
+                    <span class="badge bg-success-soft text-success small">System Admin</span>
+                </div>
+                <img src="https://ui-avatars.com/api/?name=Admin&background=14452F&color=FFD700" class="rounded-circle shadow-sm" width="45">
+            </div>
+        </div>
+
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-{{ message.tags }} alert-dismissible fade show border-0 rounded-4 shadow-sm mb-4">
+                    {{ message }}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        {% block content %}
+        {% endblock %}
+
+    </main>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Sidebar Toggle for Mobile
+        $('#sidebarToggle').click(function() {
+            $('#sidebar').toggleClass('active');
+        });
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,115 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row justify-content-center">
+        <div class="col-xl-10 col-lg-12">
+            
+            <div class="shadow-sm mb-4" style="background: linear-gradient(45deg, #d32f2f, #388e3c); border-radius: 15px; padding: 20px;">
+                <div class="d-flex align-items-center justify-content-between">
+                    <div class="d-flex align-items-center">
+                        <div class="bg-white bg-opacity-25 rounded-circle p-3 me-3">
+                            <i class="fas fa-gift text-white fs-3"></i>
+                        </div>
+                        <div>
+                            <h3 class="fw-bold m-0 text-white">Xmas Loan Migration</h3>
+                            <p class="mb-0 text-white-50 small">Paper Migration for: <strong>{{ member.user.get_full_name }}</strong></p>
+                        </div>
+                    </div>
+                    <span class="badge bg-white text-danger px-3 py-2 rounded-pill fw-bold">3 MONTHS FIXED</span>
+                </div>
+            </div>
+
+            <form method="POST">
+                {% csrf_token %}
+                <div class="row g-4">
+                    <div class="col-lg-7">
+                        <div class="card h-100 shadow-sm border-0 p-4" style="border-radius: 15px;">
+                            <h5 class="fw-bold mb-4 text-success border-bottom pb-2">Loan Entry</h5>
+                            
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Disbursement Date (Past)</label>
+                                    <input type="date" name="start_date" id="start_date" class="form-control border-2" required>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <label class="form-label fw-bold small">Principal Amount</label>
+                                    <input type="number" step="0.01" name="amount" id="amount" class="form-control border-2 fw-bold" placeholder="0.00" required>
+                                </div>
+
+                                <div class="col-md-12 mt-3">
+                                    <div class="p-3 rounded-4 bg-light border">
+                                        <label class="form-label text-danger small fw-bold">MANUAL INTEREST OVERRIDE (9.1%)</label>
+                                        <input type="number" step="0.01" name="interest" id="interest" class="form-control border-2" placeholder="0.00">
+                                        <small class="text-muted">Calculated: <span id="auto_interest">0.00</span></small>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 mt-4">
+                                    <label class="form-label text-success fw-bold">TOTAL REPAID TO DATE</label>
+                                    <input type="number" step="0.01" name="paid_on_paper" id="paid" class="form-control border-2 border-success fw-bold" value="0.00">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-5">
+                        <div class="card shadow-sm h-100 p-4 border-top border-4 border-danger" style="border-radius: 15px;">
+                            <h5 class="fw-bold mb-4 text-dark border-bottom pb-2">Xmas Limit Audit</h5>
+
+                            <div class="p-3 rounded-4 mb-4 bg-light border">
+                                <div class="d-flex justify-content-between mb-2 small">
+                                    <span>Max Eligible (10% Shares):</span>
+                                    <span class="fw-bold">KES {{ max_limit|floatformat:2 }}</span>
+                                </div>
+                                <div class="d-flex justify-content-between mb-2 small text-danger">
+                                    <span>Existing Xmas Debt:</span>
+                                    <span class="fw-bold">- KES {{ current_exposure|floatformat:2 }}</span>
+                                </div>
+                                <hr>
+                                <div class="d-flex justify-content-between fw-bold text-primary">
+                                    <span>Available for Migration:</span>
+                                    <span>KES {{ available_limit|floatformat:2 }}</span>
+                                </div>
+                            </div>
+
+                            <div class="text-center py-3 bg-dark text-white rounded-4 mb-4">
+                                <p class="small opacity-75 mb-1">Estimated Monthly Installment</p>
+                                <h2 class="fw-bold m-0" id="monthly_display">KES 0.00</h2>
+                            </div>
+
+                            <button type="submit" class="btn btn-success w-100 py-3 shadow-lg fw-bold">
+                                <i class="fas fa-file-check me-2"></i> RECORD MIGRATION
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    const amountInput = document.getElementById('amount');
+    const interestInput = document.getElementById('interest');
+    const paidInput = document.getElementById('paid');
+    const autoInterestSpan = document.getElementById('auto_interest');
+    const monthlyDisplay = document.getElementById('monthly_display');
+
+    function updateXmasCalc() {
+        const principal = parseFloat(amountInput.value) || 0;
+        const autoInt = principal * 0.091;
+        autoInterestSpan.innerText = autoInt.toLocaleString();
+
+        // If interest field is empty, use auto-calculated one for display
+        const interest = parseFloat(interestInput.value) || autoInt;
+        const total = principal + interest;
+        const monthly = total / 3;
+
+        monthlyDisplay.innerText = "KES " + monthly.toLocaleString(undefined, {minimumFractionDigits: 2});
+    }
+
+    [amountInput, interestInput, paidInput].forEach(el => el.addEventListener('input', updateXmasCalc));
+</script>
+{% endblock %}

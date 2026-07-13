@@ -1,0 +1,589 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Directory | ELDOPOLY WELFARE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --sidebar-width: 260px;
+            --top-nav-height: 70px;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+        }
+
+        body {
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            padding: 1.5rem;
+            color: white;
+            z-index: 1100;
+            transition: transform 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar {
+            width: 5px;
+        }
+        .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 204, 0, 0.2);
+            border-radius: 10px;
+        }
+
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--welfare-gold);
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar-brand i {
+            color: var(--welfare-gold);
+        }
+
+        .nav-link-side {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 15px;
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            border-radius: 12px;
+            margin-bottom: 5px;
+            transition: 0.3s;
+            font-weight: 600;
+            font-size: 0.85rem;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            width: 100%;
+            text-align: left;
+        }
+
+        .nav-link-side i {
+            margin-right: 12px;
+            font-size: 1.1rem;
+            width: 20px;
+        }
+
+        .nav-link-side:hover, 
+        .nav-link-side.active {
+            background: rgba(255, 204, 0, 0.08);
+            color: var(--welfare-gold);
+            border-left-color: var(--welfare-gold);
+        }
+
+        .nav-link-side.text-danger {
+            color: rgba(255, 100, 100, 0.7) !important;
+        }
+        .nav-link-side.text-danger:hover {
+            color: #ff6b6b !important;
+            background: rgba(255, 0, 0, 0.05);
+        }
+
+        .label-text {
+            font-size: 0.65rem;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            padding-left: 12px;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .top-navbar {
+            height: var(--top-nav-height);
+            background: var(--welfare-white);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+            transition: left 0.3s ease;
+        }
+
+        .top-navbar h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        .top-navbar .fw-bold.small {
+            color: var(--welfare-dark-green);
+        }
+
+        .top-navbar .text-muted {
+            color: var(--welfare-maroon) !important;
+        }
+
+        .top-navbar .bg-light.rounded-circle {
+            background: rgba(0, 77, 38, 0.06) !important;
+            border: 2px solid rgba(255, 204, 0, 0.15) !important;
+        }
+
+        .top-navbar .bg-light.rounded-circle i {
+            color: var(--welfare-dark-green) !important;
+        }
+
+        .top-navbar .btn-light {
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            padding: 6px 12px;
+            background: transparent !important;
+        }
+
+        .top-navbar .btn-light i {
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--top-nav-height);
+            padding: 2.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ===== SEARCH ===== */
+        .search-container {
+            position: relative;
+            max-width: 300px;
+            width: 100%;
+        }
+
+        .search-input {
+            border-radius: 12px;
+            padding: 8px 12px 8px 40px;
+            border: 2px solid #e9edf2;
+            background: #fafcff;
+            transition: all 0.3s ease;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            width: 100%;
+        }
+
+        .search-input:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.1);
+            outline: none;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* ===== CONTENT CARD ===== */
+        .content-card {
+            background: var(--welfare-white);
+            border-radius: 24px;
+            padding: 2rem;
+            box-shadow: var(--welfare-shadow);
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        .content-card:hover {
+            border-color: rgba(255, 204, 0, 0.12);
+        }
+
+        .content-card h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        .content-card .badge {
+            background: var(--welfare-dark-green) !important;
+            color: var(--welfare-gold) !important;
+        }
+
+        /* ===== TABLE ===== */
+        .table thead th {
+            background: rgba(0, 77, 38, 0.03);
+            color: var(--welfare-dark-green);
+            font-size: 0.7rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: none;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 18px 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.06);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .table .fw-bold {
+            color: var(--welfare-dark-green);
+        }
+
+        .table .text-muted {
+            color: #64748b !important;
+        }
+
+        .table .badge.bg-light {
+            background: rgba(0, 77, 38, 0.04) !important;
+            color: var(--welfare-dark-green) !important;
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            font-weight: 600;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-gold:hover {
+            background: #f5d742;
+            color: var(--welfare-dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(255, 204, 0, 0.25);
+        }
+
+        .btn-maroon {
+            background: var(--welfare-maroon);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 14px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-maroon:hover {
+            background: #4a0000;
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.2);
+        }
+
+        .btn-group .btn {
+            margin: 0 2px;
+        }
+
+        /* ===== SIDEBAR OVERLAY ===== */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 1040;
+        }
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.1);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 991.98px) {
+            .sidebar {
+                transform: translateX(-100%);
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .top-navbar {
+                left: 0;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-wrapper { padding: 1rem; }
+            .content-card { padding: 1.25rem; }
+            .top-navbar { padding: 0 1rem; }
+            .top-navbar h5 { font-size: 0.9rem; }
+            .table { font-size: 0.85rem; }
+            .table thead th { font-size: 0.6rem; padding: 10px; }
+            .table tbody td { padding: 10px; }
+            .btn-gold, .btn-maroon { font-size: 0.7rem; padding: 4px 10px; }
+            .search-container { max-width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebarMenu">
+    <a href="#" class="sidebar-brand"><i class="bi bi-bank2"></i> ELDOPOLY</a>
+    <nav>
+        <div class="label-text mb-2">Main Menu</div>
+        <a href="{% url 'treasurer_dashboard' %}" class="nav-link-side"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="{% url 'Members' %}" class="nav-link-side active"><i class="bi bi-people"></i> Members</a>
+        <a href="{% url 'all_savings' %}" class="nav-link-side"><i class="bi bi-piggy-bank"></i> Member Savings</a>
+        <a href="{% url 'sacco_reportings' %}" class="nav-link-side"><i class="bi bi-graph-up"></i> Welfare Report</a>
+        
+        <div class="label-text mb-2 mt-4">Loan Management</div>
+        <a href="{% url 'pending_loans' %}" class="nav-link-side"><i class="bi bi-hourglass-split"></i> Pending Standard</a>
+        <a href="{% url 'Xm_approved' %}" class="nav-link-side"><i class="bi bi-gift"></i> Pending Holiday</a>
+        <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Approved History</a>
+        <a href="{% url 'Completed_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Completed Support</a>
+        <a href="{% url 'monthly_sacco_report' %}" class="nav-link-side"><i class="bi bi-gift"></i> Monthly Report</a>
+        <a href="{% url 'active_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Support</a>
+        <a href="{% url 'active_xmas_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Holiday</a>
+        
+        <div class="label-text mb-2 mt-4">Archives</div>
+        <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-archive"></i> Approved History</a>
+        <a href="{% url 'rejected_loans' %}" class="nav-link-side"><i class="bi bi-x-circle"></i> Rejected Support</a>
+
+        <a href="{% url 'Logout' %}" class="nav-link-side text-danger mt-5"><i class="bi bi-power"></i> Sign Out</a>
+    </nav>
+</aside>
+
+<!-- ===== MESSAGES ===== -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm mb-0" style="position: fixed; top: 80px; right: 20px; z-index: 9999; border: none; min-width: 250px;" role="alert">
+            <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %} me-2"></i>
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- ===== TOP NAVBAR ===== -->
+<header class="top-navbar">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-light d-lg-none me-3" id="toggleSidebar">
+            <i class="bi bi-list fs-4"></i>
+        </button>
+        <h5 class="mb-0 fw-800 d-none d-sm-block">Executive Treasury Suite</h5>
+    </div>
+    
+    <div class="search-container d-none d-md-block mx-3">
+        <i class="bi bi-search search-icon"></i>
+        <input type="text" id="memberSearch" class="search-input" placeholder="Search members...">
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+            <div class="fw-800 small">{{ request.user.get_full_name|default:request.user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Verified Treasurer</div>
+        </div>
+        <i class="bi bi-person-circle fs-3" style="color: var(--welfare-dark-green);"></i>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main-wrapper">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center mb-4 gap-3">
+        <div>
+            <h5 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">Member Directory</h5>
+            <p class="text-muted small mb-0">Manage all registered welfare members and their accounts.</p>
+        </div>
+        <div class="d-md-none">
+            <input type="text" id="memberSearchMobile" class="form-control" placeholder="Search members..." style="border-radius: 12px; border: 2px solid #e9edf2; padding: 10px 16px;">
+        </div>
+    </div>
+
+    <!-- ===== STATS ROW ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-3 col-6">
+            <div class="metric-card" style="background: var(--welfare-white); border-radius: 16px; padding: 1rem; border: 1px solid rgba(255, 204, 0, 0.08); box-shadow: var(--welfare-shadow);">
+                <div class="label-text" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Total Members</div>
+                <div class="value-text" style="font-size: 1.3rem; font-weight: 800; color: var(--welfare-dark-green);">{{ members|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card" style="background: var(--welfare-white); border-radius: 16px; padding: 1rem; border: 1px solid rgba(255, 204, 0, 0.08); box-shadow: var(--welfare-shadow);">
+                <div class="label-text" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Active Members</div>
+                <div class="value-text" style="font-size: 1.3rem; font-weight: 800; color: var(--welfare-dark-green);">{{ members|length }}</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card" style="background: var(--welfare-white); border-radius: 16px; padding: 1rem; border: 1px solid rgba(255, 204, 0, 0.08); box-shadow: var(--welfare-shadow);">
+                <div class="label-text" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">New This Month</div>
+                <div class="value-text" style="font-size: 1.3rem; font-weight: 800; color: var(--welfare-gold);">0</div>
+            </div>
+        </div>
+        <div class="col-md-3 col-6">
+            <div class="metric-card" style="background: var(--welfare-white); border-radius: 16px; padding: 1rem; border: 1px solid rgba(255, 204, 0, 0.08); box-shadow: var(--welfare-shadow);">
+                <div class="label-text" style="font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: 0.5px;">Total Savings</div>
+                <div class="value-text" style="font-size: 1.3rem; font-weight: 800; color: var(--welfare-maroon);">KES 0</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MEMBER TABLE ===== -->
+    <div class="content-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+                <h5 class="fw-800 mb-0">Member Records</h5>
+                <p class="text-muted small">Complete list of all registered members</p>
+            </div>
+            <span class="badge rounded-pill px-3 py-2">{{ members|length }} MEMBERS</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle" id="memberTable">
+                <thead>
+                    <tr>
+                        <th class="border-0">Member Info</th>
+                        <th class="border-0 d-none d-lg-table-cell">Contact</th>
+                        <th class="border-0">Details</th>
+                        <th class="border-0 text-end">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in members %}
+                    <tr class="member-row">
+                        <td>
+                            <div class="fw-bold member-name text-truncate" style="max-width: 150px; color: var(--welfare-dark-green);">{{ member.user.get_full_name|default:member.user.username }}</div>
+                            <small class="text-muted member-pf">PF: {{ member.pf_number|default:"---" }}</small>
+                        </td>
+                        <td class="d-none d-lg-table-cell">
+                            <div class="small member-phone"><i class="bi bi-telephone me-1" style="color: var(--welfare-gold);"></i>{{ member.phone_number }}</div>
+                            <div class="small text-muted">{{ member.email }}</div>
+                        </td>
+                        <td>
+                            <span class="badge bg-light text-dark border">#{{ member.membership_number|default:"N/A" }}</span>
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group">
+                                <a href="{% url 'treasurer_buy_shares' member.id %}" class="btn btn-gold btn-sm" title="Shares"><i class="bi bi-pie-chart-fill"></i></a>
+                                <a href="{% url 'treasurer_deposit_savings' member.id %}" class="btn btn-maroon btn-sm" title="Savings"><i class="bi bi-gift-fill"></i></a>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.addEventListener("DOMContentLoaded", function () {
+    // =========================
+    // SIDEBAR TOGGLE (MOBILE)
+    // =========================
+    const sidebar = document.getElementById('sidebarMenu');
+    const toggleBtn = document.getElementById('toggleSidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+
+    function toggleSidebar() {
+        if (!sidebar) return;
+        sidebar.classList.toggle('show');
+        if (overlay) overlay.classList.toggle('show');
+        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+    }
+
+    if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+    if (overlay) overlay.addEventListener('click', toggleSidebar);
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            toggleSidebar();
+        }
+    });
+
+    // =========================
+    // SEARCH FUNCTIONALITY
+    // =========================
+    const searchInputs = [
+        document.getElementById('memberSearch'),
+        document.getElementById('memberSearchMobile')
+    ];
+    
+    searchInputs.forEach(input => {
+        if(input) {
+            input.addEventListener('keyup', function() {
+                let filter = this.value.toLowerCase();
+                let rows = document.querySelectorAll('.member-row');
+
+                rows.forEach(row => {
+                    let text = row.innerText.toLowerCase();
+                    row.style.display = text.includes(filter) ? "" : "none";
+                });
+            });
+        }
+    });
+
+    // =========================
+    // AUTO-DISMISS ALERTS
+    // =========================
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+});
+</script>
+</body>
+</html>

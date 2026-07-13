@@ -1,0 +1,826 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Financial Report | ELDOPOLY WELFARE</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 10px 30px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 16px;
+        }
+
+        body { 
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            color: #333;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white !important; }
+            .report-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            .main-wrapper { margin: 0 !important; padding: 0 !important; }
+            .summary-box:hover { transform: none !important; }
+        }
+
+        .main-wrapper { padding: 3rem 1rem; }
+        
+        .report-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            padding: 3.5rem;
+            box-shadow: var(--welfare-shadow);
+            max-width: 1400px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        .report-header {
+            border-bottom: 4px solid var(--welfare-gold);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .sacco-logo {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--welfare-dark-green);
+            letter-spacing: -1px;
+        }
+
+        .sacco-logo span {
+            color: var(--welfare-gold);
+        }
+
+        .label-text {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-box {
+            background: #f8faf9;
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .summary-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--welfare-gold);
+        }
+
+        .section-title {
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+            border-left: 5px solid var(--welfare-gold);
+            padding-left: 15px;
+            margin: 40px 0 20px 0;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .section-title i {
+            color: var(--welfare-gold);
+            margin-right: 8px;
+        }
+
+        .currency { 
+            font-weight: 700; 
+            color: #444; 
+            white-space: nowrap; 
+        }
+
+        .text-welfare-green { 
+            color: var(--welfare-dark-green) !important; 
+        }
+
+        .text-welfare-maroon { 
+            color: var(--welfare-maroon) !important; 
+        }
+
+        .text-welfare-gold { 
+            color: var(--welfare-gold) !important; 
+        }
+        
+        .table thead th {
+            background-color: rgba(0, 77, 38, 0.03);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--welfare-dark-green);
+            border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+            font-weight: 800;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 14px 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.04);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .badge-status {
+            padding: 5px 14px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.disbursed { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.pending { background: rgba(255, 204, 0, 0.12); color: #856404; }
+        .badge-status.completed { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.rejected { background: rgba(128, 0, 0, 0.08); color: var(--welfare-maroon); }
+        .badge-status.approved { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.cleared { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.partially_approved { background: rgba(255, 204, 0, 0.12); color: #856404; }
+
+        .btn-print {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-print:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-back {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 8px 20px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0, 77, 38, 0.04);
+        }
+
+        .financial-summary {
+            background: linear-gradient(135deg, #f8faf9 0%, #ffffff 100%);
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(0, 77, 38, 0.08);
+        }
+
+        .financial-summary .row {
+            border-bottom: 1px solid rgba(0, 77, 38, 0.04);
+            padding: 8px 0;
+        }
+
+        .financial-summary .row:last-child {
+            border-bottom: none;
+        }
+
+        .financial-summary .label {
+            font-weight: 600;
+            color: #555;
+        }
+
+        .financial-summary .value {
+            font-weight: 700;
+            text-align: right;
+        }
+
+        .total-row {
+            border-top: 2px solid var(--welfare-gold) !important;
+            padding-top: 12px !important;
+            margin-top: 8px !important;
+        }
+
+        .total-row .label,
+        .total-row .value {
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            .report-card { padding: 1.5rem; }
+            .main-wrapper { padding: 1rem; }
+            .report-header { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+            .report-header .text-end { text-align: left !important; }
+            .summary-box { padding: 15px; }
+            .section-title { font-size: 0.95rem; }
+        }
+
+        @media (max-width: 576px) {
+            .report-card { padding: 1rem; }
+            .sacco-logo { font-size: 1.4rem; }
+            .table { font-size: 0.8rem; }
+            .table thead th { font-size: 0.6rem; padding: 10px; }
+            .table tbody td { padding: 10px; }
+            .summary-box h3 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <!-- ===== BUTTONS ===== -->
+    <div class="container no-print mb-4 d-flex justify-content-between" style="max-width: 1400px;">
+        <button class="btn btn-back" onclick="history.back()">
+            <i class="bi bi-arrow-left me-2"></i> Back
+        </button>
+        <button class="btn btn-print shadow-sm" onclick="window.print()">
+            <i class="bi bi-printer-fill me-2"></i> PRINT FULL REPORT
+        </button>
+    </div>
+
+    <!-- ===== REPORT CARD ===== -->
+    <div class="report-card">
+        <!-- ===== HEADER ===== -->
+        <div class="report-header d-flex justify-content-between align-items-end">
+            <div>
+                <div class="sacco-logo">ELDOPOLY <span>WELFARE</span></div>
+                <p class="text-muted small mb-0">Comprehensive Financial Management Report</p>
+            </div>
+            <div class="text-end">
+                <h4 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">General Ledger Summary</h4>
+                <p class="text-muted small">Generated: {% now "d M Y, H:i" %}</p>
+            </div>
+        </div>
+
+        <!-- ===== SUMMARY BOXES ===== -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Members</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">{{ member_count }}</h3>
+                    <small class="text-muted">Active: {{ active_members }}</small>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Share Capital</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">KES {{ total_shares|floatformat:0 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Savings</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">KES {{ total_savings|floatformat:0 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Net Position</span>
+                    <h3 class="fw-800 mt-2 {% if net_position >= 0 %}text-welfare-green{% else %}text-welfare-maroon{% endif %}">
+                        KES {{ net_position|floatformat:0 }}
+                    </h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FINANCIAL POSITION ===== -->
+        <h5 class="section-title"><i class="bi bi-pie-chart-fill"></i> Financial Position</h5>
+        <div class="financial-summary mb-5">
+            <div class="row">
+                <div class="col-8 label">Total Assets (Shares + Savings)</div>
+                <div class="col-4 value">KES {{ total_assets|floatformat:2 }}</div>
+            </div>
+            <div class="row">
+                <div class="col-8 label">Total Liabilities (Outstanding Loans)</div>
+                <div class="col-4 value">KES {{ total_liabilities|floatformat:2 }}</div>
+            </div>
+            <div class="row total-row">
+                <div class="col-8 label">NET POSITION</div>
+                <div class="col-4 value {% if net_position >= 0 %}text-welfare-green{% else %}text-welfare-maroon{% endif %}">
+                    KES {{ net_position|floatformat:2 }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== MEMBERS ===== -->
+        <h5 class="section-title"><i class="bi bi-people-fill"></i> Members</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">#</th>
+                        <th>Member Name</th>
+                        <th>Phone</th>
+                        <th>Email</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in members %}
+                    <tr>
+                        <td class="ps-3">{{ forloop.counter }}</td>
+                        <td class="fw-bold">{{ m.user.get_full_name }}</td>
+                        <td>{{ m.phone_number }}</td>
+                        <td>{{ m.user.email }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if m.is_active %}disbursed{% else %}rejected{% endif %}">
+                                {% if m.is_active %}Active{% else %}Inactive{% endif %}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No members found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SHARE CAPITAL ===== -->
+        <h5 class="section-title"><i class="bi bi-coins"></i> Share Capital Contributions</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Date</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in shares %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ s.member.user.get_full_name }}</td>
+                        <td>{{ s.date_created|date:"d M Y" }}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ s.amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center py-4 text-muted">No share records found.</td></tr>
+                    {% endfor %}
+                    {% if shares %}
+                    <tr class="table-active">
+                        <td colspan="2" class="fw-bold text-end">TOTAL SHARE CAPITAL</td>
+                        <td class="text-end fw-bold text-welfare-green">KES {{ total_shares|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SHARE REFUNDS ===== -->
+        <h5 class="section-title"><i class="bi bi-arrow-return-left"></i> Share Refunds</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Requested</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ total_share_refunds_requested|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Disbursed</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_share_refunds_disbursed|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h4 class="fw-800 text-warning">{{ pending_share_refunds }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Amount Requested</th>
+                        <th>Year</th>
+                        <th>Reason</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in share_refunds %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ r.member.user.get_full_name }}</td>
+                        <td class="currency">KES {{ r.amount_requested|floatformat:2 }}</td>
+                        <td>{{ r.year }}</td>
+                        <td>{{ r.get_reason_display }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if r.status == 'disbursed' %}disbursed{% elif r.status == 'pending' %}pending{% elif r.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ r.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No share refund records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SAVINGS ===== -->
+        <h5 class="section-title"><i class="bi bi-piggy-bank-fill"></i> Member Savings</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Month</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in savings %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ s.member.user.get_full_name }}</td>
+                        <td>{{ s.month|date:"M Y" }}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ s.amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center py-4 text-muted">No savings records found.</td></tr>
+                    {% endfor %}
+                    {% if savings %}
+                    <tr class="table-active">
+                        <td colspan="2" class="fw-bold text-end">TOTAL SAVINGS</td>
+                        <td class="text-end fw-bold text-welfare-green">KES {{ total_savings|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== LOANS ===== -->
+        <h5 class="section-title"><i class="bi bi-file-earmark-text"></i> Regular Loans</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Disbursed</span>
+                    <h5 class="fw-800 text-welfare-green">KES {{ total_loans_disbursed|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h5 class="fw-800 text-warning">KES {{ total_loans_pending|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Approved</span>
+                    <h5 class="fw-800 text-info">KES {{ total_loans_approved|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Completed</span>
+                    <h5 class="fw-800 text-success">KES {{ total_loans_completed|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Rejected</span>
+                    <h5 class="fw-800 text-danger">KES {{ total_loans_rejected|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-2 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Outstanding</span>
+                    <h5 class="fw-800 text-welfare-maroon">KES {{ outstanding_regular_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Purpose</th>
+                        <th>Date</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-end">Total Due</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Balance</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ loan.member.user.get_full_name }}</td>
+                        <td>{{ loan.get_purpose_display }}</td>
+                        <td>{{ loan.application_date|date:"d M Y" }}</td>
+                        <td class="text-end currency">KES {{ loan.amount|floatformat:2 }}</td>
+                        <td class="text-end currency text-welfare-green">KES {{ loan.total_payable|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ loan.get_remaining_balance|add:loan.amount|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ loan.get_remaining_balance|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if loan.status == 'disbursed' %}disbursed{% elif loan.status == 'pending' %}pending{% elif loan.status == 'completed' %}completed{% elif loan.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ loan.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No loan records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== XMAS LOANS ===== -->
+        <h5 class="section-title"><i class="bi bi-gift-fill"></i> Xmas Loans</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Disbursed</span>
+                    <h5 class="fw-800 text-welfare-green">KES {{ total_xmas_disbursed|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h5 class="fw-800 text-warning">KES {{ total_xmas_pending|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Approved</span>
+                    <h5 class="fw-800 text-info">KES {{ total_xmas_approved|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Outstanding</span>
+                    <h5 class="fw-800 text-welfare-maroon">KES {{ outstanding_xmas_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Date</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-end">Interest</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Balance</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in xmas_loans %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ x.member.user.get_full_name }}</td>
+                        <td>{{ x.application_date|date:"d M Y" }}</td>
+                        <td class="text-end currency">KES {{ x.amount_requested|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.total_interest|floatformat:2 }}</td>
+                        <td class="text-end currency text-welfare-green">KES {{ x.total_payable|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.total_paid|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.remaining_balance|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if x.status == 'disbursed' %}disbursed{% elif x.status == 'pending' %}pending{% elif x.status == 'cleared' %}cleared{% elif x.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ x.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="8" class="text-center py-4 text-muted">No Xmas loan records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== REPAYMENTS ===== -->
+        <h5 class="section-title"><i class="bi bi-clock-history"></i> Loan Repayments</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Repayments</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Regular Loans</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_regular_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Xmas Loans</span>
+                    <h4 class="fw-800 text-welfare-gold">KES {{ total_xmas_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Date</th>
+                        <th>Type</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in repayments %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ r.member.user.get_full_name }}</td>
+                        <td>{{ r.payment_date|date:"d M Y" }}</td>
+                        <td>{% if r.is_xmas %}🎄 Xmas{% else %}📋 Regular{% endif %}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ r.amount_paid|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">No repayment records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== EXPENSES ===== -->
+        <h5 class="section-title"><i class="bi bi-receipt"></i> Expenses</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Expenses</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ total_expenses|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Expenses by Type -->
+        <div class="row g-2 mb-4">
+            {% for type, amount in expenses_by_type.items %}
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">{{ type|title }}</span>
+                    <h6 class="fw-700">KES {{ amount|floatformat:0 }}</h6>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Type</th>
+                        <th>Description</th>
+                        <th>Date</th>
+                        <th>Method</th>
+                        <th>Recorded By</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for e in expenses %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ e.get_expense_type_display }}</td>
+                        <td>{{ e.description|truncatechars:30 }}</td>
+                        <td>{{ e.date_spent|date:"d M Y" }}</td>
+                        <td>{{ e.get_payment_method_display }}</td>
+                        <td>{{ e.recorded_by.user.get_full_name }}</td>
+                        <td class="text-end currency pe-3 text-welfare-maroon">{{ e.amount_spent|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center py-4 text-muted">No expense records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== TRANSACTIONS ===== -->
+        <h5 class="section-title"><i class="bi bi-journal"></i> All Transactions</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Transactions</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_transactions|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Deposits</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_deposits|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Loan Disbursements</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ total_loan_disbursements|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Loan Repayments</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_loan_repayments_txn|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Type</th>
+                        <th>Date</th>
+                        <th>Reference</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for t in transactions|slice:":50" %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ t.member.user.get_full_name }}</td>
+                        <td><span class="badge-status {% if t.transaction_type == 'deposit' %}disbursed{% elif t.transaction_type == 'loan' %}pending{% else %}approved{% endif %}">{{ t.transaction_type|upper }}</span></td>
+                        <td>{{ t.created_at|date:"d M Y" }}</td>
+                        <td class="text-muted">{{ t.reference|default:"-" }}</td>
+                        <td class="text-end currency pe-3 {% if t.transaction_type == 'loan' %}text-welfare-maroon{% else %}text-welfare-green{% endif %}">
+                            {{ t.amount|floatformat:2 }}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No transaction records found.</td></tr>
+                    {% endfor %}
+                    {% if transactions|length > 50 %}
+                    <tr><td colspan="5" class="text-center text-muted">Showing last 50 of {{ transactions|length }} transactions</td></tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== BEREAVEMENT ===== -->
+        <h5 class="section-title"><i class="bi bi-heart-fill"></i> Bereavement Contributions</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Collected</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_bereavement_collected|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Member</th>
+                        <th>Month/Year</th>
+                        <th>Date</th>
+                        <th>Reference</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for b in bereavement_payments %}
+                    <tr>
+                        <td class="fw-bold ps-3">{{ b.member.user.get_full_name }}</td>
+                        <td>{{ b.payment_month }}/{{ b.payment_year }}</td>
+                        <td>{{ b.payment_date|date:"d M Y" }}</td>
+                        <td>{{ b.reference|default:"-" }}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ b.amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted">No bereavement records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="mt-5 pt-4 border-top text-center text-muted small" style="border-color: rgba(255, 204, 0, 0.08) !important;">
+            <p>Certified Comprehensive Financial Report - ELDOPOLY WELFARE Management System</p>
+            <p class="fw-bold text-welfare-green">Generated on {% now "F j, Y" %} at {% now "H:i" %}</p>
+            <p class="text-muted">This report is auto-generated and includes all financial data from the system.</p>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

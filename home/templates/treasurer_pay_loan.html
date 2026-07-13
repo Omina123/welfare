@@ -1,0 +1,228 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Treasurer Pay Loan | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <style>
+        :root { 
+            --eldo-green: #1B5E20; 
+            --eldo-gold: #D4AF37; 
+            --eldo-yellow: #FFD700; 
+            --light-bg: #f8f9fa; 
+            --sidebar-width: 280px;
+        }
+
+        body { background: var(--light-bg); font-family: 'Inter', sans-serif; }
+
+        /* --- Scrollable Sidebar --- */
+        .sidebar { 
+            height: 100vh; 
+            position: fixed; 
+            width: var(--sidebar-width); 
+            background: linear-gradient(180deg, #1B5E20 0%, #123e15 100%); 
+            color: white; 
+            display: flex; 
+            flex-direction: column; 
+            z-index: 1040;
+            transition: all 0.3s ease;
+            overflow-y: auto; 
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.2) transparent;
+        }
+        .sidebar::-webkit-scrollbar { width: 5px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        .sidebar-brand { 
+            padding: 1.5rem; 
+            border-bottom: 1px solid rgba(255,255,255,0.1); 
+            position: sticky; 
+            top: 0; 
+            background: #1B5E20; 
+            z-index: 10; 
+            font-size: 1.2rem;
+            font-weight: 700;
+        }
+        .nav-menu { padding: 1rem 0; flex-grow: 1; }
+        .label-text { 
+            font-size: 0.7rem; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 1px; 
+            color: rgba(255,255,255,0.5); 
+            padding: 1rem 1.5rem 0.5rem; 
+        }
+        .sidebar a { 
+            display: flex; align-items: center; color: rgba(255,255,255,0.8); 
+            padding: 0.7rem 1.5rem; text-decoration: none; transition: 0.2s;
+            margin: 0.1rem 1rem; border-radius: 8px; font-size: 0.9rem;
+        }
+        .sidebar a i { width: 20px; margin-right: 12px; font-size: 1.1rem; }
+        .sidebar a:hover { background: rgba(255,255,255,0.1); color: var(--eldo-yellow); }
+        .sidebar a.active { background: var(--eldo-gold); color: white; font-weight: 600; }
+
+        /* --- Main Content --- */
+        .main-content { 
+            margin-left: var(--sidebar-width); 
+            padding: 2rem; 
+            transition: all 0.3s ease; 
+        }
+        .mobile-header {
+            display: none;
+            background: var(--eldo-green);
+            color: white;
+            padding: 10px 20px;
+            position: sticky;
+            top: 0;
+            z-index: 1050;
+        }
+        .payment-card { border: none; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+        .info-label { font-size: 0.65rem; font-weight: 700; color: #64748b; text-transform: uppercase; }
+        .amount-display { font-size: 1.1rem; font-weight: 800; color: var(--eldo-green); }
+        .btn-eldo { background: var(--eldo-green); color: white; border-radius: 10px; padding: 12px; font-weight: 600; border: none; width: 100%; }
+        .btn-eldo:hover { opacity: 0.9; }
+
+        @media (max-width: 992px) {
+            .mobile-header { display: flex; justify-content: space-between; align-items: center; }
+            .sidebar { left: -100%; }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding: 1.5rem; }
+            .overlay {
+                display: none;
+                position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+                background: rgba(0,0,0,0.5); z-index: 1030;
+            }
+            .overlay.show { display: block; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Mobile Header -->
+<div class="mobile-header">
+    <h5 class="mb-0 fw-bold">ELDOPOLY</h5>
+    <button class="btn text-white p-0" onclick="toggleSidebar()"><i class="bi bi-list fs-2"></i></button>
+</div>
+<div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+
+<!-- Sidebar -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand"><i class="bi bi-bank2 me-2"></i>ELDOPOLY</div>
+    <nav>
+        <div class="label-text">Main Menu</div>
+        <a href="{% url 'treasurer_dashboard' %}"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="{% url 'Members' %}"><i class="bi bi-people"></i> Members</a>
+        <a href="{% url 'pending_loans' %}" class="active"><i class="bi bi-hourglass-split"></i> Loan Requests</a>
+        <a href="{% url 'active_loan' %}"><i class="bi bi-list-check"></i> Active Loans</a>
+        <a href="{% url 'Completed_loans' %}"><i class="bi bi-check-circle"></i> Completed</a>
+        <div class="label-text mt-4">Reports</div>
+        <a href="{% url 'sacco_reportings' %}"><i class="bi bi-graph-up"></i> Reports</a>
+        <a href="{% url 'Logout' %}"><i class="bi bi-power text-danger"></i> Sign Out</a>
+    </nav>
+</aside>
+
+<!-- Main Content -->
+<div class="main-content">
+    <div class="row mb-4 gy-3 align-items-center">
+        <div class="col-12 col-lg-6">
+            <h3 class="fw-bold mb-1" style="color: var(--eldo-green);">Process Payment</h3>
+            <p class="text-muted small mb-0">Member: <span class="text-dark fw-bold">{{ loan.member.user.get_full_name }}</span></p>
+        </div>
+        <div class="col-12 col-lg-6">
+            <div class="row g-2">
+                <div class="col-4">
+                    <div class="bg-white p-2 p-md-3 rounded-4 shadow-sm border-start border-4 border-danger h-100">
+                        <span class="info-label">Total Payable</span>
+                        <div class="amount-display small text-nowrap">KES {{ total_payable|floatformat:0 }}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="bg-white p-2 p-md-3 rounded-4 shadow-sm border-start border-4 border-primary h-100">
+                        <span class="info-label">Monthly Due</span>
+                        <div class="amount-display small text-nowrap">KES {{ monthly_installment|floatformat:0 }}</div>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="bg-white p-2 p-md-3 rounded-4 shadow-sm border-start border-4 border-success h-100">
+                        <span class="info-label">Remaining</span>
+                        <div class="amount-display small text-nowrap">KES {{ remaining_balance|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card payment-card bg-white">
+                <div class="card-body p-4">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-success-subtle p-3 rounded-circle me-3">
+                            <i class="fas fa-cash-register text-success fs-5"></i>
+                        </div>
+                        <h5 class="fw-bold mb-0">Record Payment</h5>
+                    </div>
+                    
+                    <form id="paymentForm" method="post">
+                        {% csrf_token %}
+                        <div class="mb-4">
+                            <label class="form-label small fw-bold text-muted">AMOUNT COLLECTED (KES)</label>
+                            <div class="input-group">
+                                <span class="input-group-text border-0 bg-light">KES</span>
+                                <input type="number" step="0.01" name="amount" class="form-control form-control-lg bg-light border-0" value="{{ monthly_installment|floatformat:2 }}" required>
+                            </div>
+                            <div class="mt-2 d-flex justify-content-between flex-wrap gap-2">
+                                <small class="text-muted">Default: 1 instalment</small>
+                                <small class="text-primary fw-bold" style="cursor: pointer;" onclick="document.getElementsByName('amount')[0].value='{{ remaining_balance|floatformat:2 }}'">Pay Remaining Balance</small>
+                            </div>
+                        </div>
+                        <button type="button" onclick="confirmPayment()" class="btn btn-eldo shadow-sm">
+                            <i class="fas fa-check-double me-2"></i> Confirm Payment
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="text-center mt-3">
+        <a href="{% url 'active_loan' %}" class="btn btn-link text-muted text-decoration-none">
+            <i class="bi bi-arrow-left me-2"></i> Back to Active Loans
+        </a>
+    </div>
+</div>
+
+<script>
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('overlay').classList.toggle('show');
+    }
+
+    function confirmPayment() {
+        const amt = document.getElementsByName('amount')[0].value;
+        if (!amt || parseFloat(amt) <= 0) {
+            Swal.fire('Error', 'Please enter a valid amount.', 'error');
+            return;
+        }
+        Swal.fire({
+            title: 'Confirm Payment',
+            text: `Record KES ${amt} for ${'{{ loan.member.user.get_full_name }}'}?`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#1B5E20',
+            confirmButtonText: 'Confirm'
+        }).then((result) => {
+            if (result.isConfirmed) document.getElementById('paymentForm').submit();
+        });
+    }
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

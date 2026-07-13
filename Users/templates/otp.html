@@ -1,0 +1,172 @@
+<!-- ===== ACCESSIBILITY WIDGET ===== -->
+<script src="https://cdn.userway.org/widget.js" data-account="Se6IBOWlcn"></script>
+
+<!-- ===== MESSAGES ===== -->
+{% if messages %}
+<div class="message-container" style="max-width: 400px; margin: 20px auto -90px auto;">
+    {% for message in messages %}
+    <div class="alert {% if message.tags == 'success' %}alert-success{% else %}alert-warning{% endif %} alert-dismissible fade show shadow-sm border-0" 
+         role="alert" 
+         style="background-color: #ffffff; border-left: 5px solid #ffcc00 !important; color: #333; border-radius: 8px;">
+        <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill text-success{% else %}bi-exclamation-triangle-fill text-warning{% endif %} me-2"></i> 
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-alert="alert" aria-label="Close"></button>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- ===== OTP VERIFICATION CARD ===== -->
+<div class="card p-4 shadow-lg" style="max-width: 400px; margin: 120px auto; border: none; border-top: 6px solid #ffcc00; border-radius: 16px; background-color: #ffffff;">
+    
+    <!-- Logo / Icon -->
+    <div class="text-center mb-4">
+        <div class="mb-3 d-inline-block p-3 rounded-circle" style="background-color: rgba(0, 77, 38, 0.08);">
+            <i class="bi bi-shield-lock-fill" style="font-size: 2.5rem; color: #004d26;"></i>
+        </div>
+        <h3 class="fw-bold mt-2" style="color: #004d26; letter-spacing: -0.5px;">Verify Account</h3>
+        <p class="small text-muted px-3">We've sent a 6-digit verification code to your email. Enter it below to secure your access.</p>
+    </div>
+    
+    <!-- ===== FORM ===== -->
+    <form method="post">
+        {% csrf_token %}
+        
+        <!-- OTP Input -->
+        <div class="mb-4">
+            <input type="text" name="otp" 
+                   class="form-control text-center fw-bold otp-input" 
+                   placeholder="0 0 0 0 0 0" 
+                   maxlength="6" 
+                   required
+                   pattern="\d{6}"
+                   style="font-size: 28px; letter-spacing: 8px; height: 75px; border: 2px solid #dee2e6; border-radius: 12px; color: #004d26; background-color: #fcfcfc; transition: all 0.3s ease;">
+        </div>
+        
+        <!-- Submit Button -->
+        <button type="submit" class="btn w-100 py-3 fw-bold shadow-sm" 
+                style="background: linear-gradient(135deg, #004d26, #1a5a3a); border: none; color: #ffffff; font-size: 1rem; border-radius: 10px; transition: 0.3s;">
+            Verify &amp; Proceed
+        </button>
+    </form>
+    
+    <!-- Resend Link -->
+    <div class="text-center mt-4">
+        <p class="small text-muted mb-1">Didn't receive the code?</p>
+        <a href="{% url 'resend_otp' %}" class="text-decoration-none fw-bold" style="color: #800000; font-size: 0.9rem; border-bottom: 2px solid transparent; transition: 0.3s;">
+            <i class="bi bi-arrow-clockwise me-1"></i>Resend New Code
+        </a>
+    </div>
+</div>
+
+<!-- ===== CUSTOM STYLES ===== -->
+<style>
+    /* ===== GLOBAL BACKGROUND ===== */
+    body {
+        background: linear-gradient(145deg, #004d26 0%, #1a3a2a 40%, #800000 100%);
+        background-attachment: fixed;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: 'Inter', 'Segoe UI', sans-serif;
+        margin: 0;
+        padding: 20px;
+        position: relative;
+    }
+
+    /* ===== ANIMATED BACKGROUND SHAPES ===== */
+    body::before,
+    body::after {
+        content: '';
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: 0;
+        animation: floatShape 20s infinite alternate ease-in-out;
+    }
+    body::before {
+        width: 300px;
+        height: 300px;
+        top: -5%;
+        left: -5%;
+        background: rgba(255, 204, 0, 0.06);
+    }
+    body::after {
+        width: 450px;
+        height: 450px;
+        bottom: -10%;
+        right: -10%;
+        background: rgba(128, 0, 0, 0.08);
+        animation-duration: 25s;
+    }
+
+    @keyframes floatShape {
+        0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+        33% { transform: translate(40px, -60px) scale(1.05) rotate(5deg); }
+        66% { transform: translate(-30px, 40px) scale(0.95) rotate(-5deg); }
+        100% { transform: translate(20px, -20px) scale(1.02) rotate(3deg); }
+    }
+
+    /* ===== CARD POSITIONING ===== */
+    .card {
+        position: relative;
+        z-index: 1;
+        background: rgba(255, 255, 255, 0.95) !important;
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 204, 0, 0.2) !important;
+        box-shadow: 0 25px 50px -12px rgba(0, 77, 38, 0.3) !important;
+    }
+
+    /* ===== OTP INPUT FOCUS ===== */
+    .otp-input:focus {
+        border-color: #ffcc00 !important;
+        box-shadow: 0 0 0 0.25rem rgba(255, 204, 0, 0.25) !important;
+        outline: none;
+        background-color: #fff !important;
+    }
+
+    /* ===== BUTTON HOVER ===== */
+    .btn:hover {
+        background: linear-gradient(135deg, #1a4a2a, #800000) !important;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px -8px rgba(0, 77, 38, 0.5) !important;
+    }
+
+    .btn:active {
+        transform: scale(0.97);
+    }
+
+    /* ===== RESEND LINK HOVER ===== */
+    a[href*="resend_otp"]:hover {
+        color: #004d26 !important;
+        border-bottom-color: #ffcc00 !important;
+    }
+
+    /* ===== MESSAGE CONTAINER ===== */
+    .message-container {
+        position: relative;
+        z-index: 2;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width: 480px) {
+        .card {
+            margin: 80px 15px !important;
+            padding: 1.5rem !important;
+        }
+        .otp-input {
+            font-size: 22px !important;
+            letter-spacing: 6px !important;
+            height: 60px !important;
+        }
+        .btn {
+            font-size: 0.9rem !important;
+            padding: 12px !important;
+        }
+        .message-container {
+            margin: 10px 15px -70px 15px !important;
+        }
+    }
+</style>

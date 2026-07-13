@@ -1,0 +1,397 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pay Retirement Contribution | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-shadow: 0 10px 30px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 20px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body { 
+            background: linear-gradient(145deg, var(--welfare-dark-green) 0%, #1a3a2a 40%, var(--welfare-maroon) 100%);
+            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
+
+        .pay-wrapper {
+            width: 100%;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: all var(--transition);
+        }
+
+        .back-link:hover {
+            color: var(--welfare-gold);
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateX(-4px);
+        }
+
+        .card {
+            border: none;
+            border-radius: var(--welfare-radius);
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+            overflow: hidden;
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green) 0%, #1a4a2a 50%, var(--welfare-maroon) 100%);
+            color: white;
+            padding: 25px 20px;
+            text-align: center;
+            border-bottom: 4px solid var(--welfare-gold);
+        }
+
+        .card-header .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: var(--welfare-gold);
+            border-radius: 50%;
+            margin-bottom: 10px;
+            color: var(--welfare-dark-green);
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.25);
+        }
+
+        .card-header h4 {
+            color: #fff;
+            font-weight: 800;
+        }
+
+        .card-header p {
+            color: rgba(255, 204, 0, 0.8);
+            margin-bottom: 0;
+        }
+
+        .card-body {
+            padding: 30px 28px 28px;
+        }
+
+        .amount-box {
+            background: rgba(0, 77, 38, 0.04);
+            border: 2px solid rgba(255, 204, 0, 0.08);
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .amount-box .label {
+            color: #64748b;
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .amount-box .amount {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+            font-size: 2rem;
+        }
+
+        .amount-box .min-amount {
+            color: #64748b;
+            font-size: 0.75rem;
+            margin-top: 4px;
+        }
+
+        .announcement-item {
+            background: rgba(0, 77, 38, 0.04);
+            border-left: 3px solid var(--welfare-dark-green);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            font-size: 0.8rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .announcement-item .retiree {
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+        }
+
+        .announcement-item .date {
+            font-weight: 600;
+            color: var(--welfare-maroon);
+        }
+
+        .announcement-item .amount-tag {
+            font-weight: 700;
+            color: var(--welfare-maroon);
+            background: rgba(128, 0, 0, 0.06);
+            padding: 2px 12px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+        }
+
+        .form-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--welfare-dark-green);
+            letter-spacing: 0.5px;
+        }
+
+        .form-label i {
+            color: var(--welfare-gold);
+            margin-right: 4px;
+        }
+
+        .form-label .required {
+            color: var(--welfare-maroon);
+            margin-left: 2px;
+        }
+
+        .form-control {
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            padding: 12px 16px;
+            background: #fafcff;
+            font-weight: 600;
+            color: #1e293b;
+            transition: all var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.1);
+            background: #fff;
+        }
+
+        .input-group-text {
+            background: #f1f4f9;
+            border: 2px solid #e9edf2;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 0.9rem;
+            padding: 0 14px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .btn-pay {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            padding: 14px 24px;
+            transition: all var(--transition);
+            font-size: 1rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-pay:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-pay:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .alert {
+            border-radius: 12px;
+            font-size: 0.9rem;
+        }
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.08);
+            border-left: 4px solid var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+        }
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.08);
+            border-left: 4px solid var(--welfare-maroon);
+            color: var(--welfare-maroon);
+        }
+        .alert-warning {
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            border-left: 4px solid var(--welfare-gold);
+            color: #856404;
+        }
+        .alert i { margin-right: 8px; }
+
+        @media (max-width: 480px) {
+            body { padding: 16px; }
+            .card-body { padding: 20px 16px; }
+            .card-header { padding: 20px 16px; }
+            .card-header .icon-circle { width: 50px; height: 50px; font-size: 1.4rem; }
+            .amount-box .amount { font-size: 1.5rem; }
+            .btn-pay { font-size: 0.9rem; padding: 12px 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="pay-wrapper">
+        <a href="{% url 'member_dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <div class="card">
+            <div class="card-header">
+                <div class="icon-circle">
+                    <i class="fas fa-user-clock"></i>
+                </div>
+                <h4>Pay Retirement Contributions</h4>
+                <p>For {{ month }}</p>
+            </div>
+
+            <div class="card-body">
+
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-3">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% elif message.tags == 'warning' %}fa-exclamation-triangle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- Active announcements (pending) -->
+                {% if announcements %}
+                <div class="mb-3">
+                    <small class="text-muted fw-bold text-uppercase" style="font-size: 0.6rem;">
+                        <i class="fas fa-user-clock me-1" style="color: var(--welfare-gold);"></i> Active Retirement Announcements
+                    </small>
+                    {% for ann in announcements %}
+                    <div class="announcement-item">
+                        <span>
+                            <span class="retiree">{{ ann.member.user.get_full_name|default:ann.member.user.username }}</span>
+                            is retiring on 
+                            <span class="date">{{ ann.retirement_date|date:"d M, Y" }}</span>
+                        </span>
+                        <span class="amount-tag">KES {{ ann.monthly_amount_per_member|floatformat:2 }}</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% else %}
+                <div class="alert alert-info mb-3">
+                    <i class="fas fa-info-circle me-2"></i> You have no pending retirement contributions this month.
+                </div>
+                {% endif %}
+
+                <!-- Total Amount Box -->
+                <div class="amount-box">
+                    <div class="label">
+                        <i class="fas fa-coins me-1" style="color: var(--welfare-gold);"></i>
+                        Total Amount Due (This Month)
+                    </div>
+                    <div class="amount">KES {{ total_due|floatformat:2 }}</div>
+                    <div class="min-amount">
+                        This is the total for all active retirement announcements this month.
+                    </div>
+                </div>
+
+                <!-- Form -->
+                <form method="POST" action="{% url 'pay_retirement_mpesa' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-phone"></i> M-Pesa Phone Number <span class="required">*</span></label>
+                        <div class="input-group">
+                            <span class="input-group-text"><i class="fas fa-phone"></i></span>
+                            <input type="tel" name="phone" class="form-control" placeholder="0712345678" required value="{{ phone_number|default:'' }}">
+                        </div>
+                        <small class="text-muted">Enter the phone number registered with M-Pesa</small>
+                    </div>
+
+                    <!-- Hidden fields -->
+                    <input type="hidden" name="amount" value="{{ total_due }}">
+                    <input type="hidden" name="payment_type" value="retirement">
+
+                    <button type="submit" class="btn-pay" {% if total_due == 0 %}disabled{% endif %}>
+                        <i class="fas fa-mobile-alt"></i> 
+                        {% if total_due == 0 %}
+                            No Payment Required
+                        {% else %}
+                            Pay KES {{ total_due|floatformat:2 }} via M-Pesa
+                        {% endif %}
+                    </button>
+                </form>
+
+                <div class="text-center mt-3">
+                    <p class="text-muted small">
+                        <i class="fas fa-lock me-1" style="color: var(--welfare-gold);"></i>
+                        Secure payment via M-Pesa STK Push
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Auto-dismiss alerts
+        setTimeout(function() {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+
+        // Validate phone number
+        document.querySelector('form').addEventListener('submit', function(e) {
+            const phone = this.querySelector('input[name="phone"]').value.trim();
+            if (!phone || phone.length < 10) {
+                e.preventDefault();
+                alert('⚠️ Please enter a valid phone number.');
+                this.querySelector('input[name="phone"]').focus();
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

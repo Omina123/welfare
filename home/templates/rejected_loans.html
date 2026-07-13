@@ -1,0 +1,533 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Rejected Support | ELDOPOLY WELFARE</title>
+    <meta name="description" content="View rejected support requests for ELDOPOLY WELFARE members. Review declined welfare applications.">
+    <meta name="keywords" content="ELDOPOLY WELFARE rejected support, declined welfare, member support, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/rejected-support/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 16px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 260px;
+            --top-nav-height: 70px;
+        }
+
+        body { 
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            z-index: 1100;
+            padding: 1.5rem;
+            color: white;
+            transition: all 0.3s ease;
+            overflow-y: auto;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-thumb { background: rgba(255, 204, 0, 0.2); border-radius: 10px; }
+
+        .sidebar-brand {
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--welfare-gold);
+            padding-bottom: 2rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .sidebar-brand i {
+            color: var(--welfare-gold);
+        }
+
+        .nav-link-side {
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            padding: 12px 15px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            margin-bottom: 5px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.2s;
+            border-left: 3px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-link-side i { font-size: 1.1rem; margin-right: 12px; width: 22px; }
+
+        .nav-link-side:hover, .nav-link-side.active {
+            background: rgba(255,204,0,0.08);
+            color: var(--welfare-gold);
+            border-left-color: var(--welfare-gold);
+        }
+
+        .nav-link-side.text-danger:hover {
+            color: #ff6b6b !important;
+            background: rgba(255,0,0,0.05);
+        }
+
+        .menu-label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1.5px;
+            padding: 0 15px;
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.06);
+            margin: 0.5rem 15px;
+        }
+
+        /* ===== MOBILE TOGGLE ===== */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 15px;
+            left: 15px;
+            z-index: 1100;
+            background: var(--welfare-dark-green);
+            border: none;
+            color: var(--welfare-gold);
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-size: 1.2rem;
+        }
+
+        @media (max-width: 992px) {
+            .sidebar { 
+                transform: translateX(-100%);
+                width: 280px;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .top-navbar { left: 0; }
+            .main-wrapper { margin-left: 0; padding: 1.5rem; }
+            .mobile-toggle {
+                display: block !important;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-wrapper { padding: 1rem; }
+            .top-navbar { padding: 0 1rem; }
+            .top-navbar h5 { font-size: 0.9rem; }
+            .report-card { padding: 1rem; }
+            .table { font-size: 0.8rem; }
+        }
+
+        /* ===== SIDEBAR OVERLAY ===== */
+        #sidebar-overlay {
+            display: none;
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0,0,0,0.3);
+            z-index: 1040;
+            top: 0;
+        }
+
+        #sidebar-overlay.show { display: block; }
+
+        /* ===== TOP NAVBAR ===== */
+        .top-navbar {
+            height: var(--top-nav-height);
+            background: var(--welfare-white);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border-bottom: 2px solid rgba(255,204,0,0.06);
+            transition: all 0.3s ease;
+        }
+
+        .top-navbar h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        .top-navbar .fw-800 {
+            color: var(--welfare-dark-green);
+        }
+
+        .top-navbar .text-muted {
+            color: var(--welfare-maroon) !important;
+        }
+
+        .top-navbar .bg-light.rounded-circle {
+            background: rgba(0,77,38,0.06) !important;
+            border: 2px solid rgba(255,204,0,0.1) !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-navbar .bg-light.rounded-circle i {
+            color: var(--welfare-dark-green) !important;
+        }
+
+        .top-navbar .btn-light {
+            border: 2px solid #e9edf2;
+            border-radius: 10px;
+            padding: 6px 10px;
+            background: transparent !important;
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--top-nav-height);
+            padding: 2.5rem;
+            transition: all 0.3s ease;
+        }
+
+        /* ===== REPORT CARD ===== */
+        .report-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            padding: 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border: 1px solid rgba(255,204,0,0.06);
+            transition: all var(--transition);
+        }
+
+        .report-card:hover {
+            border-color: rgba(255,204,0,0.12);
+        }
+
+        /* ===== TABLE ===== */
+        .table thead th {
+            background: rgba(0,77,38,0.03);
+            color: var(--welfare-dark-green);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 0.8rem;
+            border-bottom: 2px solid rgba(255,204,0,0.06);
+        }
+
+        .table tbody td {
+            padding: 0.8rem;
+            vertical-align: middle;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,204,0,0.04);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255,204,0,0.02);
+        }
+
+        .table .fw-bold {
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.rejected {
+            background: rgba(128,0,0,0.08);
+            color: var(--welfare-maroon);
+        }
+
+        .badge-status.completed {
+            background: rgba(0,77,38,0.08);
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-dark {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 16px;
+            font-weight: 600;
+            transition: all var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .btn-dark:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,77,38,0.15);
+        }
+
+        .btn-dark i {
+            margin-right: 4px;
+        }
+
+        /* ===== EMPTY STATE ===== */
+        .empty-state i {
+            color: #cbd5e0;
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0,77,38,0.05);
+            border: 1px solid rgba(0,77,38,0.08);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128,0,0,0.05);
+            border: 1px solid rgba(128,0,0,0.08);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== MOBILE TOGGLE ===== -->
+<button class="mobile-toggle" id="sidebarToggle">
+    <i class="fas fa-bars"></i>
+</button>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <i class="bi bi-bank2"></i> ELDOPOLY
+    </div>
+    
+    <nav>
+        <div class="menu-label">Main Menu</div>
+        <a href="{% url 'treasurer_dashboard' %}" class="nav-link-side"><i class="bi bi-speedometer2"></i> Dashboard</a>
+        <a href="{% url 'Members' %}" class="nav-link-side"><i class="bi bi-people"></i> Members</a>
+        <a href="{% url 'all_savings' %}" class="nav-link-side"><i class="bi bi-piggy-bank"></i> Member Savings</a>
+        <a href="{% url 'sacco_reportings' %}" class="nav-link-side"><i class="bi bi-graph-up"></i> Welfare Report</a>
+        
+        <div class="menu-label">Loan Management</div>
+        <a href="{% url 'pending_loans' %}" class="nav-link-side"><i class="bi bi-hourglass-split"></i> Pending Standard</a>
+        <a href="{% url 'Xm_approved' %}" class="nav-link-side"><i class="bi bi-gift"></i> Pending Holiday</a>
+        <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Approved History</a>
+        <a href="{% url 'Completed_loans' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Completed Support</a>
+        <a href="{% url 'monthly_sacco_report' %}" class="nav-link-side"><i class="bi bi-calendar2-week"></i> Monthly Report</a>
+        <a href="{% url 'active_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Support</a>
+        <a href="{% url 'active_xmas_loan' %}" class="nav-link-side"><i class="bi bi-check2-circle"></i> Active Holiday</a>
+        
+        <div class="menu-label">Archives</div>
+        <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-archive"></i> Approved History</a>
+        <a href="{% url 'rejected_loans' %}" class="nav-link-side active"><i class="bi bi-x-circle"></i> Rejected Support</a>
+
+        <hr>
+        <a href="{% url 'Logout' %}" class="nav-link-side text-danger"><i class="bi bi-power"></i> Sign Out</a>
+    </nav>
+</aside>
+
+<!-- ===== TOP NAVBAR ===== -->
+<header class="top-navbar">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-light d-lg-none" onclick="toggleSidebar()">
+            <i class="bi bi-list"></i>
+        </button>
+        <h5 class="mb-0 fw-800 d-none d-sm-block">Executive Treasury Suite</h5>
+    </div>
+    
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+            <div class="fw-800 small">{{ request.user.get_full_name|default:request.user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Verified Treasurer</div>
+        </div>
+        <div class="bg-light rounded-circle p-2 border">
+            <i class="bi bi-person-fill"></i>
+        </div>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-wrapper">
+
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ===== HEADER ===== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-end mb-4 gap-3">
+        <div>
+            <h2 class="fw-800 mb-1" style="color: var(--welfare-dark-green);">Rejected Support</h2>
+            <p class="text-muted">Generated on: {% now "jS F Y" %}</p>
+        </div>
+        <button class="btn-dark shadow-sm px-4 fw-bold" onclick="window.print()">
+            <i class="bi bi-file-pdf me-2"></i> GENERATE PDF
+        </button>
+    </div>
+
+    <!-- ===== REPORT CARD ===== -->
+    <div class="report-card">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h6 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">
+                <i class="bi bi-x-circle me-2" style="color: var(--welfare-maroon);"></i>Declined Support Requests
+            </h6>
+            <span class="badge" style="background: var(--welfare-maroon); color: white;">{{ rejected_loans|length }} Rejected</span>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Support Amount</th>
+                        <th>Purpose</th>
+                        <th>Status</th>
+                        <th class="text-end">Approvals</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in rejected_loans %}
+                    <tr>
+                        <td>
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <div class="text-muted small">ID: #{{ loan.member.id }}</div>
+                        </td>
+                        <td class="fw-800" style="color: var(--welfare-dark-green);">KES {{ loan.amount|floatformat:2 }}</td>
+                        <td>{{ loan.purpose.name|default:"Standard" }}</td>
+                        <td>
+                            <span class="badge-status rejected"><i class="bi bi-x-circle me-1"></i> {{ loan.status|title }}</span>
+                        </td>
+                        <td class="text-end fw-bold" style="color: var(--welfare-dark-green);">{{ loan.approval_count }}/3</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="empty-state">
+                                <i class="bi bi-inbox fs-1 d-block mb-2" style="color: #cbd5e0;"></i>
+                                <span class="text-muted">No rejected support requests found.</span>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="mt-3 pt-2 border-top text-muted small d-flex justify-content-between" style="border-color: rgba(255,204,0,0.06) !important;">
+            <span>Total: <strong style="color: var(--welfare-dark-green);">{{ rejected_loans|length }}</strong> rejected requests</span>
+            <span class="fw-bold" style="color: var(--welfare-dark-green);">ELDOPOLY WELFARE</span>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ===== SIDEBAR TOGGLE =====
+    const toggleBtn = document.getElementById('sidebarToggle');
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+
+    function toggleSidebar() {
+        sidebar.classList.toggle('show');
+        overlay.classList.toggle('show');
+        document.body.style.overflow = sidebar.classList.contains('show') ? 'hidden' : '';
+    }
+
+    if (toggleBtn) {
+        toggleBtn.addEventListener('click', toggleSidebar);
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', toggleSidebar);
+    }
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            toggleSidebar();
+        }
+    });
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992) {
+            if (sidebar && !sidebar.contains(event.target) && toggleBtn && !toggleBtn.contains(event.target) && !event.target.closest('.mobile-toggle')) {
+                sidebar.classList.remove('show');
+                overlay.classList.remove('show');
+            }
+        }
+    });
+
+    // ===== AUTO-DISMISS ALERTS =====
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
+</body>
+</html>

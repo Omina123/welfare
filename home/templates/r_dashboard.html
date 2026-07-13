@@ -1,0 +1,1381 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Member Dashboard – ELDOPOLY WELFARE</title>
+    <meta name="description" content="Access your ELDOPOLY WELFARE member dashboard. View savings, welfare benefits, shares, loans, and community support programs.">
+    <meta name="keywords" content="ELDOPOLY WELFARE dashboard, member dashboard, welfare benefits, savings, shares, loans, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/dashboard/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.08);
+            --welfare-radius: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--welfare-light-bg);
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            width: 260px;
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            color: white;
+            padding-top: 1.5rem;
+            z-index: 1050;
+            overflow-y: auto;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar::-webkit-scrollbar { width: 4px; }
+        .sidebar::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .sidebar::-webkit-scrollbar-thumb { background: var(--welfare-gold); border-radius: 4px; }
+
+        .sidebar-brand h4 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.5);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+        }
+
+        .sidebar a {
+            display: flex;
+            align-items: center;
+            color: rgba(255,255,255,0.7);
+            padding: 10px 22px;
+            text-decoration: none;
+            transition: all var(--transition);
+            font-weight: 500;
+            font-size: 0.85rem;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a i {
+            width: 22px;
+            font-size: 1rem;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 204, 0, 0.08);
+            color: var(--welfare-gold) !important;
+            border-left: 3px solid var(--welfare-gold);
+        }
+
+        .sidebar .menu-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.3);
+            letter-spacing: 1.5px;
+            padding: 0 22px;
+            margin-top: 1.2rem;
+            margin-bottom: 0.4rem;
+        }
+
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.06);
+            margin: 0.8rem 22px;
+        }
+
+        .sidebar .btn-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 6px 12px;
+        }
+        .sidebar .btn-gold:hover {
+            background: #f5d742;
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== MAIN CONTENT ===== */
+        .main-content {
+            margin-left: 260px;
+            padding: 20px 25px;
+            transition: all 0.3s ease;
+            min-height: 100vh;
+        }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-header {
+            display: none;
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: white;
+            padding: 12px 18px;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            border-bottom: 3px solid var(--welfare-gold);
+        }
+
+        .mobile-header h5 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+            font-size: 1.1rem;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .sidebar { left: -260px; }
+            .sidebar.active { left: 0; }
+            .main-content { margin-left: 0; padding: 15px; }
+            .mobile-header { display: flex !important; }
+        }
+
+        @media (max-width: 576px) {
+            .main-content { padding: 10px; }
+            .stat-card { padding: 0.6rem; }
+            .stat-card .stat-value { font-size: 0.9rem; }
+            .card-table .card-header { flex-direction: column; gap: 0.3rem; text-align: center; padding: 10px 14px; }
+            .card-table .card-header h5 { font-size: 0.85rem; }
+        }
+
+        /* ===== COMPACT STAT CARDS ===== */
+        .stat-card {
+            border: none;
+            border-radius: var(--welfare-radius);
+            background: var(--welfare-white);
+            border-top: 3px solid var(--welfare-gold);
+            transition: all var(--transition);
+            box-shadow: var(--welfare-shadow);
+            height: 100%;
+            padding: 0.8rem 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.1);
+        }
+
+        .stat-card .stat-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .stat-card .stat-icon.gold {
+            background: rgba(255, 204, 0, 0.12);
+            color: var(--welfare-gold);
+        }
+        .stat-card .stat-icon.green {
+            background: rgba(0, 77, 38, 0.10);
+            color: var(--welfare-dark-green);
+        }
+        .stat-card .stat-icon.maroon {
+            background: rgba(128, 0, 0, 0.10);
+            color: var(--welfare-maroon);
+        }
+        .stat-card .stat-icon.blue {
+            background: rgba(13, 110, 253, 0.10);
+            color: #0d6efd;
+        }
+        .stat-card .stat-icon.purple {
+            background: rgba(128, 0, 128, 0.08);
+            color: #6a0dad;
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 0;
+            line-height: 1.2;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+            line-height: 1.2;
+            margin-top: 0;
+        }
+
+        /* ===== CARD TABLE ===== */
+        .card-table {
+            border: none;
+            border-radius: var(--welfare-radius);
+            overflow: hidden;
+            box-shadow: var(--welfare-shadow);
+            background: var(--welfare-white);
+        }
+
+        .card-table .card-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a4a2a);
+            color: var(--welfare-gold);
+            padding: 12px 18px;
+            font-weight: 700;
+            border: none;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .card-table .card-header .badge-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+        }
+
+        /* ===== BEREAVEMENT CARD ===== */
+        .bereavement-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            border-left: 4px solid var(--welfare-gold);
+            box-shadow: var(--welfare-shadow);
+            padding: 1rem 1.25rem;
+            transition: all var(--transition);
+        }
+
+        .bereavement-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.08);
+        }
+
+        .bereavement-card .amount {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+        }
+
+        .bereavement-card .label {
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        /* ===== BEREAVEMENT ANNOUNCEMENT ===== */
+        .bereavement-announcement {
+            background: linear-gradient(135deg, #fff5f5, #fff0f0);
+            border-radius: var(--welfare-radius);
+            border-left: 4px solid var(--welfare-maroon);
+            box-shadow: var(--welfare-shadow);
+            padding: 1rem 1.25rem;
+            transition: all var(--transition);
+            margin-bottom: 0.75rem;
+        }
+
+        .bereavement-announcement:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 25px rgba(128, 0, 0, 0.08);
+        }
+
+        .bereavement-announcement .mourner-name {
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 1rem;
+        }
+
+        .bereavement-announcement .deceased-name {
+            font-weight: 600;
+            color: var(--welfare-maroon);
+        }
+
+        .bereavement-announcement .relationship-badge {
+            background: var(--welfare-maroon);
+            color: white;
+            padding: 0.15rem 0.7rem;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .bereavement-announcement .amount-badge {
+            background: var(--welfare-dark-green);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+        }
+
+        .bereavement-announcement .btn-pay-bereavement {
+            background: linear-gradient(135deg, var(--welfare-maroon), #4a0000);
+            color: white;
+            border: none;
+            padding: 6px 18px;
+            border-radius: 8px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .bereavement-announcement .btn-pay-bereavement:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(128, 0, 0, 0.3);
+            color: var(--welfare-gold);
+        }
+
+        .bereavement-announcement .btn-pay-bereavement:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .badge-status.paid {
+            background: #28a745;
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        .badge-status.pending {
+            background: #ffc107;
+            color: #856404;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.6rem;
+            font-weight: 600;
+        }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 0.25rem 0.7rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+        .badge-status.approved { background: var(--welfare-dark-green); color: white; }
+        .badge-status.pending { background: var(--welfare-gold); color: var(--welfare-dark-green); }
+        .badge-status.rejected { background: var(--welfare-maroon); color: white; }
+        .badge-status.disbursed { background: #0d6efd; color: white; }
+
+        /* ===== PROGRESS CIRCLE ===== */
+        .progress-circle-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .progress-circle-container svg {
+            transform: rotate(-90deg);
+            width: 70px;
+            height: 70px;
+        }
+
+        .progress-circle-container .progress-label {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-weight: 700;
+            font-size: 0.75rem;
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== XMAS REFUND PROGRESS ===== */
+        .progress-xmas {
+            height: 4px;
+            background: #e9edf2;
+            border-radius: 10px;
+            overflow: hidden;
+            flex: 1;
+        }
+
+        .progress-xmas .progress-bar {
+            background: linear-gradient(90deg, var(--welfare-dark-green), var(--welfare-gold));
+            border-radius: 10px;
+            transition: width 0.6s ease;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-eldo {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: var(--welfare-white);
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            padding: 6px 16px;
+            transition: all var(--transition);
+            font-size: 0.75rem;
+        }
+
+        .btn-eldo:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-outline-danger {
+            border: 2px solid var(--welfare-maroon);
+            color: var(--welfare-maroon);
+            background: transparent;
+            font-weight: 600;
+            padding: 2px 10px;
+            border-radius: 6px;
+            font-size: 0.65rem;
+            transition: all var(--transition);
+        }
+
+        .btn-outline-danger:hover {
+            background: var(--welfare-maroon);
+            color: white;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a) !important;
+            border: none !important;
+            font-size: 0.7rem;
+            padding: 4px 14px;
+        }
+        .btn-success:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon)) !important;
+            color: var(--welfare-gold) !important;
+        }
+
+        /* ===== TABLES ===== */
+        .table thead th {
+            background: rgba(0, 77, 38, 0.03);
+            color: var(--welfare-dark-green);
+            font-size: 0.6rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 0.6rem 0.8rem;
+            border-bottom: 2px solid rgba(255, 204, 0, 0.06);
+        }
+
+        .table tbody td {
+            padding: 0.6rem 0.8rem;
+            vertical-align: middle;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.04);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .text-welfare-green { color: var(--welfare-dark-green); }
+        .text-welfare-maroon { color: var(--welfare-maroon); }
+        .text-welfare-gold { color: var(--welfare-gold); }
+
+        /* ===== TIMER ===== */
+        .timer-text {
+            color: var(--welfare-maroon);
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        /* ===== RESPONSIVE TWEAKS ===== */
+        @media (max-width: 576px) {
+            .stat-card { flex-direction: column; text-align: center; padding: 0.6rem; }
+            .stat-card .stat-icon { width: 30px; height: 30px; font-size: 0.8rem; }
+            .stat-card .stat-value { font-size: 0.9rem; }
+            .table { font-size: 0.7rem; }
+            .progress-circle-container svg { width: 60px; height: 60px; }
+            .card-table .card-header { font-size: 0.8rem; }
+            .bereavement-card { padding: 0.8rem 1rem; }
+            .bereavement-card .amount { font-size: 0.95rem; }
+            .bereavement-announcement { padding: 0.8rem 1rem; }
+        }
+
+        /* ===== ANNOUNCEMENT COLLAPSE ICON ANIMATION ===== */
+        .collapse-icon {
+            transition: transform 0.3s ease;
+        }
+        .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar" id="sidebar">
+        <div class="sidebar-brand p-3 mb-1 text-center">
+            <h4 class="fw-bold"><i class="fas fa-hands-helping me-2"></i> ELDOPOLY</h4>
+            <small>WELFARE PORTAL v2.0</small>
+        </div>
+
+        {% if request.user.user_type != '4' %}
+        <div class="px-3 mb-2">
+            {% if 'admin' in request.path or 'management' in request.path or 'staff' in request.path %}
+                <a href="{% url 'member_dashboard' %}" class="btn btn-sm w-100 btn-gold fw-bold py-1 shadow-sm">
+                    <i class="fas fa-user me-2"></i> My Member View
+                </a>
+            {% else %}
+                <a href="{% url 'management_index' %}" class="btn btn-sm w-100 btn-gold fw-bold py-1 shadow-sm">
+                    <i class="fas fa-user-shield me-2"></i> Management Hub
+                </a>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <div class="menu-label">Main Menu</div>
+
+        <a href="{% url 'member_dashboard' %}" class="{% if request.resolver_match.url_name == 'member_dashboard' %}active{% endif %}">
+            <i class="fas fa-th-large"></i> Dashboard
+        </a>
+        <a href="{% url 'member_profile' %}">
+            <i class="fas fa-user"></i> My Profile
+        </a>
+        <a href="{% url 'deposit_savings' %}" class="{% if 'savings' in request.path %}active{% endif %}">
+            <i class="fas fa-piggy-bank"></i> Welfare Savings
+        </a>
+        <a href="{% url 'purchase_shares' %}" class="{% if 'shares' in request.path %}active{% endif %}">
+            <i class="fas fa-chart-pie"></i> Shares
+        </a>
+
+        <div class="menu-label">Welfare Services</div>
+
+        <a href="{% url 'apply_loan' %}"><i class="fas fa-file-invoice-dollar"></i> Apply loan</a>
+        <a href="{% url 'apply_xmas_loan' %}"><i class="fas fa-holly-berry"></i> Apply Xmas Loan</a>
+        <a href="{% url 'pay_loan' %}"><i class="fas fa-hand-holding-usd"></i> Repay Loan</a>
+        <a href="{% url 'my_loans' %}"><i class="fas fa-exchange-alt"></i> My Loans</a>
+
+        <div class="menu-label">Records &amp; Reports</div>
+
+        <a href="{% url 'my_statement' %}"><i class="fas fa-file-alt"></i> My Statement</a>
+        <a href="{% url 'member_individual_report' %}"><i class="fas fa-book"></i> My Ledger</a>
+
+        <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#bereavementSubmenu" role="button">
+            <span><i class="fas fa-hand-holding-heart"></i> Bereavement</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.6rem;"></i>
+        </a>
+        <div class="collapse" id="bereavementSubmenu">
+            <a href="{% url 'pay_bereavement_mpesa' %}" class="ps-5 py-1" style="font-size: 0.8rem;">
+                <i class="fas fa-gift me-2"></i> Pay
+            </a>
+        </div>
+
+        <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#retirementSubmenu" role="button">
+            <span><i class="fas fa-user-clock"></i> Retirement</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.6rem;"></i>
+        </a>
+        <div class="collapse" id="retirementSubmenu">
+            <a href="{% url 'pay_retirement_mpesa' %}" class="ps-5 py-1" style="font-size: 0.8rem;">
+                <i class="fas fa-gift me-2"></i> Pay
+            </a>
+        </div>
+
+        <a class="d-flex justify-content-between align-items-center" data-bs-toggle="collapse" href="#refundSubmenu" role="button">
+            <span><i class="fas fa-undo-alt"></i> Refunds</span>
+            <i class="fas fa-chevron-down" style="font-size: 0.6rem;"></i>
+        </a>
+        <div class="collapse" id="refundSubmenu">
+            <a href="{% url 'apply_xmas_refund' %}" class="ps-5 py-1" style="font-size: 0.8rem;">
+                <i class="fas fa-gift me-2"></i> Holiday Refunds
+            </a>
+            <a href="{% url 'apply_share_refund' %}" class="ps-5 py-1" style="font-size: 0.8rem;">
+                <i class="fas fa-coins me-2"></i> Share Refunds
+            </a>
+        </div>
+
+        <hr>
+        <a href="{% url 'Logout' %}" style="color: rgba(255,255,255,0.5);">
+            <i class="fas fa-sign-out-alt"></i> Logout
+        </a>
+    </div>
+
+    <!-- ===== TOAST CONTAINER ===== -->
+    <div id="toast-container"></div>
+
+    <!-- ===== MOBILE HEADER ===== -->
+    <div class="mobile-header shadow-sm">
+        <h5 class="mb-0 fw-bold"><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h5>
+        <button class="btn text-white fs-4 p-0" id="sidebarToggle">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="main-content position-relative">
+
+        <!-- Dashboard Lock -->
+        {% if share_goal <= 0 %}
+        <div id="dashboard-lock" class="position-absolute top-0 start-0 w-100 h-100 rounded-3 d-flex justify-content-center align-items-center" 
+             style="background: rgba(255,255,255,0.8); backdrop-filter: blur(6px); z-index: 1020;">
+            <div class="text-center p-4 shadow-lg bg-white rounded-3 border border-warning" style="max-width: 380px;">
+                <div class="mb-2 text-warning"><i class="fas fa-lock fa-2x"></i></div>
+                <h5 class="fw-bold text-welfare-green">Dashboard Locked</h5>
+                <p class="text-muted small mb-3">Set a target share goal to view your full portfolio.</p>
+                <button type="button" class="btn btn-success rounded-pill w-100 py-1 fw-bold" onclick="updateGoal('share')">Set Share Goal Now</button>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Welcome Header -->
+        <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+            <div>
+                <h4 class="fw-bold text-welfare-green mb-0">Hello, {{ profile.user.get_full_name }}!</h4>
+                <p class="text-muted small mb-0">
+                    Member: <span class="fw-bold text-welfare-maroon">#{{ profile.membership_number }}</span> 
+                    <span class="badge bg-success ms-1" style="font-size: 0.6rem;">Active</span>
+                </p>
+            </div>
+            <div class="date-display bg-white p-1 px-3 rounded shadow-sm text-muted border-start border-3 border-warning" style="font-size: 0.8rem;">
+                <i class="fas fa-calendar-check me-1 text-welfare-gold"></i> {% now "F j, Y" %}
+            </div>
+        </div>
+
+        <!-- ============================================= -->
+<!-- ===== ANNOUNCEMENTS (Ultra Compact) ===== -->
+<!-- ============================================= -->
+{% with total_announcements=active_bereavements|length|add:active_retirements|length %}
+<div class="mb-2">
+    <div class="d-flex align-items-center justify-content-between mb-1">
+        <div class="d-flex align-items-center gap-2">
+            <i class="fas fa-bullhorn text-welfare-gold fs-6"></i>
+            <span class="fw-bold text-welfare-green" style="font-size: 0.8rem;">Announcements</span>
+            <span class="badge bg-primary" style="font-size: 0.55rem;">{{ total_announcements }}</span>
+        </div>
+        {% if total_announcements > 0 %}
+        <button class="btn btn-sm btn-outline-secondary py-0 px-2" type="button" data-bs-toggle="collapse" data-bs-target="#announcementsCollapse" aria-expanded="true">
+            <i class="fas fa-chevron-up collapse-icon" style="font-size: 0.6rem;"></i>
+        </button>
+        {% endif %}
+    </div>
+
+    <div class="collapse show" id="announcementsCollapse">
+        <div class="bg-white p-1 rounded-2 shadow-sm" style="border: 1px solid rgba(255,204,0,0.1);">
+            <!-- Bereavement -->
+            {% if active_bereavements %}
+            <div class="mb-1">
+                <div class="d-flex align-items-center gap-1 mb-1">
+                    <i class="fas fa-heart text-welfare-maroon" style="font-size: 0.65rem;"></i>
+                    <span class="fw-bold text-welfare-maroon" style="font-size: 0.6rem;">Bereavement</span>
+                    <span class="badge bg-danger text-white" style="font-size: 0.45rem;">{{ active_bereavements|length }}</span>
+                </div>
+                {% for item in active_bereavements|slice:":3" %}
+                <div class="d-flex align-items-center justify-content-between py-1 px-2 border-bottom" style="border-color: rgba(255,204,0,0.05) !important;">
+                    <div class="d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.65rem;">
+                        <span class="fw-bold text-dark">{{ item.mourner.user.get_full_name|default:item.mourner.user.username }}</span>
+                        <span class="text-muted">•</span>
+                        <span class="text-muted">{{ item.deceased_name }}</span>
+                        <span class="amount-badge" style="font-size: 0.55rem; padding: 0.05rem 0.4rem;">KES {{ item.monthly_amount|floatformat:0 }}</span>
+                        {% if item.is_owner %}
+                            <span class="badge bg-secondary" style="font-size: 0.45rem;">You</span>
+                        {% elif item.paid_this_month %}
+                            <span class="badge bg-success" style="font-size: 0.45rem;">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark" style="font-size: 0.45rem;">Pending</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if not item.is_owner and not item.paid_this_month %}
+                            <button class="btn-pay-bereavement" style="padding: 0 8px; font-size: 0.55rem; line-height: 1.4;" onclick="payBereavement({{ item.announcement.id }}, '{{ item.deceased_name }}', {{ item.monthly_amount }})">
+                                <i class="fas fa-mobile-alt me-1"></i> Pay
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% if active_bereavements|length > 3 %}
+                    <div class="text-end mt-1">
+                        <a href="{% url 'pay_bereavement_mpesa' %}" class="small text-welfare-green" style="font-size: 0.6rem;">View all {{ active_bereavements|length }} →</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <!-- Retirement -->
+            {% if active_retirements %}
+            <div>
+                <div class="d-flex align-items-center gap-1 mb-1 mt-1">
+                    <i class="fas fa-user-clock text-welfare-dark-green" style="font-size: 0.65rem;"></i>
+                    <span class="fw-bold text-welfare-dark-green" style="font-size: 0.6rem;">Retirement</span>
+                    <span class="badge bg-primary text-white" style="font-size: 0.45rem;">{{ active_retirements|length }}</span>
+                </div>
+                {% for item in active_retirements|slice:":3" %}
+                <div class="d-flex align-items-center justify-content-between py-1 px-2 border-bottom" style="border-color: rgba(255,204,0,0.05) !important;">
+                    <div class="d-flex align-items-center gap-2 flex-wrap" style="font-size: 0.65rem;">
+                        <span class="fw-bold text-dark">{{ item.retiree.user.get_full_name|default:item.retiree.user.username }}</span>
+                        <span class="text-muted">•</span>
+                        <span class="text-muted">{{ item.retirement_date|date:"d M" }}</span>
+                        <span class="amount-badge" style="background: var(--welfare-dark-green); font-size: 0.55rem; padding: 0.05rem 0.4rem;">KES {{ item.monthly_amount|floatformat:0 }}</span>
+                        {% if item.is_owner %}
+                            <span class="badge bg-secondary" style="font-size: 0.45rem;">You</span>
+                        {% elif item.paid_this_month %}
+                            <span class="badge bg-success" style="font-size: 0.45rem;">Paid</span>
+                        {% else %}
+                            <span class="badge bg-warning text-dark" style="font-size: 0.45rem;">Pending</span>
+                        {% endif %}
+                    </div>
+                    <div>
+                        {% if not item.is_owner and not item.paid_this_month %}
+                            <button class="btn-pay-bereavement" style="background: var(--welfare-dark-green); padding: 0 8px; font-size: 0.55rem; line-height: 1.4;" onclick="payRetirement({{ item.announcement.id }}, '{{ item.retiree.user.get_full_name }}', {{ item.monthly_amount }})">
+                                <i class="fas fa-mobile-alt me-1"></i> Pay
+                            </button>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+                {% if active_retirements|length > 3 %}
+                    <div class="text-end mt-1">
+                        <a href="{% url 'pay_retirement_mpesa' %}" class="small text-welfare-green" style="font-size: 0.6rem;">View all {{ active_retirements|length }} →</a>
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if total_announcements == 0 %}
+                <div class="text-center py-1 text-muted small" style="font-size: 0.6rem;">
+                    <i class="fas fa-check-circle me-1 text-success"></i> No pending announcements
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endwith %}
+
+        <!-- Portfolio Overview -->
+        <div class="card border-0 shadow-sm rounded-3 mb-3 overflow-hidden" id="main-portfolio-card" {% if share_goal <= 0 %}style="pointer-events: none; opacity: 0.5;"{% endif %}>
+            <div class="card-header bg-white border-0 pt-3 px-3 d-flex justify-content-between align-items-center" style="padding-bottom: 0.5rem;">
+                <h6 class="fw-bold mb-0 text-welfare-green"><i class="fas fa-chart-pie me-1 text-welfare-gold"></i>Portfolio Overview</h6>
+                <div class="dropdown">
+                    <button class="btn btn-light btn-sm rounded-pill px-2" type="button" data-bs-toggle="dropdown" style="font-size: 0.7rem; border: 1px solid #e9edf2;">
+                        <i class="fas fa-cog me-1"></i> Targets
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-2">
+                        <li><button class="dropdown-item small" onclick="updateGoal('share')">Edit Share Goal</button></li>
+                        <li><button class="dropdown-item small" onclick="updateGoal('saving')">Edit Savings Target</button></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card-body p-3">
+                <div class="row g-3">
+                    <!-- Shares -->
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="progress-circle-container me-2">
+                                <svg width="70" height="70" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="54" fill="none" stroke="#e9ecef" stroke-width="12" />
+                                    <circle cx="60" cy="60" r="54" fill="none" stroke="#004d26" stroke-width="12" 
+                                            stroke-dasharray="339.29" stroke-dashoffset="{{ dash_offset|default:339.29 }}" 
+                                            stroke-linecap="round" />
+                                </svg>
+                                <span class="progress-label">{{ share_progress_pct|floatformat:0 }}%</span>
+                            </div>
+                            <div>
+                                <h6 class="text-uppercase text-muted small fw-bold mb-0" style="font-size: 0.55rem;">Shares</h6>
+                                <h5 class="fw-bold mb-0 text-welfare-green" style="font-size: 1.1rem;">KES {{ total_shares|floatformat:0 }}</h5>
+                                <p class="text-muted small mb-0" style="font-size: 0.65rem;">Goal: {{ share_goal|floatformat:0 }}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Savings -->
+                    <div class="col-md-6">
+                        <div class="d-flex align-items-center">
+                            <div class="progress-circle-container me-2">
+                                <svg width="70" height="70" viewBox="0 0 120 120">
+                                    <circle cx="60" cy="60" r="54" fill="none" stroke="#e9ecef" stroke-width="12" />
+                                    <circle cx="60" cy="60" r="54" fill="none" stroke="#800000" stroke-width="12" 
+                                            stroke-dasharray="339.29" stroke-dashoffset="{{ saving_dash_offset|default:339.29 }}" 
+                                            stroke-linecap="round" />
+                                </svg>
+                                <span class="progress-label">{{ progress_pct|floatformat:0 }}%</span>
+                            </div>
+                            <div>
+                                <h6 class="text-uppercase text-muted small fw-bold mb-0" style="font-size: 0.55rem;">Savings</h6>
+                                <h5 class="fw-bold mb-0 text-welfare-maroon" style="font-size: 1.1rem;">KES {{ current_month_savings|floatformat:0 }}</h5>
+                                <p class="text-muted small mb-0" style="font-size: 0.65rem;">Target: {{ saving_target|floatformat:0 }}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Share Refunds -->
+                {% if active_refunds %}
+                <hr class="my-2 opacity-25">
+                <div class="bg-light rounded-3 p-2 border-start border-3 border-warning" style="background: rgba(255, 204, 0, 0.03) !important;">
+                    <h6 class="fw-bold mb-0 text-welfare-green" style="font-size: 0.8rem;">
+                        <i class="fas fa-clock me-1 text-welfare-gold"></i>Active Share Refunds
+                    </h6>
+                    {% for refund in active_refunds %}
+                    <div class="d-flex justify-content-between align-items-center mt-1">
+                        <div>
+                            <span class="text-dark fw-bold" style="font-size: 0.85rem;">KES {{ refund.amount_requested|floatformat:2 }}</span>
+                            <div id="timer-{{ refund.id }}" class="small timer-text" style="font-size: 0.6rem;">--:--:--:--</div>
+                        </div>
+                        <form action="{% url 'cancel_share_refund' refund.id %}" method="POST">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-link text-danger text-decoration-none p-0 small" style="font-size: 0.65rem;">
+                                Cancel <i class="fas fa-times-circle ms-1"></i>
+                            </button>
+                        </form>
+                    </div>
+                    <script>
+                        (function() {
+                            let timeLeft = parseInt("{{ refund.time_remaining|floatformat:0 }}");
+                            const display = document.getElementById("timer-{{ refund.id }}");
+                            const update = () => {
+                                if (timeLeft <= 0) { display.innerHTML = "COMPLETED"; return; }
+                                const d = Math.floor(timeLeft / 86400), h = Math.floor((timeLeft % 86400) / 3600);
+                                const m = Math.floor((timeLeft % 3600) / 60), s = timeLeft % 60;
+                                display.innerHTML = `${d}d ${h}h ${m}m ${s}s`;
+                                timeLeft--;
+                            };
+                            update(); setInterval(update, 1000);
+                        })();
+                    </script>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <!-- ===== XMAS REFUND SECTION ===== -->
+        {% if xmas_refunds %}
+        <div class="card card-table mb-3">
+            <div class="card-header">
+                <span style="font-size: 0.85rem;"><i class="fas fa-gift me-1" style="color: var(--welfare-gold);"></i> Holiday Refund Requests</span>
+                <span class="badge-gold">{{ xmas_refunds|length }} Requests</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3" style="font-size: 0.6rem;">Refund Details</th>
+                                <th style="font-size: 0.6rem;">Amount</th>
+                                <th style="font-size: 0.6rem;">Approval Progress</th>
+                                <th class="text-center" style="font-size: 0.6rem;">Status</th>
+                                <th class="text-end pe-3" style="font-size: 0.6rem;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for refund in xmas_refunds %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-bold" style="color: var(--welfare-dark-green); font-size: 0.8rem;">
+                                        <i class="fas fa-gift me-1" style="color: var(--welfare-gold);"></i> Holiday Refund
+                                    </div>
+                                    <small class="text-muted" style="font-size: 0.6rem;">Applied: {{ refund.date_applied|date:"d M, Y" }}</small>
+                                </td>
+                                <td>
+                                    <div class="fw-bold" style="color: var(--welfare-dark-green); font-size: 0.85rem;">KES {{ refund.amount_requested|floatformat:2 }}</div>
+                                </td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="progress-xmas" style="width: 80px;">
+                                            <div class="progress-bar" role="progressbar" style="width: {{ refund.progress_percent }}%;"></div>
+                                        </div>
+                                        <span class="fw-bold small" style="color: var(--welfare-dark-green); font-size: 0.65rem;">
+                                            {{ refund.approvals_count }}/3
+                                        </span>
+                                    </div>
+                                    <small class="text-muted d-block mt-1" style="font-size: 0.55rem;">
+                                        {{ refund.current_stage }}
+                                    </small>
+                                </td>
+                                <td class="text-center">
+                                    <span class="badge-status 
+                                        {% if refund.status == 'disbursed' %}approved
+                                        {% elif refund.status == 'approved' %}approved
+                                        {% elif refund.status == 'rejected' %}rejected
+                                        {% else %}pending{% endif %}">
+                                        {{ refund.get_status_display|default:"Pending" }}
+                                    </span>
+                                </td>
+                                <td class="text-end pe-3">
+                                    {% if refund.can_cancel %}
+                                        <form action="{% url 'cancel_xmas_refund' refund.id %}" method="POST" class="d-inline">
+                                            {% csrf_token %}
+                                            <button type="submit" class="btn-outline-danger" 
+                                                    onclick="return confirm('Cancel this refund request?')">
+                                                <i class="fas fa-times me-1"></i> Cancel
+                                            </button>
+                                        </form>
+                                    {% elif refund.status == 'disbursed' %}
+                                        <span class="text-success fw-bold small" style="font-size: 0.65rem;">
+                                            <i class="fas fa-check-circle me-1"></i> Disbursed
+                                        </span>
+                                    {% else %}
+                                        <span class="text-muted small" style="font-size: 0.65rem;">
+                                            <i class="fas fa-clock me-1"></i> In Progress
+                                        </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Guarantor Requests -->
+        {% if pending_guarantor_requests %}
+        <div class="row mb-3">
+            <div class="col-12">
+                <div class="notification-card">
+                    <h6 class="mb-2 fw-bold text-welfare-green" style="font-size: 0.85rem;">
+                        <i class="fas fa-user-shield me-1 text-welfare-gold"></i>Guarantor Requests
+                    </h6>
+                    <div class="list-group list-group-flush">
+                        {% for g in pending_guarantor_requests %}
+                        <div class="list-group-item d-md-flex justify-content-between align-items-center bg-transparent border-0 px-0 py-2 border-bottom">
+                            <div class="mb-2 mb-md-0">
+                                <p class="mb-0 text-dark" style="font-size: 0.8rem;">
+                                    <span class="fw-bold text-welfare-maroon">{{ g.loan.member.user.get_full_name }}</span> 
+                                    wants you to guarantee <span class="text-welfare-green fw-bold">KES {{ g.guaranteed_amount|floatformat:2 }}</span>.
+                                </p>
+                                <small class="text-muted" style="font-size: 0.6rem;">Purpose: {{ g.loan.purpose }}</small>
+                            </div>
+                            <div class="d-flex gap-2">
+                                <a href="{% url 'respond_guarantor' g.id 'accept' %}" class="btn btn-success btn-sm px-3 py-1 fw-bold" style="font-size: 0.7rem;">Accept</a>
+                                <a href="{% url 'respond_guarantor' g.id 'reject' %}" class="btn btn-outline-danger btn-sm px-3 py-1 fw-bold" style="font-size: 0.7rem;">Reject</a>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Stats Row -->
+        <div class="row g-2 mb-3">
+            <div class="col-6 col-md-3">
+                <div class="stat-card">
+                    <div class="stat-icon gold"><i class="fas fa-chart-pie"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Shares</div>
+                        <div class="stat-value">KES {{ total_shares|default:"0"|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top-color: var(--welfare-dark-green);">
+                    <div class="stat-icon green"><i class="fas fa-piggy-bank"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Total Xmas Savings</div>
+                        <div class="stat-value">KES {{ total_savings|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top-color: var(--welfare-maroon);">
+                    <div class="stat-icon maroon"><i class="fas fa-hand-holding-usd"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Loan Balance</div>
+                        <div class="stat-value" style="color: var(--welfare-maroon);">KES {{ total_loans|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stat-card" style="border-top-color: #0d6efd;">
+                    <div class="stat-icon blue"><i class="fas fa-exclamation-triangle"></i></div>
+                    <div class="stat-info">
+                        <div class="stat-label">Penalties</div>
+                        <div class="stat-value" style="color: #0d6efd;">KES {{ total_penalties|floatformat:0 }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quick Loans -->
+        {% if xmas_loans %}
+        <div class="card card-table mb-3">
+            <div class="card-header">
+                <span style="font-size: 0.85rem;"><i class="fas fa-holly-berry me-1"></i> My Xmas loan Portfolio</span>
+                <span class="badge-gold">{{ active_xmas_count }} Active</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3" style="font-size: 0.6rem;">Loan Details</th>
+                                <th style="font-size: 0.6rem;">Principal</th>
+                                <th style="font-size: 0.6rem;">Remaining</th>
+                                <th class="text-center" style="font-size: 0.6rem;">Status</th>
+                                <th class="text-center" style="font-size: 0.6rem;">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for xl in xmas_loans %}
+                            <tr>
+                                <td class="ps-3">
+                                    <div class="fw-bold text-welfare-green" style="font-size: 0.8rem;">QW-{{ xl.id|stringformat:"04d" }}</div>
+                                    <small class="text-muted" style="font-size: 0.6rem;">{{ xl.application_date|date:"d M, Y" }}</small>
+                                </td>
+                                <td class="fw-bold" style="font-size: 0.85rem;">KES {{ xl.amount_requested|floatformat:0 }}</td>
+                                <td class="text-welfare-maroon fw-bold" style="font-size: 0.85rem;">KES {{ xl.remaining_balance|default:"0"|floatformat:0 }}</td>
+                                <td class="text-center">
+                                    <span class="badge-status {% if xl.status == 'approved' or xl.status == 'disbursed' %}approved{% elif xl.status == 'rejected' %}rejected{% else %}pending{% endif %}">
+                                        {{ xl.get_status_display }}
+                                    </span>
+                                </td>
+                                <td class="text-center">
+                                    {% if xl.status == 'disbursed' %}
+                                        <a href="{% url 'pay_xmas_loan' %}" class="btn btn-eldo btn-sm px-2">Repay</a>
+                                    {% else %}<small class="text-muted" style="font-size: 0.6rem;">In Review</small>{% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Main Support Portfolio -->
+        <div class="card card-table mb-3">
+            <div class="card-header">
+                <span style="font-size: 0.85rem;"><i class="fas fa-layer-group me-1"></i> LOANS</span>
+                <span class="badge-gold">{{ active_normal_count }} Active</span>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table align-middle mb-0">
+                        <thead>
+                            <tr>
+                                <th class="ps-3" style="font-size: 0.6rem;">Loan  Details</th>
+                                <th style="font-size: 0.6rem;">Total Paid</th>
+                                <th style="font-size: 0.6rem;">Balance</th>
+                                <th style="font-size: 0.6rem;">Penalties</th>
+                                <th class="text-center" style="font-size: 0.6rem;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                        {% for l in loans %}
+                        <tr>
+                            <td class="ps-3">
+                                <div class="fw-bold text-welfare-green" style="font-size: 0.8rem;">{{ l.purpose }}</div>
+                                <small class="text-muted" style="font-size: 0.6rem;">Applied: {{ l.application_date|date:"d M, Y" }}</small>
+                            </td>
+                            <td class="text-success fw-bold" style="font-size: 0.85rem;">KES {{ l.total_paid|floatformat:0 }}</td>
+                            <td class="text-welfare-maroon fw-bold" style="font-size: 0.85rem;">KES {{ l.remaining_balance|floatformat:0 }}</td>
+                            <td>
+                                {% if l.penalty_due > 0 %}
+                                    <span class="text-warning fw-bold" style="font-size: 0.8rem;">KES {{ l.penalty_due|floatformat:0 }}</span>
+                                {% else %}<span class="text-muted small" style="font-size: 0.6rem;">None</span>{% endif %}
+                            </td>
+                            <td class="text-center">
+                                <span class="badge-status {% if l.status == 'approved' or l.status == 'disbursed' %}approved{% elif l.status == 'pending_guarantors' %}pending{% else %}rejected{% endif %}">
+                                    {{ l.get_status_display }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr><td colspan="5" class="text-center py-3 text-muted" style="font-size: 0.8rem;">No records found.</td></tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent Savings & Shares Breakdown -->
+        <div class="row g-3">
+            <div class="col-lg-7">
+                <div class="card card-table h-100">
+                    <div class="card-header" style="font-size: 0.85rem;"><i class="fas fa-history me-1"></i> Recent Savings</div>
+                    <div class="table-responsive">
+                        <table class="table align-middle mb-0">
+                            <tbody>
+                                {% for s in savings|slice:":5" %}
+                                <tr>
+                                    <td class="ps-3 small" style="font-size: 0.7rem;">{{ s.created_at|date:"d M, Y" }}</td>
+                                    <td class="text-welfare-green fw-bold" style="font-size: 0.85rem;">KES {{ s.amount|floatformat:0 }}</td>
+                                    <td class="text-end pe-3">
+                                        <a href="{% url 'download_receipt' s.id %}" class="text-welfare-gold">
+                                            <i class="fas fa-download"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                {% empty %}<tr><td colspan="3" class="text-center py-2 text-muted" style="font-size: 0.8rem;">No recent savings recorded.</td></tr>{% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-5">
+                <div class="card card-table h-100">
+                    <div class="card-header" style="background: linear-gradient(135deg, var(--welfare-maroon), #4a0000); color: var(--welfare-gold); font-size: 0.85rem;">
+                        <i class="fas fa-chart-pie me-1"></i> Shares Breakdown
+                    </div>
+                    <div class="card-body p-2">
+                        {% for sh in shares %}
+                        <div class="d-flex justify-content-between mb-1 p-2 rounded bg-light border-start border-2 border-warning">
+                            <span class="small fw-bold" style="font-size: 0.75rem;">{{ sh.share_setting.share_type }}</span>
+                            <span class="small fw-bold text-welfare-green" style="font-size: 0.75rem;">KES {{ sh.amount|floatformat:0 }}</span>
+                        </div>
+                        {% empty %}<p class="text-center text-muted py-2" style="font-size: 0.8rem;">No share records found.</p>{% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // ===== 1. MOBILE SIDEBAR TOGGLE =====
+        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        if (sidebarToggle) {
+            sidebarToggle.addEventListener('click', () => {
+                sidebar.classList.toggle('active');
+            });
+        }
+
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth < 768 && sidebar && sidebar.classList.contains('active')) {
+                if (!sidebar.contains(e.target) && e.target !== sidebarToggle) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        });
+
+        // ===== 2. TOAST/SMS NOTIFICATION =====
+        function showSMSPopup(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            if (!container) return;
+
+            const popup = document.createElement("div");
+            const borderColors = {
+                success: "#004d26",
+                danger: "#800000",
+                info: "#0d6efd",
+                warning: "#ffcc00"
+            };
+
+            popup.style.cssText = `
+                background: #ffffff;
+                border-left: 6px solid ${borderColors[type] || '#004d26'};
+                box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+                border-radius: 10px;
+                padding: 12px 16px;
+                margin-bottom: 10px;
+                min-width: 280px;
+                max-width: 380px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                pointer-events: auto;
+                transform: translateX(120%);
+                opacity: 0;
+                transition: all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            `;
+
+            popup.innerHTML = `
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas ${type === 'danger' ? 'fa-exclamation-circle' : 'fa-check-circle'} fs-4 me-3" style="color: ${borderColors[type] || '#004d26'};"></i>
+                    <div class="flex-grow-1">
+                        <strong class="d-block small text-uppercase text-muted" style="letter-spacing: 1px; font-size: 0.6rem;">ELDOPOLY WELFARE</strong>
+                        <span class="fw-bold text-dark" style="font-size: 0.85rem;">${message}</span>
+                    </div>
+                    <button type="button" class="btn-close ms-2" style="font-size: 0.6rem;" aria-label="Close" onclick="this.closest('.sms-popup').remove()"></button>
+                </div>
+            `;
+
+            container.appendChild(popup);
+
+            setTimeout(() => {
+                popup.style.transform = "translateX(0)";
+                popup.style.opacity = "1";
+            }, 10);
+
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.style.transform = "translateX(120%)";
+                    popup.style.opacity = "0";
+                    setTimeout(() => popup.remove(), 400);
+                }
+            }, 15000);
+        }
+
+        // ===== 3. DJANGO MESSAGES =====
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if messages %}
+                {% for message in messages %}
+                    showSMSPopup("{{ message|escapejs }}", "{% if message.tags == 'error' %}danger{% elif message.tags == 'success' %}success{% else %}info{% endif %}");
+                {% endfor %}
+            {% endif %}
+        });
+
+        // ===== 4. UPDATE GOAL =====
+        function updateGoal(type = "saving") {
+            let currentValue = type === "saving" ? "{{ profile.monthly_saving_target }}" : "{{ profile.share_goal }}";
+            let title = type === "saving" ? "Monthly Saving Target" : "Capital Share Goal";
+
+            let goal = prompt(`Enter new ${title} (KES):`, currentValue);
+            if (goal === null) return;
+            goal = parseFloat(goal);
+
+            if (isNaN(goal) || (type === "share" && goal < 500)) {
+                showSMSPopup("Please enter a valid amount (Min KES 500 for shares).", "danger");
+                return;
+            }
+
+            showSMSPopup("Updating records...", "info");
+
+            fetch("{% url 'update_targets' %}", {
+                method: "POST",
+                headers: {
+                    "X-CSRFToken": "{{ csrf_token }}",
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    saving_target: type === "saving" ? goal : null,
+                    share_goal: type === "share" ? goal : null
+                })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    showSMSPopup("Success! Your targets have been updated.", "success");
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showSMSPopup(data.message || "Operation failed.", "danger");
+                }
+            })
+            .catch(err => {
+                console.error("Fetch error:", err);
+                showSMSPopup("Network error. Could not connect to server.", "danger");
+            });
+        }
+
+        // ===== 5. PAY BEREAVEMENT (Monthly) =====
+        function payBereavement(bereavementId, deceasedName, amount) {
+            Swal.fire({
+                title: 'Monthly Bereavement Contribution',
+                html: `
+                    <div class="text-start">
+                        <p><strong>Deceased:</strong> ${deceasedName}</p>
+                        <p><strong>This month's amount:</strong> KES ${amount.toFixed(2)}</p>
+                        <p class="text-muted small">You are paying the current month's instalment.</p>
+                    </div>
+                `,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#800000',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Pay Now',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/pay-bereavement-mpesa/${bereavementId}/`;
+                }
+            });
+        }
+
+        // ===== 6. PAY RETIREMENT (Monthly) =====
+        function payRetirement(announcementId, retireeName, amount) {
+            Swal.fire({
+                title: 'Retirement Contribution',
+                html: `
+                    <div class="text-start">
+                        <p><strong>Retiree:</strong> ${retireeName}</p>
+                        <p><strong>This month's amount:</strong> KES ${amount.toFixed(2)}</p>
+                        <p class="text-muted small">You are paying the current month's retirement instalment.</p>
+                    </div>
+                `,
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonColor: '#004d26',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Pay Now',
+                cancelButtonText: 'Cancel'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = `/pay-retirement-mpesa/${announcementId}/`;
+                }
+            });
+        }
+    </script>
+
+    <style>
+        @keyframes smsSlide {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+        .sms-popup { pointer-events: auto; }
+
+        /* Collapse icon rotation */
+        .collapse-icon {
+            display: inline-block;
+            transition: transform 0.3s ease;
+        }
+        .collapse-icon.rotated {
+            transform: rotate(180deg);
+        }
+    </style>
+</body>
+</html>

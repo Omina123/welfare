@@ -1,0 +1,442 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Statement of Financial Position | ELDOPOLY WELFARE</title>
+    <meta name="description" content="ELDOPOLY WELFARE statement of financial position - Balance sheet showing assets, liabilities, and shareholders' funds.">
+    <meta name="keywords" content="ELDOPOLY WELFARE balance sheet, financial position, assets, liabilities, shareholders funds">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/balance-sheet/">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+        }
+
+        body { 
+            background-color: var(--welfare-light-bg); 
+            font-family: 'Inter', 'Times New Roman', Times, serif; 
+        }
+
+        .balance-sheet-container { 
+            background: var(--welfare-white); 
+            padding: 50px 60px; 
+            margin: 40px auto; 
+            max-width: 1000px; 
+            box-shadow: 0 10px 40px rgba(0, 77, 38, 0.06); 
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            border-radius: 12px;
+        }
+
+        .header-title { 
+            text-transform: uppercase; 
+            font-weight: 800; 
+            margin-bottom: 2px;
+            color: var(--welfare-dark-green);
+            letter-spacing: 2px;
+        }
+
+        .header-title span {
+            color: var(--welfare-gold);
+        }
+
+        .header-subtitle {
+            color: var(--welfare-maroon);
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .table th, .table td { 
+            padding: 10px 8px; 
+            vertical-align: middle; 
+            border: none; 
+            font-size: 0.95rem;
+        }
+
+        .border-double-bottom { border-bottom: 3px double #000 !important; }
+        .border-single-bottom { border-bottom: 1px solid #000 !important; }
+        .border-top-dark { border-top: 2px solid #000 !important; }
+        .note-column { text-align: center; width: 8%; }
+        .amount-column { text-align: right; width: 28%; }
+
+        /* Interactive Elements */
+        .note-link { 
+            color: var(--welfare-dark-green); 
+            text-decoration: underline; 
+            cursor: pointer; 
+            font-weight: 700;
+            transition: all 0.3s ease;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .note-link:hover { 
+            color: var(--welfare-gold);
+            background: rgba(255, 204, 0, 0.08);
+        }
+
+        /* Modal Table Styling */
+        .detail-table thead { 
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: var(--welfare-gold);
+            position: sticky; 
+            top: 0; 
+            z-index: 10;
+        }
+        .detail-table thead th {
+            color: var(--welfare-gold);
+            font-weight: 700;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            padding: 12px 16px;
+            border: none;
+        }
+        .modal-body { max-height: 65vh; overflow-y: auto; }
+        .amt-in { color: var(--welfare-dark-green) !important; font-weight: 700; }
+        .amt-out { color: var(--welfare-maroon) !important; font-weight: 700; }
+
+        .modal-content {
+            border: none;
+            border-radius: 16px;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: white;
+            border-radius: 16px 16px 0 0;
+            padding: 18px 24px;
+            border: none;
+        }
+
+        .modal-header .btn-close-white {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-footer {
+            border-top: 1px solid rgba(255, 204, 0, 0.06);
+            padding: 16px 24px;
+        }
+
+        .btn-secondary {
+            background: #e9edf2;
+            color: #64748b;
+            border: none;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 8px 20px;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background: var(--welfare-maroon);
+            color: white;
+        }
+
+        .total-row td {
+            font-weight: 800;
+            font-size: 1.05rem;
+            padding-top: 12px;
+            padding-bottom: 12px;
+        }
+
+        .total-row .amount-column {
+            font-size: 1.1rem;
+        }
+
+        .section-header td {
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 1rem;
+            padding-top: 20px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid rgba(255, 204, 0, 0.15);
+        }
+
+        .section-header td span {
+            background: rgba(255, 204, 0, 0.08);
+            padding: 2px 12px;
+            border-radius: 4px;
+        }
+
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; margin: 0; } 
+            .balance-sheet-container { 
+                box-shadow: none; 
+                border: 1px solid #ddd; 
+                margin: 0; 
+                padding: 20px; 
+                border-radius: 0;
+            } 
+            .note-link { text-decoration: none !important; }
+        }
+
+        @media (max-width: 768px) {
+            .balance-sheet-container { padding: 20px; margin: 20px; }
+            .table th, .table td { font-size: 0.8rem; padding: 6px 4px; }
+            .header-title { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <!-- ===== FILTER & CONTROLS ===== -->
+    <div class="no-print mt-4 p-3 bg-white border rounded shadow-sm" style="border-color: rgba(255, 204, 0, 0.08) !important;">
+        <form method="GET" class="d-flex flex-wrap align-items-center gap-2">
+            <label class="fw-bold me-2" style="color: var(--welfare-dark-green);">Fiscal Year:</label>
+            <select name="year" class="form-select form-select-sm w-auto me-3" style="border: 2px solid #e9edf2; border-radius: 10px;" onchange="this.form.submit()">
+                {% for y in year_range %}
+                <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>{{ y }}</option>
+                {% endfor %}
+            </select>
+            <button type="button" onclick="window.print()" class="btn btn-sm px-4 me-2" style="background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a); color: white; border: none; border-radius: 10px; font-weight: 600;">
+                <i class="bi bi-printer"></i> Print PDF
+            </button>
+            <small class="text-muted fst-italic ms-auto" style="font-size: 0.75rem;">
+                <i class="bi bi-info-circle" style="color: var(--welfare-gold);"></i> Click on Note numbers for breakdown
+            </small>
+        </form>
+    </div>
+
+    <!-- ===== BALANCE SHEET ===== -->
+    <div class="balance-sheet-container">
+        <div class="text-center mb-4">
+            <h4 class="header-title">ELDOPOLY <span>WELFARE</span></h4>
+            <h5 class="header-subtitle">STATEMENT OF FINANCIAL POSITION</h5>
+            <p class="fw-bold mb-0" style="color: var(--welfare-dark-green);">AS AT 31ST DECEMBER {{ report.year }}</p>
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr class="border-top border-bottom" style="border-color: #000 !important;">
+                    <th style="color: var(--welfare-dark-green); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">ASSETS</th>
+                    <th class="note-column" style="color: var(--welfare-dark-green); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Note</th>
+                    <th class="amount-column" style="color: var(--welfare-dark-green); font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px;">Kshs ({{ report.year }})</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ===== ASSETS ===== -->
+                <tr class="section-header"><td colspan="3"><span>Current assets</span></td></tr>
+                <tr>
+                    <td>Cash and cash equivalent</td>
+                    <td class="note-column"><span class="note-link" data-note="7">7</span></td>
+                    <td class="amount-column">{{ report.assets.cash|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Loans to members</td>
+                    <td class="note-column"><span class="note-link" data-note="9">9</span></td>
+                    <td class="amount-column border-single-bottom">{{ report.assets.loans|floatformat:2 }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td style="font-weight: 800; color: var(--welfare-dark-green);">Total assets</td>
+                    <td></td>
+                    <td class="amount-column border-double-bottom" style="font-weight: 800; color: var(--welfare-dark-green);">{{ report.assets.total|floatformat:2 }}</td>
+                </tr>
+
+                <!-- ===== LIABILITIES ===== -->
+                <tr class="section-header"><td colspan="3"><span>Liabilities</span></td></tr>
+                <tr>
+                    <td>Members' deposits</td>
+                    <td class="note-column"><span class="note-link" data-note="12">12</span></td>
+                    <td class="amount-column">{{ report.liabilities.deposits|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Trade and accrued expenses</td>
+                    <td class="note-column"><span class="note-link" data-note="13">13</span></td>
+                    <td class="amount-column">{{ report.liabilities.accrued|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Interest on deposits payable</td>
+                    <td class="note-column"><span class="note-link" data-note="14">14</span></td>
+                    <td class="amount-column border-single-bottom">{{ report.liabilities.interest|floatformat:2 }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td style="font-weight: 800; color: var(--welfare-maroon);">Total liabilities</td>
+                    <td></td>
+                    <td class="amount-column border-single-bottom" style="font-weight: 800; color: var(--welfare-maroon);">{{ report.liabilities.total|floatformat:2 }}</td>
+                </tr>
+
+                <!-- ===== SHAREHOLDERS' FUNDS ===== -->
+                <tr class="section-header"><td colspan="3"><span>Shareholders' funds</span></td></tr>
+                <tr>
+                    <td>Share capital</td>
+                    <td class="note-column"><span class="note-link" data-note="16">16</span></td>
+                    <td class="amount-column">{{ report.equity.shares|floatformat:2 }}</td>
+                </tr>
+                <tr>
+                    <td>Reserves</td>
+                    <td class="note-column"><span class="note-link" data-note="17">17</span></td>
+                    <td class="amount-column border-single-bottom">{{ report.equity.reserves|floatformat:2 }}</td>
+                </tr>
+                <tr class="total-row">
+                    <td style="font-weight: 800; color: var(--welfare-dark-green);">Total liabilities and shareholders' funds</td>
+                    <td></td>
+                    <td class="amount-column border-double-bottom" style="font-weight: 800; color: var(--welfare-dark-green);">{{ report.total_equity_and_liabilities|floatformat:2 }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <!-- ===== SIGNATURES ===== -->
+        <div class="row mt-5 pt-4 text-center">
+            <div class="col-4">
+                <div class="border-top border-dark pt-2" style="border-color: var(--welfare-dark-green) !important;">
+                    <span style="font-weight: 600; color: var(--welfare-dark-green);">Chairman</span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-2" style="border-color: var(--welfare-dark-green) !important;">
+                    <span style="font-weight: 600; color: var(--welfare-dark-green);">Treasurer</span>
+                </div>
+            </div>
+            <div class="col-4">
+                <div class="border-top border-dark pt-2" style="border-color: var(--welfare-dark-green) !important;">
+                    <span style="font-weight: 600; color: var(--welfare-dark-green);">Secretary</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal fade no-print" id="noteDetailModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-file-text me-2"></i> Detail Breakdown - Note <span id="modalNoteId"></span>
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-striped table-hover mb-0 detail-table">
+                    <thead>
+                        <tr>
+                            <th class="ps-4">Date</th>
+                            <th>Description</th>
+                            <th class="text-end pe-4">Amount (Ksh)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="noteDetailContent">
+                        <!-- Dynamically populated -->
+                    </tbody>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const noteLinks = document.querySelectorAll('.note-link');
+        const detailModal = new bootstrap.Modal(document.getElementById('noteDetailModal'));
+        const contentArea = document.getElementById('noteDetailContent');
+        const noteLabel = document.getElementById('modalNoteId');
+
+        noteLinks.forEach(link => {
+            link.addEventListener('click', function() {
+                const noteId = this.getAttribute('data-note');
+                const selectedYear = "{{ selected_year }}";
+                
+                noteLabel.innerText = noteId;
+                contentArea.innerHTML = `<tr><td colspan="3" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status" style="color: var(--welfare-gold) !important;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted" style="font-size: 0.85rem;">Fetching financial records...</p>
+                </td></tr>`;
+                
+                detailModal.show();
+
+                // ===== FETCH NOTE DETAILS =====
+                fetch(`/api/note-details/${noteId}/?year=${selectedYear}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        contentArea.innerHTML = '';
+                        
+                        if (!data.results || data.results.length === 0) {
+                            contentArea.innerHTML = `
+                                <tr>
+                                    <td colspan="3" class="text-center py-5 text-muted">
+                                        <i class="bi bi-inbox fs-1 d-block mb-2" style="color: #cbd5e0;"></i>
+                                        No records found for Note ${noteId} in ${selectedYear}.
+                                    </td>
+                                </tr>
+                            `;
+                            return;
+                        }
+
+                        let totalIn = 0;
+                        let totalOut = 0;
+
+                        data.results.forEach(item => {
+                            const amountClass = item.type === 'out' ? 'amt-out' : 'amt-in';
+                            const symbol = item.type === 'out' ? '-' : '+';
+                            
+                            // Calculate totals
+                            if (item.type === 'in') {
+                                totalIn += item.amount;
+                            } else {
+                                totalOut += item.amount;
+                            }
+                            
+                            contentArea.innerHTML += `
+                                <tr>
+                                    <td class="ps-4 small">${item.date}</td>
+                                    <td><span class="fw-bold">${item.desc}</span></td>
+                                    <td class="text-end pe-4 fw-bold ${amountClass}">
+                                        ${symbol} ${item.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                                    </td>
+                                </tr>
+                            `;
+                        });
+
+                        // Add total row
+                        const netTotal = totalIn - totalOut;
+                        contentArea.innerHTML += `
+                            <tr class="border-top border-2" style="border-color: var(--welfare-gold) !important;">
+                                <td colspan="2" class="ps-4 fw-bold" style="color: var(--welfare-dark-green);">
+                                    <i class="bi bi-calculator me-2" style="color: var(--welfare-gold);"></i> NET TOTAL
+                                </td>
+                                <td class="text-end pe-4 fw-bold" style="color: ${netTotal >= 0 ? 'var(--welfare-dark-green)' : 'var(--welfare-maroon)'};">
+                                    ${netTotal >= 0 ? '+' : '-'} ${Math.abs(netTotal).toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                                </td>
+                            </tr>
+                        `;
+                    })
+                    .catch(err => {
+                        contentArea.innerHTML = `
+                            <tr>
+                                <td colspan="3" class="text-center py-4 text-danger fst-italic">
+                                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                                    Error loading details. Please check your connection.
+                                </td>
+                            </tr>
+                        `;
+                        console.error('Fetch error:', err);
+                    });
+            });
+        });
+    });
+</script>
+</body>
+</html>

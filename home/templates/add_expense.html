@@ -1,0 +1,389 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Record Expenditure - ELDOPOLY WELFARE</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --sidebar-width: 260px;
+            --top-nav-height: 70px;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+        }
+
+        body {
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .top-navbar {
+            height: var(--top-nav-height);
+            background: var(--welfare-white);
+            position: fixed;
+            top: 0;
+            right: 0;
+            left: var(--sidebar-width);
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            box-shadow: var(--welfare-shadow);
+            border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+            transition: left 0.3s ease;
+        }
+
+        .top-navbar h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+
+        .top-navbar .fw-800 {
+            color: var(--welfare-dark-green);
+        }
+
+        .top-navbar .text-muted {
+            color: var(--welfare-maroon) !important;
+        }
+
+        .top-navbar .bg-light.rounded-circle {
+            background: rgba(0, 77, 38, 0.06) !important;
+            border: 2px solid rgba(255, 204, 0, 0.15) !important;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top-navbar .bg-light.rounded-circle i {
+            color: var(--welfare-dark-green) !important;
+        }
+
+        /* ===== MAIN WRAPPER ===== */
+        .main-wrapper {
+            margin-left: var(--sidebar-width);
+            margin-top: var(--top-nav-height);
+            padding: 2.5rem;
+            transition: margin-left 0.3s ease;
+        }
+
+        /* ===== EXPENSE CARD ===== */
+        .expense-card {
+            border: none;
+            border-radius: 20px;
+            box-shadow: var(--welfare-shadow);
+            overflow: hidden;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a4a2a 50%, var(--welfare-maroon) 100%);
+            color: white;
+            padding: 1.5rem;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .card-header-custom h4 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+        }
+
+        .card-header-custom p {
+            color: rgba(255, 204, 0, 0.8);
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-label {
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+            font-size: 0.75rem;
+            margin-bottom: 0.4rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .form-label i {
+            color: var(--welfare-gold);
+            margin-right: 4px;
+        }
+
+        .form-control, .form-select {
+            border-radius: 10px;
+            padding: 10px 14px;
+            border: 2px solid #e9edf2;
+            background: #fafcff;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.1);
+            outline: none;
+            background: #fff;
+        }
+
+        .input-group-text {
+            background: #f1f4f9;
+            border: 2px solid #e9edf2;
+            border-right: none;
+            border-radius: 10px 0 0 10px;
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+            font-size: 0.9rem;
+            padding: 0 14px;
+        }
+
+        .input-group .form-control,
+        .input-group .form-select {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .input-group .form-select {
+            padding: 10px 14px;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-save {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            padding: 14px 24px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            width: 100%;
+        }
+
+        .btn-save:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-save i {
+            margin-right: 8px;
+        }
+
+        .btn-outline-secondary {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 12px 20px;
+            background: transparent;
+            transition: all 0.3s ease;
+            width: 100%;
+            text-align: center;
+            text-decoration: none;
+        }
+
+        .btn-outline-secondary:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0, 77, 38, 0.04);
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.1);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        .alert i {
+            margin-right: 8px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .top-navbar {
+                left: 0;
+            }
+            .main-wrapper {
+                margin-left: 0;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .main-wrapper { padding: 1rem; }
+            .card-header-custom { padding: 1.25rem; }
+            .card-header-custom h4 { font-size: 1.2rem; }
+            .top-navbar { padding: 0 1rem; }
+            .top-navbar h5 { font-size: 0.9rem; }
+            .btn-save, .btn-outline-secondary { font-size: 0.85rem; padding: 12px; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== TOP NAVBAR ===== -->
+<header class="top-navbar">
+    <div class="d-flex align-items-center">
+        <h5 class="mb-0 fw-800 d-none d-sm-block">Executive Treasury Suite</h5>
+    </div>
+    <div class="d-flex align-items-center gap-3">
+        <div class="text-end d-none d-sm-block">
+            <div class="fw-800 small">{{ request.user.get_full_name|default:request.user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Verified Treasurer</div>
+        </div>
+        <div class="bg-light rounded-circle p-2 border">
+            <i class="bi bi-person-fill"></i>
+        </div>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<div class="main-wrapper">
+    <div class="container pb-5">
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                
+                <div class="d-flex align-items-center mb-4">
+                    <a href="{% url 'financial_ledger_view' %}" class="btn btn-outline-secondary me-3" style="width: auto; padding: 8px 16px;">
+                        <i class="bi bi-arrow-left me-1"></i> Back
+                    </a>
+                    <h5 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">Record Expenditure</h5>
+                </div>
+
+                <!-- ===== EXPENSE CARD ===== -->
+                <div class="card expense-card">
+                    <div class="card-header-custom">
+                        <h4 class="mb-0"><i class="bi bi-wallet2 me-2"></i>Record Expenditure</h4>
+                        <p class="small mb-0 opacity-75">Enter details for office or operational costs</p>
+                    </div>
+
+                    <div class="card-body p-4 p-md-5 bg-white">
+                        
+                        <!-- ===== MESSAGES ===== -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-4" role="alert">
+                                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %}"></i>
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- ===== FORM ===== -->
+                        <form method="POST" enctype="multipart/form-data">
+                            {% csrf_token %}
+
+                            <div class="row g-4">
+                                <!-- Category -->
+                                <div class="col-12">
+                                    <label class="form-label"><i class="bi bi-tag"></i> Category</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-tag"></i></span>
+                                        {{ form.expense_type }}
+                                    </div>
+                                    <div class="text-danger small">{{ form.expense_type.errors }}</div>
+                                </div>
+
+                                <!-- Amount -->
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-coins"></i> Amount Spent</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text">KES</span>
+                                        {{ form.amount_spent }}
+                                    </div>
+                                    <div class="text-danger small">{{ form.amount_spent.errors }}</div>
+                                </div>
+
+                                <!-- Date -->
+                                <div class="col-md-6">
+                                    <label class="form-label"><i class="bi bi-calendar-event"></i> Date of Expense</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-calendar-event"></i></span>
+                                        {{ form.date_spent }}
+                                    </div>
+                                    <div class="text-danger small">{{ form.date_spent.errors }}</div>
+                                </div>
+
+                                <!-- Payment Method -->
+                                <div class="col-12">
+                                    <label class="form-label"><i class="bi bi-credit-card"></i> Payment Method</label>
+                                    <div class="input-group">
+                                        <span class="input-group-text"><i class="bi bi-credit-card"></i></span>
+                                        {{ form.payment_method }}
+                                    </div>
+                                    <div class="text-danger small">{{ form.payment_method.errors }}</div>
+                                </div>
+
+                                <!-- Description -->
+                                <div class="col-12">
+                                    <label class="form-label"><i class="bi bi-file-text"></i> Description / Narrative</label>
+                                    {{ form.description }}
+                                    <div class="text-danger small">{{ form.description.errors }}</div>
+                                </div>
+
+                                <!-- Receipt Upload -->
+                                <div class="col-12">
+                                    <label class="form-label"><i class="bi bi-paperclip"></i> Attach Receipt (Optional)</label>
+                                    <div class="input-group">
+                                        {{ form.receipt_image }}
+                                    </div>
+                                    <small class="text-muted">Max file size: 5MB (Image format)</small>
+                                    <div class="text-danger small">{{ form.receipt_image.errors }}</div>
+                                </div>
+
+                                <!-- Buttons -->
+                                <div class="col-12 mt-3">
+                                    <button type="submit" class="btn btn-save">
+                                        <i class="bi bi-check-circle"></i> Post to Ledger
+                                    </button>
+                                    <a href="{% url 'financial_ledger_view' %}" class="btn btn-outline-secondary mt-3">
+                                        <i class="bi bi-x-circle me-1"></i> Cancel &amp; Go Back
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- ===== FOOTER ===== -->
+                <div class="text-center mt-4 text-muted small">
+                    <i class="bi bi-lock me-1" style="color: var(--welfare-gold);"></i>
+                    &copy; 2026 ELDOPOLY WELFARE Management System. All rights reserved.
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

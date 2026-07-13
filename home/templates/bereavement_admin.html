@@ -1,0 +1,460 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bereavement Announcements | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 16px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body { 
+            background: var(--welfare-light-bg); 
+            font-family: 'Inter', sans-serif; 
+        }
+
+        .main-content { padding: 30px; }
+
+        /* ===== ANNOUNCEMENT CARDS ===== */
+        .announcement-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            border-left: 5px solid var(--welfare-maroon);
+            box-shadow: var(--welfare-shadow);
+            padding: 1.25rem 1.5rem;
+            margin-bottom: 1rem;
+            transition: all var(--transition);
+        }
+
+        .announcement-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 8px 25px rgba(128, 0, 0, 0.08);
+        }
+
+        .announcement-card .mourner-name {
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 1.1rem;
+        }
+
+        .announcement-card .deceased-name {
+            font-weight: 600;
+            color: var(--welfare-maroon);
+        }
+
+        .announcement-card .relationship-badge {
+            background: var(--welfare-maroon);
+            color: white;
+            padding: 0.25rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .announcement-card .amount-badge {
+            background: var(--welfare-dark-green);
+            color: white;
+            padding: 0.3rem 1rem;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .announcement-card .paid-count {
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .announcement-card .paid-count strong {
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== STAT CARDS ===== */
+        .stat-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            padding: 1.25rem;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            box-shadow: var(--welfare-shadow);
+            text-align: center;
+            height: 100%;
+        }
+
+        .stat-card .stat-value {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 1.8rem;
+            color: var(--welfare-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-welfare {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .btn-welfare:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-welfare-danger {
+            background: var(--welfare-maroon);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 8px 20px;
+            font-weight: 600;
+            transition: all var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .btn-welfare-danger:hover {
+            background: #4a0000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-welfare {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 8px;
+            padding: 8px 20px;
+            background: transparent;
+            transition: all var(--transition);
+            font-size: 0.85rem;
+        }
+
+        .btn-outline-welfare:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0, 77, 38, 0.04);
+        }
+
+        .btn-success-sm {
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 12px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .btn-success-sm:hover {
+            background: #1e7e34;
+            transform: translateY(-1px);
+        }
+
+        .btn-success-sm:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 576px) {
+            .main-content { padding: 15px; }
+            .announcement-card { padding: 1rem; }
+            .announcement-card .mourner-name { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-content">
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+        <div>
+            <h2 class="fw-bold" style="color: var(--welfare-dark-green);">
+                <i class="fas fa-hand-holding-heart me-2" style="color: var(--welfare-gold);"></i>Bereavement Announcements
+            </h2>
+            <p class="text-muted">Create and manage bereavement announcements for members</p>
+        </div>
+        <button class="btn btn-welfare" data-bs-toggle="modal" data-bs-target="#createAnnouncementModal">
+            <i class="fas fa-plus-circle me-2"></i> New Announcement
+        </button>
+    </div>
+
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-3" role="alert" style="border-radius: 12px;">
+                <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+
+    <!-- ===== STATS ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-bullhorn"></i></div>
+                <div class="stat-value">{{ total_announcements }}</div>
+                <div class="stat-label">Active Announcements</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-check-circle"></i></div>
+                <div class="stat-value">{{ total_paid }}</div>
+                <div class="stat-label">Total Contributions Made</div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="stat-card">
+                <div class="stat-icon"><i class="fas fa-users"></i></div>
+                <div class="stat-value">{{ total_members }}</div>
+                <div class="stat-label">Total Members</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== ACTIVE ANNOUNCEMENTS ===== -->
+    {% if announcements %}
+        <h6 class="fw-bold text-welfare-maroon mb-3">
+            <i class="fas fa-bullhorn me-2"></i>Active Announcements ({{ announcements|length }})
+        </h6>
+        
+        {% for announcement in announcements %}
+        <div class="announcement-card">
+            <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
+                <div class="flex-grow-1">
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                        <span class="mourner-name">{{ announcement.member.user.get_full_name|default:announcement.member.user.username }}</span>
+                        <span class="relationship-badge">{{ announcement.get_relationship_display }}</span>
+                        <span class="text-muted small">
+                            <i class="fas fa-clock me-1"></i>{{ announcement.created_at|timesince }} ago
+                        </span>
+                    </div>
+                    
+                    <p class="mb-2" style="font-size: 1rem;">
+                        <i class="fas fa-angel me-2" style="color: var(--welfare-maroon);"></i>
+                        <span class="deceased-name">{{ announcement.deceased_name }}</span>
+                        <span class="text-muted small">(Rest in Peace)</span>
+                    </p>
+                    
+                    <div class="d-flex flex-wrap align-items-center gap-3">
+                        <span class="amount-badge">
+                            <i class="fas fa-hand-holding-heart me-1"></i>
+                            KES {{ announcement.contribution_amount|floatformat:2 }}
+                        </span>
+                        <span class="paid-count">
+                            <i class="fas fa-users me-1"></i>
+                            <strong>{{ announcement.get_payment_count }}</strong> members have contributed
+                        </span>
+                        <span class="badge {% if announcement.is_approved %}bg-success{% else %}bg-warning text-dark{% endif %}">
+                            {% if announcement.is_approved %}Approved{% else %}Pending Approval{% endif %}
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-2 flex-wrap">
+                    <button class="btn btn-success-sm" 
+                            data-bs-toggle="modal" 
+                            data-bs-target="#markPaidModal{{ announcement.id }}">
+                        <i class="fas fa-check-circle me-1"></i> Mark Paid
+                    </button>
+                    <form method="POST" action="{% url 'bereavement_admin' %}" style="display: inline;">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="clear_announcement">
+                        <input type="hidden" name="announcement_id" value="{{ announcement.id }}">
+                        <button type="submit" class="btn btn-welfare-danger btn-sm" 
+                                onclick="return confirm('Clear this announcement? It will no longer be visible to members.')">
+                            <i class="fas fa-times me-1"></i> Clear
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mark Paid Modal -->
+        <div class="modal fade" id="markPaidModal{{ announcement.id }}" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h6 class="fw-bold" style="color: var(--welfare-dark-green);">
+                            <i class="fas fa-check-circle me-2" style="color: var(--welfare-gold);"></i>
+                            Mark Member as Paid
+                        </h6>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <form method="POST" action="{% url 'bereavement_admin' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="action" value="mark_paid">
+                        <input type="hidden" name="announcement_id" value="{{ announcement.id }}">
+                        <div class="modal-body">
+                            <p class="text-muted small">
+                                Select a member who has paid their contribution for 
+                                <strong style="color: var(--welfare-dark-green);">{{ announcement.member.user.get_full_name }}</strong>'s bereavement.
+                            </p>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold small text-uppercase" style="color: var(--welfare-dark-green);">
+                                    <i class="fas fa-user me-1"></i> Select Member
+                                </label>
+                                <select name="member_id" class="form-select" required>
+                                    <option value="">Select a member...</option>
+                                    {% for member in members %}
+                                        {% if not announcement.has_member_paid(member) %}
+                                            <option value="{{ member.id }}">{{ member.user.get_full_name|default:member.user.username }} (#{{ member.membership_number }})</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="alert alert-info border-0 small" style="border-radius: 8px;">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Amount: <strong>KES {{ announcement.contribution_amount|floatformat:2 }}</strong>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn-outline-welfare" data-bs-dismiss="modal">Cancel</button>
+                            <button type="submit" class="btn-welfare">
+                                <i class="fas fa-check me-1"></i> Mark Paid
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        <div class="text-center py-5">
+            <i class="fas fa-inbox fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
+            <h6 class="text-muted">No active bereavement announcements</h6>
+            <p class="text-muted small">Click "New Announcement" to create one.</p>
+        </div>
+    {% endif %}
+</div>
+
+<!-- ===== CREATE ANNOUNCEMENT MODAL ===== -->
+<div class="modal fade" id="createAnnouncementModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h6 class="fw-bold" style="color: var(--welfare-dark-green);">
+                    <i class="fas fa-plus-circle me-2" style="color: var(--welfare-gold);"></i>
+                    Create Bereavement Announcement
+                </h6>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <form method="POST" action="{% url 'bereavement_admin' %}">
+                {% csrf_token %}
+                <input type="hidden" name="action" value="create_announcement">
+                <div class="modal-body">
+                    <div class="alert alert-info border-0 small" style="border-radius: 8px;">
+                        <i class="fas fa-info-circle me-2"></i>
+                        This will create an announcement visible to all members on their dashboard.
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: var(--welfare-dark-green);">
+                            <i class="fas fa-user me-1"></i> Member (Who lost a loved one)
+                        </label>
+                        <select name="member_id" class="form-select" required>
+                            <option value="">Select a member...</option>
+                            {% for member in members %}
+                                <option value="{{ member.id }}">{{ member.user.get_full_name|default:member.user.username }} (#{{ member.membership_number }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: var(--welfare-dark-green);">
+                            <i class="fas fa-angel me-1"></i> Deceased Full Name
+                        </label>
+                        <input type="text" name="deceased_name" class="form-control" 
+                               placeholder="Enter the name of the deceased" required>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: var(--welfare-dark-green);">
+                            <i class="fas fa-heart me-1"></i> Relationship
+                        </label>
+                        <select name="relationship" class="form-select" required>
+                            <option value="">Select relationship...</option>
+                            <option value="spouse">Spouse</option>
+                            <option value="child">Child</option>
+                            <option value="parent">Parent</option>
+                        </select>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label fw-bold small text-uppercase" style="color: var(--welfare-dark-green);">
+                            <i class="fas fa-coins me-1"></i> Contribution Amount (KES)
+                        </label>
+                        <input type="number" name="contribution_amount" class="form-control" 
+                               placeholder="Enter amount (0 - 100,000)" 
+                               min="0" max="100000" step="100" required>
+                        <small class="text-muted">Range: KES 0 - KES 100,000</small>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline-welfare" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn-welfare">
+                        <i class="fas fa-paper-plane me-1"></i> Create Announcement
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Auto-dismiss alerts
+    setTimeout(function() {
+        document.querySelectorAll('.alert').forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+    
+    // Form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        const amount = parseFloat(this.querySelector('input[name="contribution_amount"]').value);
+        if (isNaN(amount) || amount < 0 || amount > 100000) {
+            e.preventDefault();
+            alert('Please enter a valid amount between 0 and 100,000');
+        }
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,592 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Annual Audit Report | ELDOPOLY WELFARE</title>
+    <meta name="description" content="ELDOPOLY WELFARE annual financial audit statement showing expenses, savings, loans, and cash flow.">
+    <meta name="keywords" content="ELDOPOLY WELFARE audit, financial audit, annual report, expenses, savings, loans, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/audit/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 12px;
+        }
+
+        body { 
+            background: var(--welfare-light-bg); 
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+
+        /* ===== AUDIT CONTAINER ===== */
+        .audit-container { 
+            background: var(--welfare-white); 
+            border-radius: var(--welfare-radius); 
+            overflow: hidden; 
+            box-shadow: 0 15px 40px rgba(0, 77, 38, 0.06); 
+            margin: 40px auto; 
+            max-width: 1000px; 
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        /* ===== HEADER ===== */
+        .header-gradient { 
+            background: linear-gradient(135deg, var(--welfare-dark-green) 0%, #1a4a2a 50%, var(--welfare-maroon) 100%); 
+            color: white; 
+            padding: 35px 40px; 
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+        }
+
+        .header-gradient h1 {
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .header-gradient h1 span {
+            color: var(--welfare-gold);
+        }
+
+        .header-gradient .subtitle {
+            color: rgba(255, 204, 0, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .header-gradient .badge-year {
+            background: var(--welfare-gold) !important;
+            color: var(--welfare-dark-green) !important;
+            font-weight: 700;
+            padding: 6px 20px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+        }
+
+        /* ===== METRIC CARDS ===== */
+        .metric-card { 
+            border: none; 
+            border-right: 1px solid rgba(255, 204, 0, 0.06); 
+            border-radius: 0; 
+            padding: 1.25rem;
+            text-align: center;
+            background: var(--welfare-white);
+            transition: all 0.3s ease;
+        }
+
+        .metric-card:last-child { border-right: none; }
+        .metric-card:hover { background: rgba(255, 204, 0, 0.02); }
+
+        .metric-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .metric-card .value {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .metric-card .value.positive { color: var(--welfare-dark-green); }
+        .metric-card .value.negative { color: var(--welfare-maroon); }
+        .metric-card .value.gold { color: var(--welfare-gold); }
+
+        /* ===== SECTION TITLE ===== */
+        .section-title { 
+            border-left: 5px solid var(--welfare-gold); 
+            padding-left: 15px; 
+            font-weight: 800; 
+            color: var(--welfare-dark-green); 
+            margin-bottom: 20px; 
+            font-size: 1.1rem;
+        }
+
+        .section-title i {
+            color: var(--welfare-gold);
+            margin-right: 8px;
+        }
+
+        /* ===== TABLE ===== */
+        .table thead { 
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a4a2a); 
+            color: var(--welfare-gold); 
+        }
+
+        .table thead th {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 700;
+            padding: 12px 16px;
+            border: none;
+        }
+
+        .table tbody td {
+            padding: 10px 16px;
+            vertical-align: middle;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.04);
+            font-size: 0.9rem;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .table tfoot tr {
+            background: rgba(0, 77, 38, 0.03);
+            border-top: 2px solid rgba(255, 204, 0, 0.08);
+        }
+
+        .table tfoot td {
+            padding: 12px 16px;
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+        }
+
+        .table tfoot td.text-danger {
+            color: var(--welfare-maroon) !important;
+        }
+
+        /* ===== NOTE BADGE ===== */
+        .note-badge { 
+            cursor: pointer; 
+            background: rgba(0, 77, 38, 0.06); 
+            color: var(--welfare-dark-green); 
+            padding: 2px 10px; 
+            border-radius: 4px; 
+            font-weight: 700; 
+            transition: all 0.3s ease; 
+            font-size: 0.7rem;
+            border: 1px solid rgba(255, 204, 0, 0.08);
+        }
+
+        .note-badge:hover { 
+            background: var(--welfare-dark-green); 
+            color: var(--welfare-gold);
+            border-color: var(--welfare-dark-green);
+            transform: scale(1.05);
+        }
+
+        /* ===== LIST GROUP ===== */
+        .list-group-item {
+            border-color: rgba(255, 204, 0, 0.04) !important;
+            padding: 14px 20px !important;
+            background: transparent !important;
+            transition: all 0.3s ease;
+        }
+
+        .list-group-item:hover {
+            background: rgba(255, 204, 0, 0.02) !important;
+        }
+
+        .list-group-item .amt-pos {
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+        }
+
+        .list-group-item .amt-neg {
+            color: var(--welfare-maroon);
+            font-weight: 700;
+        }
+
+        /* ===== FOOTER ===== */
+        .audit-footer {
+            background: rgba(0, 77, 38, 0.02);
+            padding: 1rem 2rem;
+            text-align: center;
+            color: #64748b;
+            font-size: 0.8rem;
+            border-top: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        .audit-footer strong {
+            color: var(--welfare-dark-green);
+        }
+
+        /* ===== SIGNATURES ===== */
+        .signatures .col-4 {
+            padding: 0 10px;
+        }
+
+        .signatures .border-top {
+            border-color: var(--welfare-dark-green) !important;
+            padding-top: 8px;
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+            font-size: 0.85rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-print {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 8px 20px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: all 0.3s ease;
+        }
+
+        .btn-print:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-print i { margin-right: 6px; }
+
+        /* ===== MODAL ===== */
+        .modal-content {
+            border: none;
+            border-radius: var(--welfare-radius);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: white;
+            border-radius: var(--welfare-radius) var(--welfare-radius) 0 0;
+            padding: 16px 24px;
+            border: none;
+        }
+
+        .modal-header .btn-close-white {
+            filter: brightness(0) invert(1);
+        }
+
+        .modal-body { padding: 0; }
+        .modal-body .table { margin-bottom: 0; }
+
+        .modal-body .table thead {
+            background: rgba(0, 77, 38, 0.03);
+            color: var(--welfare-dark-green);
+        }
+
+        .modal-body .table thead th {
+            color: var(--welfare-dark-green);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 768px) {
+            .header-gradient { padding: 25px 20px; }
+            .header-gradient h1 { font-size: 1.3rem; }
+            .metric-card { border-right: none; border-bottom: 1px solid rgba(255, 204, 0, 0.06); }
+            .metric-card:last-child { border-bottom: none; }
+            .audit-container { margin: 20px; }
+            .table { font-size: 0.8rem; }
+        }
+
+        @media (max-width: 576px) {
+            .header-gradient h1 { font-size: 1.1rem; }
+            .metric-card .value { font-size: 1.1rem; }
+            .table { font-size: 0.7rem; }
+            .table thead th, .table tbody td { padding: 6px 8px; }
+            .section-title { font-size: 0.95rem; }
+        }
+
+        /* ===== PRINT ===== */
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; } 
+            .audit-container { box-shadow: none; margin: 0; max-width: 100%; border: 1px solid #ddd; border-radius: 0; }
+            .header-gradient { background: #000 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .table thead { background: #333 !important; color: white !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+            .metric-card { border-right: 1px solid #ddd !important; }
+            .note-badge { background: #eee !important; color: #000 !important; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container pb-4">
+    <!-- ===== CONTROLS ===== -->
+    <div class="no-print mt-4 mb-4 p-3 bg-white border rounded shadow-sm d-flex flex-wrap justify-content-between align-items-center gap-2" style="border-color: rgba(255, 204, 0, 0.08) !important;">
+        <form method="GET" class="row g-2 align-items-center">
+            <div class="col-auto">
+                <label class="fw-bold" style="color: var(--welfare-dark-green);">Audit Period:</label>
+            </div>
+            <div class="col-auto">
+                <select name="year" class="form-select form-select-sm" style="border: 2px solid #e9edf2; border-radius: 10px;" onchange="this.form.submit()">
+                    {% for y in year_range %}
+                    <option value="{{ y }}" {% if y == selected_year %}selected{% endif %}>FY {{ y }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+        </form>
+        <button onclick="window.print()" class="btn-print">
+            <i class="bi bi-printer-fill"></i> Print Statement
+        </button>
+    </div>
+
+    <!-- ===== AUDIT CONTAINER ===== -->
+    <div class="audit-container">
+        <!-- ===== HEADER ===== -->
+        <div class="header-gradient text-center">
+            <h1 class="fw-bold mb-1">ELDOPOLY <span>WELFARE</span></h1>
+            <p class="subtitle">Annual Financial Audit Statement</p>
+            <div class="mt-2">
+                <span class="badge-year">Fiscal Year: {{ report.year }}</span>
+            </div>
+        </div>
+
+        <!-- ===== METRIC CARDS ===== -->
+        <div class="row g-0 border-bottom" style="border-color: rgba(255, 204, 0, 0.06) !important;">
+            <div class="col-md-3 col-6 metric-card">
+                <div class="label"><i class="bi bi-piggy-bank me-1" style="color: var(--welfare-gold);"></i>Total Savings</div>
+                <div class="value positive">KES {{ report.total_contributions|floatformat:2 }}</div>
+            </div>
+            <div class="col-md-3 col-6 metric-card">
+                <div class="label"><i class="bi bi-arrow-down-circle me-1" style="color: var(--welfare-gold);"></i>Loan Recovery</div>
+                <div class="value positive">KES {{ report.total_repayments|floatformat:2 }}</div>
+            </div>
+            <div class="col-md-3 col-6 metric-card">
+                <div class="label"><i class="bi bi-arrow-up-circle me-1" style="color: var(--welfare-gold);"></i>Expenses</div>
+                <div class="value negative">KES {{ report.total_expenses|floatformat:2 }}</div>
+            </div>
+            <div class="col-md-3 col-6 metric-card" style="background: rgba(0, 77, 38, 0.02);">
+                <div class="label"><i class="bi bi-water me-1" style="color: var(--welfare-gold);"></i>Net Flow</div>
+                <div class="value {% if report.net_cash_flow < 0 %}negative{% else %}positive{% endif %}">
+                    KES {{ report.net_cash_flow|floatformat:2 }}
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== BODY ===== -->
+        <div class="p-4 p-md-5">
+            <!-- ===== EXPENSES TABLE ===== -->
+            <div class="mb-5">
+                <h5 class="section-title"><i class="bi bi-receipt"></i>Operational Expenditure</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover border">
+                        <thead>
+                            <tr>
+                                <th>Particulars / Description</th>
+                                <th class="text-center">Transaction Date</th>
+                                <th class="text-end pe-4">Amount (KES)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in report.expenses %}
+                            <tr>
+                                <td>
+                                    <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ item.get_expense_type_display }}</div>
+                                    <small class="text-muted">{{ item.description|default:"Administrative Cost" }}</small>
+                                </td>
+                                <td class="text-center text-muted small">{{ item.date_spent|date:"d M Y" }}</td>
+                                <td class="text-end pe-4 fw-bold">{{ item.amount_spent|floatformat:2 }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr><td colspan="3" class="text-center py-4 fst-italic text-muted">No expense records found for this year.</td></tr>
+                            {% endfor %}
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="2" class="text-end fw-bold" style="color: var(--welfare-dark-green);">Total Operational Costs</td>
+                                <td class="text-end pe-4 fw-bold" style="color: var(--welfare-maroon);">{{ report.total_expenses|floatformat:2 }}</td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
+            </div>
+
+            <!-- ===== INFLOWS & OUTFLOWS ===== -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <h5 class="section-title"><i class="bi bi-arrow-down-circle"></i>Inflows &amp; Equity</h5>
+                    <div class="card shadow-sm border-0" style="border: 1px solid rgba(255, 204, 0, 0.06) !important; border-radius: var(--welfare-radius);">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Monthly Contributions <span class="note-badge ms-1" onclick="loadDetails('12')">12</span></span>
+                                <span class="amt-pos">{{ report.total_contributions|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Registration Fees <span class="note-badge ms-1" onclick="loadDetails('16')">16</span></span>
+                                <span class="amt-pos">{{ report.total_reg_fees|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Loan Principal Recovered</span>
+                                <span class="amt-pos">{{ report.total_repayments|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center" style="border-bottom: 2px solid rgba(255, 204, 0, 0.06);">
+                                <span class="fw-bold" style="color: var(--welfare-dark-green);">Total Inflows</span>
+                                <span class="amt-pos fw-bold">{{ report.total_contributions|add:report.total_reg_fees|add:report.total_repayments|floatformat:2 }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <h5 class="section-title"><i class="bi bi-arrow-up-circle"></i>Disbursements</h5>
+                    <div class="card shadow-sm border-0" style="border: 1px solid rgba(255, 204, 0, 0.06) !important; border-radius: var(--welfare-radius);">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Loans Issued to Members <span class="note-badge ms-1" onclick="loadDetails('9')">9</span></span>
+                                <span class="amt-neg">- {{ report.total_disbursed|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center">
+                                <span>Operational Expenses</span>
+                                <span class="amt-neg">- {{ report.total_expenses|floatformat:2 }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between align-items-center" style="border-bottom: 2px solid rgba(255, 204, 0, 0.06);">
+                                <span class="fw-bold" style="color: var(--welfare-maroon);">Total Outflows</span>
+                                <span class="amt-neg fw-bold">{{ report.total_disbursed|add:report.total_expenses|floatformat:2 }}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== NET POSITION ===== -->
+            <div class="row mt-4">
+                <div class="col-12">
+                    <div class="p-3 rounded" style="background: rgba(0, 77, 38, 0.03); border: 2px solid rgba(255, 204, 0, 0.06);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold" style="color: var(--welfare-dark-green);">
+                                <i class="bi bi-calculator me-2" style="color: var(--welfare-gold);"></i>NET FINANCIAL POSITION
+                            </span>
+                            <span class="fw-bold fs-4 {% if report.net_cash_flow < 0 %}text-danger{% else %}" style="color: var(--welfare-dark-green);{% endif %}">
+                                KES {{ report.net_cash_flow|floatformat:2 }}
+                            </span>
+                        </div>
+                        <small class="text-muted">(Total Inflows - Total Outflows)</small>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SIGNATURES ===== -->
+            <div class="row mt-5 pt-4 text-center signatures">
+                <div class="col-4">
+                    <div class="border-top pt-2">Chairman</div>
+                </div>
+                <div class="col-4">
+                    <div class="border-top pt-2">Treasurer</div>
+                </div>
+                <div class="col-4">
+                    <div class="border-top pt-2">Secretary</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="audit-footer">
+            <i class="bi bi-info-circle me-1" style="color: var(--welfare-gold);"></i> 
+            This audit was generated on {% now "d M Y H:i" %}. 
+            Reconcile with <strong>bank.pdf</strong> for full compliance.
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div class="modal fade no-print" id="auditModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title fw-bold">
+                    <i class="bi bi-file-text me-2"></i> Detailed Ledger Breakdown
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-0">
+                <table class="table table-striped mb-0">
+                    <thead>
+                        <tr>
+                            <th class="ps-3">Date</th>
+                            <th>Description</th>
+                            <th class="text-end pe-3">Amount (KES)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="modalBody">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const auditModal = new bootstrap.Modal(document.getElementById('auditModal'));
+    const modalBody = document.getElementById('modalBody');
+
+    function loadDetails(noteId) {
+        modalBody.innerHTML = `
+            <tr>
+                <td colspan="3" class="text-center py-4">
+                    <div class="spinner-border text-primary" role="status" style="color: var(--welfare-gold) !important;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2 text-muted" style="font-size: 0.85rem;">Loading details...</p>
+                </td>
+            </tr>
+        `;
+        auditModal.show();
+
+        fetch(`/api/note-details/${noteId}/?year={{ selected_year }}`)
+            .then(res => res.json())
+            .then(data => {
+                modalBody.innerHTML = '';
+                if (!data.results || !data.results.length) {
+                    modalBody.innerHTML = `
+                        <tr>
+                            <td colspan="3" class="text-center py-4 text-muted">
+                                <i class="bi bi-inbox fs-2 d-block mb-2" style="color: #cbd5e0;"></i>
+                                No records found.
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                data.results.forEach(item => {
+                    const clr = item.type === 'out' ? 'text-danger' : 'text-success';
+                    const symbol = item.type === 'out' ? '-' : '+';
+                    modalBody.innerHTML += `
+                        <tr>
+                            <td class="ps-3 small">${item.date}</td>
+                            <td>${item.desc}</td>
+                            <td class="text-end pe-3 fw-bold ${clr}">
+                                ${symbol} ${item.amount.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}
+                            </td>
+                        </tr>
+                    `;
+                });
+            })
+            .catch(() => {
+                modalBody.innerHTML = `
+                    <tr>
+                        <td colspan="3" class="text-center text-danger py-4">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i> Connection Error. Please try again.
+                        </td>
+                    </tr>
+                `;
+            });
+    }
+</script>
+</body>
+</html>

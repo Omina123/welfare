@@ -1,0 +1,580 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Deposit Savings – ELDOPOLY WELFARE</title>
+    <meta name="description" content="Deposit your welfare savings securely with ELDOPOLY WELFARE. Make M-Pesa payments and grow your savings in Eldoret, Kenya.">
+    <meta name="keywords" content="ELDOPOLY WELFARE deposit savings, welfare savings, M-Pesa payment, savings plan, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/deposit-savings/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 15px 50px rgba(0, 77, 38, 0.15);
+            --welfare-radius: 20px;
+            --transition: 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--welfare-light-bg);
+            min-height: 100vh;
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            padding: 30px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ===== WRAPPER ===== */
+        .savings-wrapper {
+            width: 100%;
+            max-width: 520px;
+            margin: 0 auto;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: var(--welfare-dark-green);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            margin-bottom: 20px;
+            padding: 8px 16px;
+            background: var(--welfare-white);
+            border-radius: 50px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+        }
+
+        .back-link:hover {
+            color: var(--welfare-maroon);
+            transform: translateX(-3px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        }
+
+        .back-link i {
+            margin-right: 8px;
+            font-size: 0.9rem;
+        }
+
+        /* ===== CARD ===== */
+        .card {
+            background: var(--welfare-white);
+            border: none;
+            border-radius: var(--welfare-radius);
+            box-shadow: var(--welfare-shadow);
+            overflow: hidden;
+            transition: all var(--transition);
+        }
+
+        .card:hover {
+            box-shadow: 0 20px 60px rgba(0, 77, 38, 0.12);
+        }
+
+        /* ===== CARD HEADER ===== */
+        .card-header-custom {
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            padding: 28px 30px 32px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-header-custom::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 204, 0, 0.06);
+            border-radius: 50%;
+        }
+
+        .card-header-custom::after {
+            content: '';
+            position: absolute;
+            bottom: -40%;
+            left: -10%;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 204, 0, 0.04);
+            border-radius: 50%;
+        }
+
+        .card-header-custom .icon-wrapper {
+            position: relative;
+            z-index: 1;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: var(--welfare-gold);
+            border-radius: 16px;
+            margin-bottom: 12px;
+            color: var(--welfare-dark-green);
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.25);
+        }
+
+        .card-header-custom h4 {
+            position: relative;
+            z-index: 1;
+            color: #fff;
+            font-weight: 700;
+            font-size: 1.4rem;
+            margin-bottom: 2px;
+        }
+
+        .card-header-custom p {
+            position: relative;
+            z-index: 1;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.85rem;
+            margin-bottom: 0;
+        }
+
+        /* ===== CARD BODY ===== */
+        .card-body {
+            padding: 30px 28px 28px;
+        }
+
+        /* ===== M-PESA BADGE ===== */
+        .mpesa-badge {
+            display: inline-flex;
+            align-items: center;
+            background: rgba(73, 178, 73, 0.08);
+            color: #1a7a1a;
+            padding: 4px 14px;
+            border-radius: 50px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            border: 1px solid rgba(73, 178, 73, 0.12);
+        }
+
+        .mpesa-badge i {
+            margin-right: 6px;
+            font-size: 0.8rem;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 4px;
+        }
+
+        .form-label i {
+            color: var(--welfare-gold);
+            margin-right: 4px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9edf2;
+            border-radius: 12px;
+            padding: 11px 16px;
+            background: #fafcff;
+            font-weight: 500;
+            color: #1e293b;
+            transition: all var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.12);
+            background: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .input-group-text {
+            background: #f1f4f9;
+            border: 2px solid #e9edf2;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 0.9rem;
+            padding: 0 16px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* ===== INFO ALERT ===== */
+        .alert-info-custom {
+            background: #f8fafc;
+            border: 1px solid #e9edf2;
+            border-left: 4px solid var(--welfare-gold);
+            border-radius: 12px;
+            padding: 12px 16px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .alert-info-custom i {
+            color: var(--welfare-gold);
+            font-size: 1.1rem;
+            margin-top: 2px;
+        }
+
+        .alert-info-custom .content {
+            flex: 1;
+        }
+
+        .alert-info-custom .content strong {
+            color: var(--welfare-dark-green);
+            font-size: 0.85rem;
+        }
+
+        .alert-info-custom .content span {
+            color: #64748b;
+            font-size: 0.8rem;
+            display: block;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-deposit {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            border-radius: 12px;
+            padding: 14px 24px;
+            transition: all var(--transition);
+            font-size: 0.95rem;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-deposit:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-deposit:active {
+            transform: scale(0.98);
+        }
+
+        .btn-deposit i {
+            font-size: 1.1rem;
+        }
+
+        /* ===== MESSAGES ===== */
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.1);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.1);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        .alert i {
+            margin-right: 8px;
+        }
+
+        /* ===== MODAL ===== */
+        .modal-content {
+            border: none;
+            border-radius: var(--welfare-radius);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+
+        .modal-header {
+            border-bottom: 1px solid #f1f5f9;
+            padding: 18px 24px;
+        }
+
+        .modal-header h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            font-size: 1.1rem;
+        }
+
+        .modal-header h5 i {
+            color: var(--welfare-gold);
+            margin-right: 8px;
+        }
+
+        .modal-body {
+            padding: 24px;
+        }
+
+        .modal-body .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 56px;
+            height: 56px;
+            background: rgba(255, 204, 0, 0.1);
+            border-radius: 50%;
+            margin-bottom: 12px;
+        }
+
+        .modal-body .icon-circle i {
+            color: var(--welfare-dark-green);
+            font-size: 1.8rem;
+        }
+
+        .modal-body .amount-display {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+            font-size: 1.6rem;
+            margin: 4px 0;
+        }
+
+        .modal-body .info-box {
+            background: #f8fafc;
+            border-radius: 10px;
+            padding: 10px 16px;
+            font-size: 0.8rem;
+            color: #64748b;
+        }
+
+        .modal-body .info-box i {
+            color: var(--welfare-gold);
+        }
+
+        .modal-footer {
+            border-top: 1px solid #f1f5f9;
+            padding: 16px 24px 20px;
+            gap: 10px;
+        }
+
+        .modal-footer .btn-cancel {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 10px 24px;
+            background: transparent;
+            transition: all var(--transition);
+        }
+
+        .modal-footer .btn-cancel:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .modal-footer .btn-confirm {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: #fff;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 28px;
+            transition: all var(--transition);
+        }
+
+        .modal-footer .btn-confirm:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            body { padding: 16px; }
+            .card-body { padding: 20px 16px; }
+            .card-header-custom { padding: 24px 20px 28px; }
+            .card-header-custom .icon-wrapper { width: 56px; height: 56px; font-size: 1.5rem; }
+            .card-header-custom h4 { font-size: 1.2rem; }
+            .modal-footer { flex-direction: column; }
+            .modal-footer .btn-cancel, .modal-footer .btn-confirm { width: 100%; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== SAVINGS WRAPPER ===== -->
+    <div class="savings-wrapper">
+
+        <!-- ===== BACK LINK ===== -->
+        <a href="{% url 'member_dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <!-- ===== CARD ===== -->
+        <div class="card">
+
+            <!-- ===== HEADER ===== -->
+            <div class="card-header-custom">
+                <div class="icon-wrapper">
+                    <i class="fas fa-piggy-bank"></i>
+                </div>
+                <h4>Deposit Savings</h4>
+                <p>Secure your financial future with ELDOPOLY WELFARE</p>
+            </div>
+
+            <!-- ===== BODY ===== -->
+            <div class="card-body">
+
+                <!-- ===== MESSAGES ===== -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-3" role="alert" style="font-size: 0.9rem;">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %}"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- ===== M-PESA BADGE ===== -->
+                <div class="d-flex align-items-center gap-2 mb-3">
+                    <span class="mpesa-badge"><i class="fas fa-mobile-alt"></i> M-PESA PAYMENT</span>
+                    <span class="text-muted" style="font-size: 0.7rem;">Secure &amp; Instant</span>
+                </div>
+
+                <!-- ===== FORM ===== -->
+                <form method="POST" id="savingsForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="payment_type" value="savings">
+
+                    <!-- Amount -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-coins"></i> Amount to Save</label>
+                        <div class="input-group">
+                            <span class="input-group-text">KES</span>
+                            {{ form.amount }}
+                        </div>
+                    </div>
+
+                    <!-- Month -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-calendar-alt"></i> For Month</label>
+                        {{ form.month }}
+                    </div>
+
+                    <!-- Info Alert -->
+                    <div class="alert-info-custom mb-3">
+                        <i class="fas fa-info-circle"></i>
+                        <div class="content">
+                            <strong>STK Push Notification</strong>
+                            <span>An M-Pesa prompt will be sent to your registered phone number.</span>
+                        </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button type="button" class="btn-deposit" onclick="confirmPayment()">
+                        <i class="fas fa-mobile-alt"></i> Deposit via M-Pesa
+                    </button>
+                </form>
+
+                <!-- ===== FOOTER NOTE ===== -->
+                <div class="text-center mt-3">
+                    <p class="text-muted" style="font-size: 0.7rem;">
+                        <i class="fas fa-lock" style="color: var(--welfare-gold);"></i>
+                        Encrypted &bull; Secured by ELDOPOLY WELFARE
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CONFIRMATION MODAL ===== -->
+    <div class="modal fade" id="confirmModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5><i class="fas fa-shield-alt"></i> Confirm Deposit</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="icon-circle">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <p class="text-muted" style="font-size: 0.9rem;">You are about to deposit</p>
+                    <div class="amount-display" id="displayAmt">KES 0</div>
+                    <p class="text-muted" style="font-size: 0.85rem;">via M-Pesa</p>
+                    <div class="info-box">
+                        <i class="fas fa-info-circle"></i> An STK Push will be sent to your registered phone number
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-cancel" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" form="savingsForm" class="btn-confirm">
+                        <i class="fas fa-paper-plane me-2"></i> Send STK Push
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function confirmPayment() {
+            // Safe selectors based purely on the element's name attribute
+            const amtField = document.querySelector('[name="amount"]');
+            const monthField = document.querySelector('[name="month"]');
+
+            if (!amtField || !amtField.value || parseFloat(amtField.value) <= 0) {
+                alert("Please enter a valid amount.");
+                if (amtField) amtField.focus();
+                return;
+            }
+
+            if (!monthField || !monthField.value) {
+                alert("Please select a month.");
+                if (monthField) monthField.focus();
+                return;
+            }
+
+            const amount = parseFloat(amtField.value).toLocaleString();
+            document.getElementById('displayAmt').innerText = "KES " + amount;
+
+            const modal = new bootstrap.Modal(document.getElementById('confirmModal'));
+            modal.show();
+        }
+    </script>
+</body>
+</html>

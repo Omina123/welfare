@@ -1,0 +1,263 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Member Ledger | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ---- Your existing CSS (unchanged) ---- */
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+        }
+        body { 
+            background-color: var(--welfare-light-bg); 
+            font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+        }
+        .ledger-wrapper {
+            background: var(--welfare-white); 
+            max-width: 1200px; 
+            margin: 20px auto;
+            padding: 30px; 
+            border: 1px solid rgba(255, 204, 0, 0.12);
+            box-shadow: 0 10px 30px rgba(0, 77, 38, 0.06);
+            border-radius: 12px;
+        }
+        .filter-section { 
+            border-radius: 10px; 
+            margin-bottom: 20px; 
+            background: #f8fafc;
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            padding: 20px;
+        }
+        .ledger-header { 
+            border-bottom: 3px solid var(--welfare-gold); 
+            margin-bottom: 20px; 
+            padding-bottom: 15px; 
+        }
+        .ledger-header h2 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+        }
+        .ledger-header h2 span {
+            color: var(--welfare-gold);
+        }
+        .ledger-header .text-muted {
+            color: #64748b !important;
+        }
+        .ledger-header .member-info {
+            color: var(--welfare-maroon);
+        }
+        .ledger-table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            font-size: 11px; 
+            table-layout: fixed; 
+        }
+        .ledger-table th, .ledger-table td { 
+            border: 1px solid #000; 
+            padding: 5px 2px; 
+            text-align: center; 
+        }
+        .ledger-table thead th { 
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a4a2a);
+            color: var(--welfare-gold);
+            font-weight: 700; 
+            font-size: 9px;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            border-color: #1a4a2a;
+        }
+        .col-bal { 
+            background-color: rgba(255, 204, 0, 0.06); 
+            font-weight: 700; 
+            color: var(--welfare-dark-green);
+        }
+        .ledger-table tfoot td {
+            font-weight: 700;
+            font-size: 11px;
+            border-color: #000;
+        }
+        .ledger-table tfoot .bg-success {
+            background-color: var(--welfare-dark-green) !important;
+            color: var(--welfare-gold) !important;
+        }
+        .ledger-table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.04);
+        }
+        .ledger-table tbody td:first-child {
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+        }
+        /* Buttons, print, responsive (copy from your existing) – same */
+        /* ... (keep all your existing button & media styles) ... */
+    </style>
+</head>
+<body>
+
+<div class="container-fluid">
+    <!-- ===== FILTER SECTION ===== -->
+    <div class="ledger-wrapper d-print-none filter-section">
+        <form method="GET" class="row align-items-end g-3">
+            <div class="col-md-3">
+                <label class="small fw-bold" style="color: var(--welfare-dark-green);">From Month</label>
+                <select name="start_month" class="form-select form-select-sm">
+                    {% for m in months %}
+                        <option value="{{ m }}" {% if start_month == m %}selected{% endif %}>
+                            {{ m }} - {{ year }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="small fw-bold" style="color: var(--welfare-dark-green);">To Month</label>
+                <select name="end_month" class="form-select form-select-sm">
+                    {% for m in months %}
+                        <option value="{{ m }}" {% if end_month == m %}selected{% endif %}>
+                            {{ m }} - {{ year }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="col-md-6 d-flex gap-2">
+                <button type="submit" class="btn btn-dark w-100">
+                    <i class="bi bi-arrow-repeat me-2"></i> Update View
+                </button>
+                <button type="button" onclick="window.print()" class="btn btn-success w-100">
+                    <i class="bi bi-printer me-2"></i> Print Statement
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ===== LEDGER ===== -->
+    <div class="ledger-wrapper">
+        <!-- ===== HEADER ===== -->
+        <div class="ledger-header">
+            <div class="row align-items-end">
+                <div class="col-6">
+                    <h2 class="h4 mb-0 fw-bold">ELDOPOLY <span>WELFARE</span></h2>
+                    <small class="text-muted">Personal Financial Statement | Year {{ year }}</small>
+                </div>
+                <div class="col-6 text-end text-uppercase">
+                    <div class="small"><strong style="color: var(--welfare-dark-green);">Member:</strong> <span class="member-info">{{ member.user.get_full_name }}</span></div>
+                    <div class="small"><strong style="color: var(--welfare-dark-green);">Account No:</strong> <span class="member-info">{{ member.membership_number }}</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== TABLE ===== -->
+        <table class="ledger-table">
+            <thead>
+                <tr>
+                    <th rowspan="2" style="width: 60px;">DATE</th>
+                    <th colspan="2">MEMBERSHIP</th>
+                    <th colspan="3">CAPITAL SHARES</th>
+                    <th colspan="3">SAVINGS (WELFARE)</th>
+                    <th colspan="3">SUPPORT (NORMAL)</th>
+                    <th colspan="3">XMAS LOAN</th>                 <!-- new -->
+                    <th colspan="2">INTEREST</th>
+                </tr>
+                <tr>
+                    <th>RD No.</th>
+                    <th>PAID</th>
+                    <th>RCVD</th>
+                    <th>WITHD</th>
+                    <th>BAL</th>
+                    <th>RCVD</th>
+                    <th>WITHD</th>
+                    <th>BAL</th>
+                    <th>LOANED</th>
+                    <th>REPAID</th>
+                    <th>BAL</th>
+                    <th>LOANED</th>      <!-- XMAS -->
+                    <th>REPAID</th>      <!-- XMAS -->
+                    <th>BAL</th>         <!-- XMAS -->
+                    <th>PAID</th>
+                    <th>BAL</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- ===== OPENING BALANCE ===== -->
+                <tr>
+                    <td class="fw-bold">{{ year }}</td>
+                    <td colspan="2" class="text-start ps-2 small">Balance b/d (Opening)</td>
+                    <td>-</td><td>-</td>
+                    <td class="col-bal">{{ initial_shares|floatformat:0 }}</td>
+                    <td>-</td><td>-</td>
+                    <td class="col-bal">{{ initial_savings|floatformat:0 }}</td>
+                    <td>-</td><td>-</td>
+                    <td class="col-bal">{{ initial_loan_bal|floatformat:0 }}</td>
+                    <td>-</td><td>-</td>
+                    <td class="col-bal">{{ initial_xmas_bal|floatformat:0 }}</td>
+                    <td>-</td>
+                    <td class="col-bal">0</td>
+                </tr>
+
+                <!-- ===== MONTHLY STATS ===== -->
+                {% for row in monthly_stats %}
+                <tr>
+                    <td class="fw-bold">{{ row.date|date:"M"|upper }}</td>
+                    <td>-</td><td>-</td>
+                    <td>{{ row.share_received|default:"-" }}</td>
+                    <td>{{ row.share_withdrawn|default:"-" }}</td>
+                    <td class="col-bal">{{ row.running_share_bal|floatformat:0 }}</td>
+                    <td>{{ row.savings_in|default:"-" }}</td>
+                    <td>-</td>
+                    <td class="col-bal">{{ row.running_savings_bal|floatformat:0 }}</td>
+                    <td>{{ row.loan_disbursed|default:"-" }}</td>
+                    <td>{{ row.loan_repaid|default:"-" }}</td>
+                    <td class="col-bal">{{ row.running_loan_bal|floatformat:0 }}</td>
+                    <td>{{ row.xmas_disbursed|default:"-" }}</td>
+                    <td>{{ row.xmas_repaid|default:"-" }}</td>
+                    <td class="col-bal">{{ row.running_xmas_bal|floatformat:0 }}</td>
+                    <td>-</td>
+                    <td class="col-bal">{{ row.interest_bal|floatformat:0 }}</td>
+                </tr>
+                {% endfor %}
+
+                <!-- ===== EMPTY ROWS ===== -->
+                {% for i in "123" %}
+                <tr style="height: 30px;">
+                    {% for j in "1234567890123456" %}<td></td>{% endfor %}  <!-- increased columns -->
+                </tr>
+                {% endfor %}
+            </tbody>
+            <!-- ===== FOOTER ===== -->
+            <tfoot class="bg-light fw-bold">
+                <tr>
+                    <td colspan="3" class="text-start ps-2">Final Balances</td>
+                    <td colspan="2"></td>
+                    <td class="bg-success text-white">KES {{ current_shares|floatformat:0 }}</td>
+                    <td colspan="2"></td>
+                    <td class="bg-success text-white">KES {{ current_savings|floatformat:0 }}</td>
+                    <td colspan="2"></td>
+                    <td class="bg-success text-white">KES {{ current_loan|floatformat:0 }}</td>
+                    <td colspan="2"></td>
+                    <td class="bg-success text-white">KES {{ current_xmas|floatformat:0 }}</td>
+                    <td></td>
+                    <td class="bg-success text-white">KES {{ current_interest_bal|floatformat:0 }}</td>
+                </tr>
+            </tfoot>
+        </table>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="mt-4 row text-muted fw-bold" style="font-size: 10px;">
+            <div class="col-6 text-uppercase" style="color: var(--welfare-dark-green);">
+                <i class="bi bi-clock-history me-1"></i> Report Generated: {{ today|date:"d M Y H:i" }}
+            </div>
+            <div class="col-6 text-end" style="color: var(--welfare-maroon);">
+                Official Seal: __________________________
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

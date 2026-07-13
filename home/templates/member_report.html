@@ -1,0 +1,588 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Member Statement - {{ member.user.get_full_name }}</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 10px 30px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 16px;
+        }
+
+        body { 
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            color: #333;
+        }
+
+        @media print {
+            .no-print { display: none !important; }
+            body { background-color: white !important; }
+            .report-card { border: none !important; box-shadow: none !important; padding: 0 !important; }
+            .main-wrapper { margin: 0 !important; padding: 0 !important; }
+            .summary-box:hover { transform: none !important; }
+        }
+
+        .main-wrapper { padding: 3rem 1rem; }
+        
+        .report-card {
+            background: var(--welfare-white);
+            border-radius: var(--welfare-radius);
+            padding: 3.5rem;
+            box-shadow: var(--welfare-shadow);
+            max-width: 1200px;
+            margin: 0 auto;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        .report-header {
+            border-bottom: 4px solid var(--welfare-gold);
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+        }
+
+        .sacco-logo {
+            font-weight: 800;
+            font-size: 1.8rem;
+            color: var(--welfare-dark-green);
+            letter-spacing: -1px;
+        }
+
+        .sacco-logo span {
+            color: var(--welfare-gold);
+        }
+
+        .label-text {
+            font-size: 0.7rem;
+            font-weight: 800;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .summary-box {
+            background: #f8faf9;
+            border-radius: 12px;
+            padding: 20px;
+            height: 100%;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+            transition: transform 0.2s, border-color 0.2s;
+        }
+
+        .summary-box:hover {
+            transform: translateY(-3px);
+            border-color: var(--welfare-gold);
+        }
+
+        .section-title {
+            font-weight: 800;
+            color: var(--welfare-dark-green);
+            border-left: 5px solid var(--welfare-gold);
+            padding-left: 15px;
+            margin: 40px 0 20px 0;
+            text-transform: uppercase;
+            font-size: 1.1rem;
+        }
+
+        .section-title i {
+            color: var(--welfare-gold);
+            margin-right: 8px;
+        }
+
+        .currency { 
+            font-weight: 700; 
+            color: #444; 
+            white-space: nowrap; 
+        }
+
+        .text-welfare-green { color: var(--welfare-dark-green) !important; }
+        .text-welfare-maroon { color: var(--welfare-maroon) !important; }
+        .text-welfare-gold { color: var(--welfare-gold) !important; }
+        
+        .table thead th {
+            background-color: rgba(0, 77, 38, 0.03);
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--welfare-dark-green);
+            border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+            font-weight: 800;
+            padding: 15px;
+        }
+
+        .table tbody td {
+            padding: 14px 15px;
+            border-bottom: 1px solid rgba(255, 204, 0, 0.04);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255, 204, 0, 0.02);
+        }
+
+        .badge-status {
+            padding: 5px 14px;
+            border-radius: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.disbursed { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.pending { background: rgba(255, 204, 0, 0.12); color: #856404; }
+        .badge-status.completed { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.rejected { background: rgba(128, 0, 0, 0.08); color: var(--welfare-maroon); }
+        .badge-status.approved { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+        .badge-status.cleared { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+
+        .btn-print {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 10px;
+            padding: 10px 24px;
+            transition: all 0.3s ease;
+            font-size: 0.85rem;
+        }
+
+        .btn-print:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 77, 38, 0.15);
+        }
+
+        .btn-back {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 10px;
+            padding: 8px 20px;
+            background: transparent;
+            transition: all 0.3s ease;
+        }
+
+        .btn-back:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0, 77, 38, 0.04);
+        }
+
+        .member-info-card {
+            background: #f8faf9;
+            border-radius: 12px;
+            padding: 20px;
+            border: 1px solid rgba(255, 204, 0, 0.06);
+        }
+
+        @media (max-width: 768px) {
+            .report-card { padding: 1.5rem; }
+            .main-wrapper { padding: 1rem; }
+            .report-header { flex-direction: column; align-items: flex-start !important; gap: 10px; }
+            .report-header .text-end { text-align: left !important; }
+            .summary-box { padding: 15px; }
+            .section-title { font-size: 0.95rem; }
+            .member-info-card .row { flex-direction: column; gap: 10px; }
+            .member-info-card .text-end { text-align: left !important; }
+        }
+
+        @media (max-width: 576px) {
+            .report-card { padding: 1rem; }
+            .sacco-logo { font-size: 1.4rem; }
+            .table { font-size: 0.8rem; }
+            .table thead th { font-size: 0.6rem; padding: 10px; }
+            .table tbody td { padding: 10px; }
+            .summary-box h3 { font-size: 1.2rem; }
+            .no-print .d-flex { flex-direction: column; gap: 10px; }
+            .no-print .d-flex .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="main-wrapper">
+    <!-- ===== BUTTONS ===== -->
+    <div class="container no-print mb-4 d-flex justify-content-between" style="max-width: 1200px;">
+        <button class="btn btn-back" onclick="history.back()">
+            <i class="bi bi-arrow-left me-2"></i> Back to Dashboard
+        </button>
+        <button class="btn btn-print shadow-sm" onclick="window.print()">
+            <i class="bi bi-printer-fill me-2"></i> PRINT STATEMENT
+        </button>
+    </div>
+
+    <!-- ===== REPORT CARD ===== -->
+    <div class="report-card">
+        <!-- ===== HEADER ===== -->
+        <div class="report-header d-flex justify-content-between align-items-end">
+            <div>
+                <div class="sacco-logo">ELDOPOLY <span>WELFARE</span></div>
+                <p class="text-muted small mb-0">Empowering Members, Building Communities.</p>
+            </div>
+            <div class="text-end">
+                <h4 class="fw-bold mb-0" style="color: var(--welfare-dark-green);">Member Statement</h4>
+                <p class="text-muted small">Generated: {% now "d M Y, H:i" %}</p>
+            </div>
+        </div>
+
+        <!-- ===== MEMBER INFO ===== -->
+        <div class="member-info-card mb-4">
+            <div class="row align-items-center">
+                <div class="col-md-8">
+                    <span class="label-text">Member Name</span>
+                    <h4 class="fw-bold mb-0" style="color: var(--welfare-dark-green);">{{ member.user.get_full_name }}</h4>
+                    <div class="row mt-2">
+                        <div class="col-md-6">
+                            <span class="label-text">PF Number</span>
+                            <p class="fw-bold mb-0" style="color: var(--welfare-maroon);">{{ member.pf_number|default:member.id }}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <span class="label-text">Phone</span>
+                            <p class="mb-0">{{ member.phone_number }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 text-end">
+                    <span class="label-text">Member Since</span>
+                    <p class="fw-bold mb-0">{{ member.user.date_joined|date:"d M Y" }}</p>
+                    <span class="label-text">Email</span>
+                    <p class="mb-0">{{ member.user.email }}</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SUMMARY BOXES ===== -->
+        <div class="row g-3 mb-5">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Shares</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">KES {{ total_shares|floatformat:0 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Savings</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">KES {{ total_savings|floatformat:0 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Loans Repaid</span>
+                    <h3 class="fw-800 mt-2 text-welfare-green">KES {{ total_repaid|floatformat:0 }}</h3>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Outstanding</span>
+                    <h3 class="fw-800 mt-2 text-welfare-maroon">KES {{ total_outstanding|floatformat:0 }}</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===== SHARE CAPITAL ===== -->
+        <h5 class="section-title"><i class="bi bi-coins"></i> SHARE CAPITAL TRANSACTIONS</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Date</th>
+                        <th>Description</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for share in shares %}
+                    <tr>
+                        <td class="ps-3">{{ share.date_created|date:"d M Y" }}</td>
+                        <td>Monthly Share Contribution</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ share.amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center py-4 text-muted">No share transactions found.</td></tr>
+                    {% endfor %}
+                    {% if shares %}
+                    <tr class="table-active">
+                        <td colspan="2" class="fw-bold text-end">TOTAL SHARE CAPITAL</td>
+                        <td class="text-end fw-bold text-welfare-green">KES {{ total_shares|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SAVINGS ===== -->
+        <h5 class="section-title"><i class="bi bi-piggy-bank-fill"></i> SAVINGS HISTORY</h5>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Month</th>
+                        <th>Date Saved</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for s in savings %}
+                    <tr>
+                        <td class="ps-3">{{ s.month|date:"M Y" }}</td>
+                        <td>{{ s.created_at|date:"d M Y" }}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ s.amount|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="3" class="text-center py-4 text-muted">No savings records found.</td></tr>
+                    {% endfor %}
+                    {% if savings %}
+                    <tr class="table-active">
+                        <td colspan="2" class="fw-bold text-end">TOTAL SAVINGS</td>
+                        <td class="text-end fw-bold text-welfare-green">KES {{ total_savings|floatformat:2 }}</td>
+                    </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== SHARE REFUNDS ===== -->
+        <h5 class="section-title"><i class="bi bi-arrow-return-left"></i> SHARE REFUNDS</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Requested</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ total_share_refunds|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h4 class="fw-800 text-warning">{{ pending_share_refunds }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Year</th>
+                        <th>Amount Requested</th>
+                        <th>Reason</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in share_refunds %}
+                    <tr>
+                        <td class="ps-3">{{ r.year }}</td>
+                        <td class="currency">KES {{ r.amount_requested|floatformat:2 }}</td>
+                        <td>{{ r.get_reason_display }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if r.status == 'disbursed' %}disbursed{% elif r.status == 'pending' %}pending{% elif r.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ r.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">No share refund records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== LOANS ===== -->
+        <h5 class="section-title"><i class="bi bi-file-earmark-text"></i> SUPPORT HISTORY</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Disbursed</span>
+                    <h5 class="fw-800 text-welfare-maroon">KES {{ total_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Active</span>
+                    <h5 class="fw-800 text-welfare-green">KES {{ total_active_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h5 class="fw-800 text-warning">KES {{ total_pending_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Completed</span>
+                    <h5 class="fw-800 text-success">KES {{ total_completed_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Date</th>
+                        <th>Purpose</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-end">Total Due</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Balance</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in loans %}
+                    <tr>
+                        <td class="ps-3">{{ loan.application_date|date:"d M Y" }}</td>
+                        <td>{{ loan.get_purpose_display }}</td>
+                        <td class="text-end currency">KES {{ loan.amount|floatformat:2 }}</td>
+                        <td class="text-end currency text-welfare-green">KES {{ loan.total_payable|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ loan.total_payable|add:loan.get_remaining_balance|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ loan.get_remaining_balance|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if loan.status == 'disbursed' %}disbursed{% elif loan.status == 'pending' %}pending{% elif loan.status == 'completed' %}completed{% elif loan.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ loan.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center py-4 text-muted">No support records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== XMAS LOANS ===== -->
+        <h5 class="section-title"><i class="bi bi-gift-fill"></i> XMAS LOANS</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total</span>
+                    <h5 class="fw-800 text-welfare-maroon">KES {{ total_xmas_loans|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Active</span>
+                    <h5 class="fw-800 text-welfare-green">KES {{ total_active_xmas|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Pending</span>
+                    <h5 class="fw-800 text-warning">KES {{ total_pending_xmas|floatformat:0 }}</h5>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="summary-box text-center">
+                    <span class="label-text">Cleared</span>
+                    <h5 class="fw-800 text-success">KES {{ total_cleared_xmas|floatformat:0 }}</h5>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Date</th>
+                        <th class="text-end">Amount</th>
+                        <th class="text-end">Interest</th>
+                        <th class="text-end">Total</th>
+                        <th class="text-end">Paid</th>
+                        <th class="text-end">Balance</th>
+                        <th class="text-center">Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for x in xmas_loans %}
+                    <tr>
+                        <td class="ps-3">{{ x.application_date|date:"d M Y" }}</td>
+                        <td class="text-end currency">KES {{ x.amount_requested|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.total_interest|floatformat:2 }}</td>
+                        <td class="text-end currency text-welfare-green">KES {{ x.total_payable|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.total_paid|floatformat:2 }}</td>
+                        <td class="text-end currency">KES {{ x.remaining_balance|floatformat:2 }}</td>
+                        <td class="text-center">
+                            <span class="badge-status {% if x.status == 'disbursed' %}disbursed{% elif x.status == 'pending' %}pending{% elif x.status == 'cleared' %}cleared{% elif x.status == 'approved' %}approved{% else %}rejected{% endif %}">
+                                {{ x.status|upper }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="7" class="text-center py-4 text-muted">No Xmas loan records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== REPAYMENTS ===== -->
+        <h5 class="section-title"><i class="bi bi-clock-history"></i> REPAYMENT LOG</h5>
+        <div class="row g-3 mb-4">
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Total Repayments</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Regular Loans</span>
+                    <h4 class="fw-800 text-welfare-green">KES {{ total_regular_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Xmas Loans</span>
+                    <h4 class="fw-800 text-welfare-gold">KES {{ total_xmas_repaid|floatformat:0 }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="table-responsive mb-5">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-3">Date</th>
+                        <th>Type</th>
+                        <th>Reference</th>
+                        <th class="text-end pe-3">Amount (KES)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for pmt in repayments %}
+                    <tr>
+                        <td class="ps-3">{{ pmt.payment_date|date:"d M Y" }}</td>
+                        <td>{% if pmt.is_xmas %}🎄 Xmas{% else %}📋 Regular{% endif %}</td>
+                        <td class="text-muted">{{ pmt.reference|default:"-" }}</td>
+                        <td class="text-end currency pe-3 text-welfare-green">{{ pmt.amount_paid|floatformat:2 }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center py-4 text-muted">No repayment records found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- ===== OUTSTANDING SUMMARY ===== -->
+        <h5 class="section-title"><i class="bi bi-cash-stack"></i> OUTSTANDING SUMMARY</h5>
+        <div class="row g-3 mb-5">
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Regular Loans</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ outstanding_regular|floatformat:0 }}</h4>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="summary-box text-center">
+                    <span class="label-text">Xmas Loans</span>
+                    <h4 class="fw-800 text-welfare-maroon">KES {{ outstanding_xmas|flo

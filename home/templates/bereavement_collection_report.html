@@ -1,0 +1,510 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bereavement Collection Report | ELDOPOLY WELFARE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        /* ===== Base ===== */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #f8f6f3;
+            font-family: 'Inter', 'Segoe UI', Arial, Helvetica, sans-serif;
+            color: #1a1a2e;
+            padding: 30px 20px;
+        }
+        .report-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 20px;
+            padding: 40px 45px 30px;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.06);
+        }
+        .report-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, #004d26, #ffcc00, #800000);
+        }
+
+        /* ===== Header ===== */
+        .report-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            padding-bottom: 25px;
+            border-bottom: 2px solid #e9ecef;
+            margin-bottom: 30px;
+        }
+        .report-header .brand { display: flex; align-items: center; gap: 14px; }
+        .report-header .brand .logo {
+            width: 50px; height: 50px;
+            background: #004d26;
+            border-radius: 12px;
+            display: flex;
+            align-items: center; justify-content: center;
+            color: #ffcc00;
+            font-size: 1.5rem; font-weight: 800;
+        }
+        .report-header .brand h1 {
+            font-size: 1.5rem; font-weight: 800;
+            color: #004d26; margin: 0; letter-spacing: -0.5px;
+        }
+        .report-header .brand small {
+            display: block; color: #6c757d;
+            font-size: 0.7rem; letter-spacing: 1px; text-transform: uppercase;
+        }
+        .report-header .meta { text-align: right; }
+        .report-header .meta .title {
+            font-size: 1.4rem; font-weight: 700; color: #800000;
+        }
+        .report-header .meta .sub {
+            color: #6c757d; font-size: 0.85rem;
+        }
+        .report-header .meta .sub strong { color: #004d26; }
+
+        /* ===== Stats ===== */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 18px;
+            margin-bottom: 35px;
+        }
+        .stat-card {
+            background: #ffffff;
+            border-radius: 14px;
+            padding: 18px 20px;
+            border: 1px solid #e9ecef;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+        .stat-card .icon {
+            width: 48px; height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center; justify-content: center;
+            font-size: 1.3rem; flex-shrink: 0;
+        }
+        .stat-card .icon.green { background: rgba(0,77,38,0.08); color: #004d26; }
+        .stat-card .icon.gold { background: rgba(255,204,0,0.12); color: #b8860b; }
+        .stat-card .icon.maroon { background: rgba(128,0,0,0.08); color: #800000; }
+        .stat-card .icon.blue { background: rgba(13,110,253,0.08); color: #0d6efd; }
+        .stat-card .info .value {
+            font-size: 1.6rem; font-weight: 800; color: #343a40; line-height: 1.2;
+        }
+        .stat-card .info .label {
+            font-size: 0.7rem; text-transform: uppercase; color: #6c757d;
+            font-weight: 600; letter-spacing: 0.3px;
+        }
+
+        /* ===== Main Table ===== */
+        .table-wrapper {
+            border-radius: 14px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+        .table-header {
+            background: #004d26;
+            color: #ffcc00;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .table-header .badge-count {
+            background: #ffcc00; color: #004d26;
+            padding: 2px 14px; border-radius: 50px; font-size: 0.7rem;
+        }
+        .table {
+            width: 100%;
+            margin: 0;
+            font-size: 0.85rem;
+            border-collapse: collapse;
+        }
+        .table thead th {
+            background: #f5f5f5;
+            color: #343a40;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            padding: 12px 10px;
+            border-bottom: 2px solid #e9ecef;
+            text-align: center;
+            vertical-align: middle;
+        }
+        .table thead th.text-left { text-align: left; }
+        .table tbody td {
+            padding: 10px 10px;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f5;
+            vertical-align: middle;
+        }
+        .table tbody td.text-left { text-align: left; }
+        .table tbody tr:nth-child(even) { background: #fafaf8; }
+
+        .badge-unpaid {
+            background: rgba(128,0,0,0.08); color: #800000;
+            font-weight: 600; padding: 4px 12px; border-radius: 20px;
+        }
+        .badge-paid {
+            background: rgba(0,77,38,0.08); color: #004d26;
+            font-weight: 600; padding: 4px 12px; border-radius: 20px;
+        }
+        .progress-sm {
+            height: 6px; width: 60px; display: inline-block;
+            border-radius: 10px; background: #e9ecef; overflow: hidden;
+        }
+        .progress-sm .bar {
+            height: 100%; border-radius: 10px; background: #ffcc00;
+        }
+        .progress-sm .bar.green { background: #004d26; }
+        .progress-sm .bar.maroon { background: #800000; }
+
+        .member-list {
+            font-size: 0.7rem; max-height: 70px; overflow-y: auto;
+        }
+        .member-list .badge { margin: 2px; font-weight: 500; }
+
+        /* ===== Monthly Breakdown ===== */
+        .monthly-card {
+            border-radius: 14px;
+            border: 1px solid #e9ecef;
+            overflow: hidden;
+        }
+        .monthly-card .card-header {
+            background: #800000;
+            color: white;
+            padding: 12px 20px;
+            font-weight: 700;
+            font-size: 0.85rem;
+        }
+        .monthly-table {
+            width: 100%;
+            font-size: 0.8rem;
+            border-collapse: collapse;
+        }
+        .monthly-table thead th {
+            background: #f5f5f5;
+            color: #343a40;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            padding: 8px 6px;
+            border-bottom: 2px solid #e9ecef;
+            text-align: center;
+        }
+        .monthly-table tbody td {
+            padding: 6px 6px;
+            text-align: center;
+            border-bottom: 1px solid #f5f5f5;
+        }
+        .monthly-table tbody tr:nth-child(even) { background: #fafaf8; }
+        .monthly-table .text-green { color: #004d26; font-weight: 600; }
+
+        /* ===== Footer ===== */
+        .report-footer {
+            margin-top: 30px;
+            padding-top: 18px;
+            border-top: 2px solid #e9ecef;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.75rem;
+            color: #6c757d;
+        }
+
+        /* ===== Filter Bar (hidden in print/PDF) ===== */
+        .filter-bar {
+            background: #f5f5f5;
+            border-radius: 14px;
+            padding: 16px 22px;
+            margin-bottom: 30px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 12px 20px;
+        }
+        .filter-bar .filter-label {
+            font-size: 0.7rem; font-weight: 700; text-transform: uppercase;
+            color: #6c757d; letter-spacing: 0.5px;
+        }
+        .filter-bar select, .filter-bar input {
+            border: 1px solid #e9ecef; border-radius: 8px;
+            padding: 6px 14px; font-size: 0.85rem; background: white;
+        }
+        .filter-bar .btn-filter {
+            background: #004d26; color: white; border: none;
+            border-radius: 8px; padding: 6px 22px;
+            font-weight: 600; font-size: 0.8rem;
+        }
+        .filter-bar .btn-filter:hover { background: #1a6a3a; }
+        .filter-bar .btn-clear {
+            background: transparent; border: 1px solid #e9ecef;
+            border-radius: 8px; padding: 6px 16px;
+            font-size: 0.8rem; color: #6c757d; text-decoration: none;
+        }
+        .filter-bar .badge-filter {
+            background: #ffcc00; color: #004d26;
+            padding: 4px 16px; border-radius: 50px;
+            font-weight: 700; font-size: 0.75rem;
+        }
+        .btn-export, .btn-pdf, .btn-print {
+            border: none; border-radius: 8px;
+            padding: 6px 16px; font-weight: 600;
+            font-size: 0.8rem; text-decoration: none;
+            display: inline-block;
+        }
+        .btn-export { background: #004d26; color: white; }
+        .btn-pdf { background: #800000; color: white; }
+        .btn-print { background: #ffcc00; color: #004d26; }
+        .btn-export:hover, .btn-pdf:hover, .btn-print:hover { opacity: 0.85; }
+
+        /* ===== Print / PDF Mode ===== */
+        @media print, .pdf-mode {
+            body { background: white; padding: 0; }
+            .report-container {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                padding: 25px 30px !important;
+                max-width: 100% !important;
+            }
+            .report-container::before { height: 4px; }
+            .filter-bar, .no-print { display: none !important; }
+            .stat-card { border: 1px solid #ddd !important; padding: 12px 14px; }
+            .stat-card .info .value { font-size: 1.2rem; }
+            .table thead th { font-size: 0.6rem; padding: 6px 6px; }
+            .table tbody td { font-size: 0.65rem; padding: 6px 6px; }
+            .monthly-table thead th { font-size: 0.55rem; padding: 4px 4px; }
+            .monthly-table tbody td { font-size: 0.6rem; padding: 4px 4px; }
+            .member-list { max-height: none; overflow: visible; }
+            .stats-grid { gap: 10px; }
+            .stat-card .icon { width: 36px; height: 36px; font-size: 1rem; }
+            .report-footer { font-size: 0.65rem; }
+            .table, .monthly-table { page-break-inside: avoid; }
+            body { font-family: Arial, Helvetica, sans-serif !important; }
+        }
+
+        @media (max-width: 768px) {
+            .report-container { padding: 20px; }
+            .stats-grid { grid-template-columns: 1fr 1fr; }
+            .report-header { flex-direction: column; gap: 10px; }
+            .report-header .meta { text-align: left; }
+        }
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .filter-bar { flex-direction: column; align-items: stretch; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="report-container {% if pdf_mode %}pdf-mode{% endif %}">
+
+    <!-- ===== HEADER ===== -->
+    <div class="report-header">
+        <div class="brand">
+            <div class="logo">E</div>
+            <div>
+                <h1>ELDOPOLY WELFARE</h1>
+                <small>Bereavement Collection Report</small>
+            </div>
+        </div>
+        <div class="meta">
+            <div class="title">Bereavement Contributions</div>
+            <div class="sub">
+                Period: <strong>{{ month|default:"All Time" }}</strong>
+                {% if selected_mourner %}
+                    &nbsp;·&nbsp; Mourner: <strong>{{ selected_mourner.user.get_full_name }}</strong>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FILTER BAR (hidden in print/pdf) ===== -->
+    <div class="filter-bar no-print">
+        <span class="filter-label"><i class="bi bi-funnel"></i> Filter</span>
+        <form method="GET" class="d-flex flex-wrap align-items-center gap-2" style="flex:1;">
+            <select name="mourner_id" class="form-select form-select-sm" style="width:auto; min-width:180px;">
+                <option value="">All Mourners</option>
+                {% for mourner in mourners %}
+                    <option value="{{ mourner.id }}" {% if selected_mourner and selected_mourner.id == mourner.id %}selected{% endif %}>
+                        {{ mourner.user.get_full_name|default:mourner.user.username }}
+                    </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn-filter"><i class="bi bi-filter"></i> Apply</button>
+            <a href="{% url 'bereavement_collection_report' %}" class="btn-clear">Clear</a>
+            {% if selected_mourner %}
+                <span class="badge-filter"><i class="bi bi-person"></i> {{ selected_mourner.user.get_full_name }}</span>
+            {% endif %}
+            <div class="ms-auto d-flex gap-2">
+                <a href="?mourner_id={{ selected_mourner.id|default:'' }}&export=1" class="btn-export"><i class="bi bi-download"></i> CSV</a>
+                <a href="?mourner_id={{ selected_mourner.id|default:'' }}&export_pdf=1" class="btn-pdf"><i class="bi bi-file-pdf"></i> PDF</a>
+                <button onclick="window.print()" class="btn-print"><i class="bi bi-printer"></i> Print</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ===== STATS ===== -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="icon green"><i class="bi bi-megaphone"></i></div>
+            <div class="info">
+                <div class="value">{{ announcement_count }}</div>
+                <div class="label">Total Announcements</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="icon gold"><i class="bi bi-cash-stack"></i></div>
+            <div class="info">
+                <div class="value">KES {{ total_collected_overall|floatformat:2 }}</div>
+                <div class="label">Total Collected</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="icon maroon"><i class="bi bi-coin"></i></div>
+            <div class="info">
+                <div class="value">KES {{ total_expected_overall|floatformat:2 }}</div>
+                <div class="label">Total Expected</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="icon blue"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="info">
+                <div class="value">
+                    {% if total_expected_overall > 0 %}
+                        {% widthratio total_collected_overall total_expected_overall 100 %}%
+                    {% else %}
+                        0%
+                    {% endif %}
+                </div>
+                <div class="label">Collection Rate</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MAIN TABLE ===== -->
+    <div class="table-wrapper">
+        <div class="table-header">
+            <span><i class="bi bi-list-ul me-2"></i> Announcement Summary</span>
+            <span class="badge-count">{{ report_data|length }} announcements</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th style="width:40px;">#</th>
+                        <th class="text-left">Mourner</th>
+                        <th>Deceased</th>
+                        <th>Relationship</th>
+                        <th>Expected (KES)</th>
+                        <th>Collected (KES)</th>
+                        <th>Rate</th>
+                        <th>Instalments</th>
+                        <th>Unpaid</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in report_data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td class="text-left fw-semibold">{{ item.mourner.user.get_full_name|default:item.mourner.user.username }}</td>
+                        <td>{{ item.deceased_name }}</td>
+                        <td>{{ item.relationship }}</td>
+                        <td class="fw-bold">{{ item.total_expected|floatformat:2 }}</td>
+                        <td class="fw-bold" style="color: #004d26;">{{ item.total_collected|floatformat:2 }}</td>
+                        <td>
+                            <div class="progress-sm">
+                                <div class="bar {% if item.collection_rate >= 80 %}green{% elif item.collection_rate < 40 %}maroon{% endif %}" 
+                                     style="width: {{ item.collection_rate|floatformat:0 }}%;"></div>
+                            </div>
+                            <span class="small">{{ item.collection_rate|floatformat:0 }}%</span>
+                        </td>
+                        <td>{{ item.paid_instalments }} / {{ item.total_instalments }}</td>
+                        <td>
+                            {% if item.unpaid_count > 0 %}
+                                <span class="badge badge-unpaid rounded-pill px-3 py-1">{{ item.unpaid_count }}</span>
+                                <div class="member-list mt-1">
+                                    {% for member in item.unpaid_members|slice:":5" %}
+                                        <span class="badge bg-light text-dark">{{ member.user.get_full_name|default:member.user.username }}</span>
+                                    {% endfor %}
+                                    {% if item.unpaid_count > 5 and not pdf_mode %}
+                                        <span class="badge bg-secondary">+{{ item.unpaid_count|add:"-5" }}</span>
+                                    {% endif %}
+                                </div>
+                            {% else %}
+                                <span class="badge badge-paid rounded-pill px-3 py-1">All paid ✅</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="9" class="text-center py-4 text-muted">No bereavement announcements found.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== MONTHLY BREAKDOWN ===== -->
+    {% if report_data %}
+    <div class="monthly-card">
+        <div class="card-header">
+            <i class="bi bi-calendar-month me-2"></i> Monthly Breakdown per Announcement
+        </div>
+        <div class="table-responsive">
+            <table class="table monthly-table align-middle">
+                <thead>
+                    <tr>
+                        <th>Ann.</th>
+                        <th>Mourner</th>
+                        {% for month_label in report_data.0.monthly_breakdown|slice:":12" %}
+                            <th>{{ month_label.label }}</th>
+                        {% endfor %}
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in report_data %}
+                    <tr>
+                        <td><strong>{{ item.announcement.id }}</strong></td>
+                        <td>{{ item.mourner.user.get_full_name|default:item.mourner.user.username }}</td>
+                        {% for month in item.monthly_breakdown %}
+                            <td>
+                                {% if month.collected > 0 %}
+                                    <span style="color: #004d26; font-weight: 600;">{{ month.collected|floatformat:2 }}</span>
+                                {% else %}
+                                    <span class="text-muted">—</span>
+                                {% endif %}
+                            </td>
+                        {% endfor %}
+                        <td><strong style="color: #004d26;">{{ item.total_collected|floatformat:2 }}</strong></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- ===== FOOTER ===== -->
+    <div class="report-footer no-print">
+        <span>Report Generated: {% now "jS F Y" %} at {% now "H:i" %}</span>
+        <span class="fw-bold">ELDOPOLY WELFARE · Confidential</span>
+    </div>
+
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

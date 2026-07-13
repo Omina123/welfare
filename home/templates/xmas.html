@@ -1,0 +1,557 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Quick Loan – ELDOPOLY WELFARE</title>
+    <meta name="description" content="Apply for a quick welfare loan at ELDOPOLY WELFARE. Instant financial empowerment for members in Eldoret, Kenya.">
+    <meta name="keywords" content="ELDOPOLY WELFARE quick loan, welfare loan, financial assistance, emergency loan, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/quick-loan/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 10px 30px rgba(0, 77, 38, 0.06);
+            --welfare-radius: 24px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: linear-gradient(145deg, var(--welfare-dark-green) 0%, #1a3a2a 40%, var(--welfare-maroon) 100%);
+            background-attachment: fixed;
+            min-height: 100vh;
+            font-family: 'Inter', 'Plus Jakarta Sans', sans-serif;
+            color: #2D3748;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            position: relative;
+        }
+
+        /* ===== ANIMATED BACKGROUND SHAPES ===== */
+        .bg-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 204, 0, 0.06);
+            animation: floatShape 20s infinite alternate ease-in-out;
+        }
+        .shape:nth-child(1) { width: 300px; height: 300px; top: -5%; left: -5%; }
+        .shape:nth-child(2) { width: 450px; height: 450px; bottom: -10%; right: -10%; animation-duration: 25s; background: rgba(128, 0, 0, 0.08); }
+        .shape:nth-child(3) { width: 200px; height: 200px; top: 40%; right: 5%; animation-duration: 18s; background: rgba(255, 204, 0, 0.04); }
+        .shape:nth-child(4) { width: 350px; height: 350px; bottom: 20%; left: -8%; animation-duration: 22s; background: rgba(0, 77, 38, 0.08); }
+
+        @keyframes floatShape {
+            0% { transform: translate(0, 0) scale(1) rotate(0deg); }
+            33% { transform: translate(40px, -60px) scale(1.05) rotate(5deg); }
+            66% { transform: translate(-30px, 40px) scale(0.95) rotate(-5deg); }
+            100% { transform: translate(20px, -20px) scale(1.02) rotate(3deg); }
+        }
+
+        /* ===== WRAPPER ===== */
+        .xmas-wrapper {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 540px;
+            margin: 0 auto;
+        }
+
+        /* ===== BACK LINK ===== */
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            color: rgba(255, 255, 255, 0.8);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: all var(--transition);
+            margin-bottom: 20px;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 50px;
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+        }
+
+        .back-link:hover {
+            color: var(--welfare-gold);
+            background: rgba(255, 204, 0, 0.1);
+            transform: translateX(-4px);
+        }
+
+        .back-link i {
+            margin-right: 10px;
+            font-size: 1.1rem;
+        }
+
+        /* ===== HEADER ===== */
+        .xmas-header {
+            background: linear-gradient(135deg, var(--welfare-dark-green) 0%, #1a4a2a 50%, var(--welfare-maroon) 100%);
+            color: white;
+            padding: 30px 20px 35px;
+            text-align: center;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+            border-radius: 20px 20px 0 0;
+        }
+
+        .xmas-header .icon-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 64px;
+            height: 64px;
+            background: var(--welfare-gold);
+            border-radius: 50%;
+            margin-bottom: 10px;
+            color: var(--welfare-dark-green);
+            font-size: 1.8rem;
+            box-shadow: 0 8px 20px rgba(255, 204, 0, 0.25);
+        }
+
+        .xmas-header h2 {
+            color: #fff;
+            font-weight: 800;
+            margin-bottom: 2px;
+        }
+
+        .xmas-header p {
+            color: rgba(255, 204, 0, 0.8);
+            font-size: 0.85rem;
+        }
+
+        /* ===== CARD ===== */
+        .apply-card {
+            border: none;
+            border-radius: 0 0 20px 20px;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 30px 28px 28px;
+        }
+
+        /* ===== LIMIT BADGE ===== */
+        .limit-badge {
+            background: rgba(0, 77, 38, 0.04);
+            border: 2px solid rgba(255, 204, 0, 0.15);
+            border-radius: 16px;
+            padding: 16px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .limit-badge small {
+            color: #64748b;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .limit-badge h2 {
+            color: var(--welfare-dark-green);
+            font-weight: 800;
+            margin: 2px 0;
+        }
+
+        .limit-badge .text-muted {
+            font-size: 0.7rem;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-label {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+            margin-bottom: 4px;
+        }
+
+        .form-label i {
+            color: var(--welfare-gold);
+            margin-right: 4px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e9edf2;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: #fafcff;
+            font-weight: 600;
+            color: #1e293b;
+            transition: all var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.1);
+            background: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #94a3b8;
+            font-weight: 400;
+        }
+
+        .input-group-text {
+            background: #f1f4f9;
+            border: 2px solid #e9edf2;
+            border-right: none;
+            border-radius: 12px 0 0 12px;
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+            font-size: 0.9rem;
+            padding: 0 16px;
+        }
+
+        .input-group .form-control {
+            border-radius: 0 12px 12px 0;
+        }
+
+        /* ===== CALC BOX ===== */
+        .calc-box {
+            background: rgba(0, 77, 38, 0.03);
+            border: 2px solid rgba(255, 204, 0, 0.08);
+            border-radius: 16px;
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .calc-box .label {
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        .calc-box .value {
+            font-weight: 700;
+            color: var(--welfare-dark-green);
+        }
+
+        .calc-box .total-value {
+            font-weight: 800;
+            font-size: 1.4rem;
+            color: var(--welfare-maroon);
+        }
+
+        .calc-box .badge-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.75rem;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn-apply {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            font-weight: 700;
+            border: none;
+            border-radius: 14px;
+            padding: 16px 24px;
+            transition: all var(--transition);
+            font-size: 1rem;
+            width: 100%;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-apply:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.2);
+        }
+
+        .btn-apply:active {
+            transform: scale(0.97);
+        }
+
+        .btn-apply i {
+            margin-left: 8px;
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-danger {
+            background: rgba(128, 0, 0, 0.05);
+            border: 1px solid rgba(128, 0, 0, 0.08);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        .alert-success {
+            background: rgba(0, 77, 38, 0.05);
+            border: 1px solid rgba(0, 77, 38, 0.08);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-info {
+            background: rgba(255, 204, 0, 0.05);
+            border: 1px solid rgba(255, 204, 0, 0.08);
+            border-left: 4px solid var(--welfare-gold);
+            border-radius: 12px;
+            color: #856404;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 480px) {
+            body { padding: 16px; }
+            .card-body { padding: 20px 16px; }
+            .xmas-header { padding: 24px 16px 28px; }
+            .xmas-header .icon-circle { width: 54px; height: 54px; font-size: 1.4rem; }
+            .xmas-header h2 { font-size: 1.2rem; }
+            .calc-box .total-value { font-size: 1.1rem; }
+            .limit-badge h2 { font-size: 1.5rem; }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ===== BACKGROUND SHAPES ===== -->
+    <div class="bg-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <!-- ===== WRAPPER ===== -->
+    <div class="xmas-wrapper">
+
+        <!-- ===== BACK LINK ===== -->
+        <a href="{% url 'member_dashboard' %}" class="back-link">
+            <i class="fas fa-arrow-left"></i> Back to Dashboard
+        </a>
+
+        <!-- ===== HEADER ===== -->
+        <div class="xmas-header">
+            <div class="icon-circle">
+                <i class="fas fa-bolt"></i>
+            </div>
+            <h2>Quick Loan</h2>
+            <p>Instant financial empowerment for welfare members</p>
+        </div>
+
+        <!-- ===== CARD ===== -->
+        <div class="card apply-card">
+            <div class="card-body">
+
+                <!-- ===== LIMIT BADGE ===== -->
+                <div class="limit-badge">
+                    <small><i class="fas fa-info-circle me-1" style="color: var(--welfare-gold);"></i> Maximum Eligible Amount</small>
+                    <h2>KES {{ max_limit|floatformat:2 }}</h2>
+                    <small class="text-muted">(Capped at 3.5x of total share capital)</small>
+
+                    {% if total_limit %}
+                        <div class="mt-2 pt-2 border-top" style="border-color: rgba(255, 204, 0, 0.1) !important;">
+                            <div class="d-flex justify-content-between px-2 small">
+                                <span class="text-muted">Total Share Cap:</span>
+                                <span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ total_limit|floatformat:2 }}</span>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+
+                <!-- ===== MESSAGES ===== -->
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-3" role="alert" style="font-size: 0.9rem;">
+                            <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
+                            {{ message }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+
+                <!-- ===== FORM ===== -->
+                <form method="POST" id="xmasForm" action="{% url 'apply_xmas_loan' %}">
+                    {% csrf_token %}
+
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-coins"></i> Desired Loan Amount</label>
+                        <div class="input-group">
+                            <span class="input-group-text">KES</span>
+                            <input type="number" 
+                                   name="amount" 
+                                   id="loanAmount" 
+                                   class="form-control" 
+                                   placeholder="0.00"
+                                   required 
+                                   min="1" 
+                                   max="{{ max_limit }}" 
+                                   oninput="calculateLoan()">
+                        </div>
+                        <div class="form-text small mt-1">
+                            <i class="fas fa-info-circle me-1" style="color: var(--welfare-gold);"></i>
+                            Enter any amount up to your limit (multiples not required)
+                        </div>
+                    </div>
+
+                    <!-- ===== DURATION SELECTION ===== -->
+                    <div class="mb-3">
+                        <label class="form-label"><i class="fas fa-calendar-alt"></i> Repayment Period</label>
+                        <select name="duration" id="duration" class="form-select" onchange="calculateLoan()" required>
+                            <option value="">Select duration...</option>
+                            <option value="12">12 Months</option>
+                            <option value="13">13 Months</option>
+                            <option value="14">14 Months</option>
+                            <option value="15">15 Months</option>
+                            <option value="16">16 Months</option>
+                            <option value="17">17 Months</option>
+                            <option value="18">18 Months</option>
+                            <option value="19">19 Months</option>
+                            <option value="20">20 Months</option>
+                            <option value="21">21 Months</option>
+                            <option value="22">22 Months</option>
+                            <option value="23">23 Months</option>
+                            <option value="24">24 Months</option>
+                        </select>
+                        <div class="form-text small mt-1">
+                            <i class="fas fa-info-circle me-1" style="color: var(--welfare-gold);"></i>
+                            Choose a repayment period between <strong>12 and 24 months</strong>
+                        </div>
+                    </div>
+
+                    <!-- ===== INFO ALERT ===== -->
+                    <div class="alert alert-info border-0 py-2 mb-3" style="font-size: 0.85rem;">
+                        <i class="fas fa-info-circle me-2" style="color: var(--welfare-gold);"></i>
+                        Interest: <strong>20%</strong> (KES 200 for every KES 1,000 borrowed)
+                    </div>
+
+                    <!-- ===== CALCULATION BOX ===== -->
+                    <div class="calc-box">
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="label"><i class="fas fa-percent me-1" style="color: var(--welfare-gold);"></i> Interest Rate</span>
+                            <span class="badge-gold">20%</span>
+                        </div>
+                        <div class="d-flex justify-content-between mb-2">
+                            <span class="label"><i class="fas fa-calendar-alt me-1" style="color: var(--welfare-gold);"></i> Repayment Tenure</span>
+                            <span class="value" id="durationDisplay">-- Months</span>
+                        </div>
+                        <hr class="my-2" style="border-color: rgba(255, 204, 0, 0.08);">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <span class="fw-bold" style="color: var(--welfare-dark-green);"><i class="fas fa-calculator me-1" style="color: var(--welfare-gold);"></i> Total Repayable:</span>
+                            <span class="total-value" id="totalRepayable">KES 0.00</span>
+                        </div>
+                        <div class="d-flex justify-content-between align-items-center mt-1">
+                            <span class="text-muted small">Monthly Installment:</span>
+                            <span class="fw-bold" style="color: var(--welfare-dark-green);" id="monthlyInstallment">KES 0.00</span>
+                        </div>
+                    </div>
+
+                    <!-- ===== SUBMIT ===== -->
+                    <button type="submit" class="btn-apply shadow-lg">
+                        Apply Now <i class="fas fa-chevron-right"></i>
+                    </button>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'member_dashboard' %}" class="text-muted text-decoration-none small fw-bold">
+                            <i class="fas fa-arrow-left me-1"></i> Return to Dashboard
+                        </a>
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- ===== FOOTER ===== -->
+        <div class="text-center mt-3">
+            <p class="text-white-50 small">
+                <i class="fas fa-shield-alt me-1" style="color: var(--welfare-gold);"></i>
+                Secure instant processing via ELDOPOLY WELFARE Engine.
+            </p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        function calculateLoan() {
+            const amountInput = document.getElementById('loanAmount');
+            const durationSelect = document.getElementById('duration');
+            const totalDisplay = document.getElementById('totalRepayable');
+            const monthlyDisplay = document.getElementById('monthlyInstallment');
+            const durationDisplay = document.getElementById('durationDisplay');
+
+            let amount = parseFloat(amountInput.value);
+            let duration = parseInt(durationSelect.value);
+
+            // Update duration display
+            if (duration && duration >= 12 && duration <= 24) {
+                durationDisplay.innerText = duration + ' Months';
+            } else {
+                durationDisplay.innerText = '-- Months';
+            }
+
+            if (!amount || amount <= 0 || !duration || duration < 12 || duration > 24) {
+                totalDisplay.innerText = "KES 0.00";
+                monthlyDisplay.innerText = "KES 0.00";
+                return;
+            }
+
+            const max = parseFloat(amountInput.max);
+            if (amount > max) {
+                amount = max;
+                amountInput.value = max;
+            }
+
+            // ===== WELFARE: 20% Interest (KES 200 for every KES 1,000) =====
+            const interestRate = 0.20;  // 20%
+            const interest = amount * interestRate;
+            const total = amount + interest;
+            const monthly = total / duration;
+
+            totalDisplay.innerText = "KES " + total.toLocaleString('en-KE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+
+            monthlyDisplay.innerText = "KES " + monthly.toLocaleString('en-KE', {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+        }
+
+        // ===== AUTO-CALCULATE ON LOAD =====
+        document.addEventListener('DOMContentLoaded', function() {
+            calculateLoan();
+        });
+    </script>
+</body>
+</html>

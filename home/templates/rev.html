@@ -1,0 +1,1065 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Admin Portal | ELDOPOLY WELFARE</title>
+    <meta name="description" content="Admin management portal for ELDOPOLY WELFARE. Manage members, loans, refunds, and financial reports.">
+    <meta name="keywords" content="ELDOPOLY WELFARE admin, member management, loan approvals, welfare management, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/admin/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+            --sidebar-width: 260px;
+            --card-radius: 14px;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background-color: var(--welfare-light-bg);
+            font-family: 'Inter', sans-serif;
+            color: #333;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        /* ===== SIDEBAR ===== */
+        .admin-sidebar {
+            width: var(--sidebar-width);
+            height: 100vh;
+            position: fixed;
+            top: 0; left: 0;
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            color: #fff;
+            z-index: 1100;
+            display: flex;
+            flex-direction: column;
+            transition: var(--transition);
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+        }
+
+        .admin-sidebar.collapsed {
+            left: calc(-1 * var(--sidebar-width));
+        }
+
+        .sidebar-brand {
+            padding: 1.75rem 1.5rem;
+            text-align: center;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand h3 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+            letter-spacing: 2px;
+        }
+
+        .sidebar-brand p {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+            margin-bottom: 0;
+        }
+
+        .sidebar-scroll-content {
+            flex-grow: 1;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(255,255,255,0.15) transparent;
+        }
+
+        .sidebar-scroll-content::-webkit-scrollbar { width: 4px; }
+        .sidebar-scroll-content::-webkit-scrollbar-track { background: transparent; }
+        .sidebar-scroll-content::-webkit-scrollbar-thumb { 
+            background: rgba(255,204,0,0.2); 
+            border-radius: 10px; 
+        }
+
+        .admin-sidebar .nav-link {
+            color: rgba(255,255,255,0.7);
+            padding: 12px 25px;
+            border-left: 3px solid transparent;
+            font-size: 0.9rem;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .admin-sidebar .nav-link i { width: 25px; font-size: 1.1rem; }
+
+        .admin-sidebar .nav-link:hover, 
+        .admin-sidebar .nav-link.active {
+            background: rgba(255,204,0,0.08);
+            color: var(--welfare-gold);
+            border-left-color: var(--welfare-gold);
+        }
+
+        .nav-section-title {
+            padding: 1.5rem 1.5rem 0.5rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: rgba(255,255,255,0.3);
+            font-weight: 700;
+        }
+
+        .sidebar-footer {
+            padding: 1.25rem 1.5rem;
+            background: rgba(0,0,0,0.1);
+            border-top: 1px solid rgba(255,255,255,0.05);
+            flex-shrink: 0;
+        }
+
+        .sidebar-footer .badge {
+            background: rgba(255,204,0,0.15) !important;
+            color: var(--welfare-gold) !important;
+            font-weight: 600;
+            font-size: 0.6rem;
+            letter-spacing: 0.5px;
+        }
+
+        /* ===== TOP NAVBAR ===== */
+        .top-navbar {
+            margin-left: var(--sidebar-width);
+            background: var(--welfare-white);
+            padding: 0.8rem 2rem;
+            height: 70px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--welfare-shadow);
+            border-bottom: 2px solid rgba(255,204,0,0.06);
+            transition: var(--transition);
+        }
+
+        .top-navbar.full-width { margin-left: 0; }
+
+        .search-container { position: relative; width: 300px; }
+        .search-container input {
+            padding-left: 40px;
+            border-radius: 50px;
+            background: #fafcff;
+            border: 2px solid #e9edf2;
+            font-size: 0.85rem;
+            padding: 8px 16px 8px 40px;
+            transition: var(--transition);
+        }
+        .search-container input:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255,204,0,0.1);
+            outline: none;
+        }
+        .search-container i {
+            position: absolute; left: 14px; top: 50%;
+            transform: translateY(-50%); color: #94a3b8;
+        }
+
+        .avatar-placeholder {
+            width: 42px; height: 42px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0,77,38,0.06);
+            color: var(--welfare-dark-green);
+            border: 2px solid rgba(255,204,0,0.1);
+        }
+
+        /* ===== CONTENT WRAPPER ===== */
+        .content-wrapper {
+            margin-left: var(--sidebar-width);
+            padding: 2rem;
+            transition: var(--transition);
+        }
+
+        .content-wrapper.full-width { margin-left: 0; }
+
+        /* ===== COMPACT SUMMARY CARDS ===== */
+        .summary-card {
+            background: var(--welfare-white);
+            border: none;
+            border-radius: var(--card-radius);
+            padding: 0.9rem 1.2rem;
+            height: 100%;
+            border-bottom: 3px solid var(--welfare-gold);
+            transition: var(--transition);
+            box-shadow: var(--welfare-shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .summary-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,77,38,0.08);
+        }
+
+        .summary-card .summary-left {
+            flex: 1;
+        }
+
+        .summary-card .summary-left .label {
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            color: #64748b;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+            margin-bottom: 2px;
+        }
+
+        .summary-card .summary-left .value {
+            font-size: 1.15rem;
+            font-weight: 800;
+            font-family: 'Inter', monospace;
+            color: var(--welfare-dark-green);
+        }
+
+        .icon-box {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            background: rgba(0,77,38,0.06);
+            color: var(--welfare-dark-green);
+            flex-shrink: 0;
+        }
+
+        .icon-box.gold { background: rgba(255,204,0,0.1); color: var(--welfare-gold); }
+        .icon-box.maroon { background: rgba(128,0,0,0.06); color: var(--welfare-maroon); }
+        .icon-box.blue { background: rgba(13,110,253,0.06); color: #0d6efd; }
+
+        /* ===== CONTENT CARDS ===== */
+        .content-card {
+            background: var(--welfare-white);
+            border-radius: var(--card-radius);
+            box-shadow: var(--welfare-shadow);
+            border: 1px solid rgba(255,204,0,0.06);
+            margin-bottom: 1.75rem;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .content-card:hover {
+            border-color: rgba(255,204,0,0.12);
+        }
+
+        .card-header-custom {
+            padding: 1rem 1.25rem;
+            background: var(--welfare-white);
+            border-bottom: 1px solid rgba(255,204,0,0.06);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .card-header-custom h5 {
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        .card-header-custom h5 i {
+            color: var(--welfare-gold);
+        }
+
+        /* ===== TABLES ===== */
+        .table thead th {
+            background: rgba(0,77,38,0.03);
+            color: var(--welfare-dark-green);
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.3px;
+            padding: 0.7rem 0.8rem;
+            border-bottom: 2px solid rgba(255,204,0,0.06);
+        }
+
+        .table tbody td {
+            padding: 0.7rem 0.8rem;
+            vertical-align: middle;
+            color: #444;
+            font-size: 0.85rem;
+            border-bottom: 1px solid rgba(255,204,0,0.04);
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255,204,0,0.02);
+        }
+
+        .table .badge.bg-navy {
+            background: var(--welfare-dark-green) !important;
+            color: var(--welfare-gold) !important;
+            font-weight: 600;
+            padding: 3px 10px;
+            font-size: 0.65rem;
+        }
+
+        /* ===== PROGRESS PILLS ===== */
+        .progress-pill {
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-size: 0.6rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .pill-done { background: rgba(0,77,38,0.08); color: var(--welfare-dark-green); }
+        .pill-wait { background: rgba(255,204,0,0.1); color: #856404; }
+
+        /* ===== BADGES ===== */
+        .badge-status {
+            padding: 4px 12px;
+            border-radius: 50px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .badge-status.success {
+            background: rgba(0,77,38,0.08);
+            color: var(--welfare-dark-green);
+        }
+
+        .badge-status.pending {
+            background: rgba(255,204,0,0.12);
+            color: #856404;
+        }
+
+        .badge-status.danger {
+            background: rgba(128,0,0,0.08);
+            color: var(--welfare-maroon);
+        }
+
+        .badge-status.info {
+            background: rgba(13,110,253,0.08);
+            color: #0d6efd;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-welfare {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            padding: 6px 18px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.8rem;
+        }
+
+        .btn-welfare:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,77,38,0.15);
+        }
+
+        .btn-welfare i { margin-right: 6px; }
+
+        .btn-welfare-success {
+            background: var(--welfare-dark-green);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.7rem;
+        }
+
+        .btn-welfare-success:hover {
+            background: var(--welfare-maroon);
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+        }
+
+        .btn-welfare-danger {
+            background: var(--welfare-maroon);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 4px 14px;
+            font-weight: 600;
+            transition: var(--transition);
+            font-size: 0.7rem;
+        }
+
+        .btn-welfare-danger:hover {
+            background: #4a0000;
+            transform: translateY(-2px);
+        }
+
+        .btn-outline-welfare {
+            border: 2px solid #e9edf2;
+            color: #64748b;
+            font-weight: 600;
+            border-radius: 50px;
+            padding: 4px 14px;
+            background: transparent;
+            transition: var(--transition);
+            font-size: 0.75rem;
+        }
+
+        .btn-outline-welfare:hover {
+            border-color: var(--welfare-dark-green);
+            color: var(--welfare-dark-green);
+            background: rgba(0,77,38,0.04);
+        }
+
+        /* ===== FOOTER ===== */
+        .card-footer-custom {
+            background: rgba(255,255,255,0.6) !important;
+            border-top: 1px solid rgba(255,204,0,0.06) !important;
+            padding: 0.7rem 1.25rem;
+        }
+
+        .card-footer-custom .text-muted {
+            color: #64748b !important;
+            font-size: 0.75rem;
+        }
+
+        /* ===== MOBILE ===== */
+        @media (max-width: 992px) {
+            .admin-sidebar { left: -280px; }
+            .admin-sidebar.active { left: 0; }
+            .top-navbar, .content-wrapper { margin-left: 0; }
+            .search-container { width: 200px; }
+        }
+
+        @media (max-width: 576px) {
+            .top-navbar { padding: 0.8rem 1rem; flex-wrap: wrap; gap: 10px; }
+            .search-container { width: 100%; }
+            .content-wrapper { padding: 1rem; }
+            .summary-card { padding: 0.7rem 1rem; }
+            .summary-card .summary-left .value { font-size: 1rem; }
+            .table { font-size: 0.75rem; }
+            .card-header-custom { flex-direction: column; gap: 0.5rem; text-align: center; }
+            .card-header-custom h5 { font-size: 0.85rem; }
+        }
+
+        #sidebar-overlay {
+            display: none; position: fixed;
+            width: 100vw; height: 100vh;
+            background: rgba(0,0,0,0.3);
+            z-index: 1050; top: 0;
+        }
+
+        #sidebar-overlay.show { display: block; }
+
+        /* ===== ALERTS ===== */
+        .alert-success {
+            background: rgba(0,77,38,0.05);
+            border: 1px solid rgba(0,77,38,0.08);
+            border-left: 4px solid var(--welfare-dark-green);
+            border-radius: 12px;
+            color: var(--welfare-dark-green);
+        }
+
+        .alert-error {
+            background: rgba(128,0,0,0.05);
+            border: 1px solid rgba(128,0,0,0.08);
+            border-left: 4px solid var(--welfare-maroon);
+            border-radius: 12px;
+            color: var(--welfare-maroon);
+        }
+
+        /* ===== DROPDOWN ===== */
+        .dropdown-menu {
+            border: none;
+            box-shadow: 0 15px 40px rgba(0,0,0,0.1);
+            border-radius: 12px;
+            padding: 0.5rem;
+        }
+
+        .dropdown-item {
+            border-radius: 8px;
+            padding: 6px 14px;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .dropdown-item:hover {
+            background: rgba(0,77,38,0.04);
+            color: var(--welfare-dark-green);
+        }
+
+        .dropdown-item.text-danger:hover {
+            background: rgba(128,0,0,0.06);
+        }
+
+        /* ===== PAGINATION ===== */
+        .pagination .page-link {
+            border: none;
+            color: var(--welfare-dark-green);
+            border-radius: 8px;
+            padding: 4px 12px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .pagination .page-link:hover {
+            background: rgba(0,77,38,0.04);
+            color: var(--welfare-dark-green);
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--welfare-dark-green);
+            color: var(--welfare-gold);
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR OVERLAY ===== -->
+<div id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="admin-sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <h3><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h3>
+        <p>WELFARE PORTAL v2.0</p>
+    </div>
+
+    <div class="sidebar-scroll-content">
+        <div class="nav flex-column">
+            <div class="nav-section-title">Operations</div>
+            <a href="{% url 'admin_dashboard' %}" class="nav-link active">
+                <i class="fas fa-chart-pie me-3"></i> Dashboard
+            </a>
+            <a href="#" class="nav-link"><i class="fas fa-users me-3"></i> Member Records</a>
+            <a href="#" class="nav-link"><i class="fas fa-file-signature me-3"></i> Support Applications</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-check me-3"></i> Payroll Verification</a>
+            <a href="#" class="nav-link"><i class="fas fa-tasks me-3"></i> Processing Queue</a>
+
+            <div class="nav-section-title">Financials</div>
+            <a href="{% url 'treasurer' %}" class="nav-link"><i class="fas fa-exchange-alt me-3"></i> Daily Transactions</a>
+            <a href="{% url 'sacco_financial_ledger_view' %}" class="nav-link"><i class="fas fa-university me-3"></i> Financial Ledger</a>
+            <a href="{% url 'balance_sheet_view' %}" class="nav-link"><i class="fas fa-piggy-bank me-3"></i> Balance Sheet</a>
+            <a href="{% url 'Bank_Statement' %}" class="nav-link"><i class="fas fa-receipt me-3"></i> Yearly Audits</a>
+            <a href="#" class="nav-link"><i class="fas fa-file-invoice-dollar me-3"></i> Expense Tracking</a>
+            <a href ="{% url 'retirement_admin_create' %}" class="nav-link"><i class="fas fa-hand-holding-usd me-3"></i>  Retirement</a>
+            <a href="{% url 'retirement_collection_report' %}" class="nav-link"><i class="fas fa-hand-holding-usd me-3"></i>  Retirement Report</a>
+            <a href="{% url 'bereavement_admin_create' %}" class="nav-link"><i class="fas fa-hand-holding-usd me-3"></i>  Bereavement</a>
+            <a href="{% url 'bereavement_collection_report' %}" class="nav-link"><i class="fas fa-hand-holding-usd me-3"></i>  Bereavement Report</a>
+
+            <div class="nav-section-title">Reports</div>
+            <a href="{% url 'performance_analysis' %}" class="nav-link"><i class="fas fa-chart-bar me-3"></i> Performance Analytics</a>
+            <a href="#" class="nav-link"><i class="fas fa-user-friends me-3"></i> Arrears Reports</a>
+
+            <div class="nav-section-title">Configuration</div>
+            <a href="#" class="nav-link"><i class="fas fa-tools me-3"></i> Support Settings</a>
+            <a href="{% url 'member_dashboard' %}" class="nav-link"><i class="fas fa-external-link-alt me-3"></i> Member View</a>
+            <a href="{% url 'Members' %}" class="nav-link"><i class="fas fa-user-cog me-3"></i> System Users</a>
+            
+            <div class="mb-5"></div>
+        </div>
+    </div>
+
+    <div class="sidebar-footer">
+        <a href="{% url 'Logout' %}" class="nav-link text-danger p-0 mb-3">
+            <i class="fas fa-power-off me-3"></i> Logout
+        </a>
+        <div class="text-center">
+            <span class="badge px-3 py-2">● Operational</span>
+        </div>
+    </div>
+</aside>
+
+<!-- ===== TOP NAVBAR ===== -->
+<header class="top-navbar" id="top-nav">
+    <div class="d-flex align-items-center">
+        <button class="btn btn-light rounded-circle me-3 d-lg-none" onclick="toggleSidebar()" style="border: 2px solid #e9edf2; padding: 6px 10px;">
+            <i class="fas fa-bars" style="color: var(--welfare-dark-green);"></i>
+        </button>
+        <button class="btn btn-light rounded-circle me-3 d-none d-lg-block" id="collapse-btn" style="border: 2px solid #e9edf2; padding: 6px 10px;">
+            <i class="fas fa-align-left" style="color: var(--welfare-dark-green);"></i>
+        </button>
+        <div class="search-container">
+            <i class="fas fa-search"></i>
+            <input type="text" id="memberSearch" class="form-control" placeholder="Search members by PF, Name or ID...">
+        </div>
+    </div>
+
+    <div class="d-flex align-items-center">
+        <div class="text-end d-none d-sm-block me-3">
+            <p class="fw-bold mb-0 small" style="color: var(--welfare-dark-green);">{{ user.get_full_name|default:user.username }}</p>
+            <p class="text-muted mb-0 small" style="font-size: 0.7rem;">Admin Office Access</p>
+        </div>
+        <div class="avatar-placeholder shadow-sm">
+            <i class="fas fa-user-shield fa-lg"></i>
+        </div>
+    </div>
+</header>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="content-wrapper" id="main-content">
+    
+    <!-- ===== MESSAGES ===== -->
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show rounded-4 shadow-sm mb-4 border-0" role="alert">
+                <i class="bi bi-info-circle-fill me-2"></i> {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endif %}
+    
+    <!-- ===== COMPACT SUMMARY CARDS ===== -->
+    <div class="row g-3 mb-4">
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card">
+                <div class="summary-left">
+                    <p class="label">Total Savings Pool</p>
+                    <h3 class="value" style="color: var(--welfare-dark-green);">KES {{ total_savings_pool|floatformat:2 }}</h3>
+                    <span class="text-success small" style="font-size: 0.6rem;"><i class="fas fa-caret-up"></i> Live Balance</span>
+                </div>
+                <div class="icon-box"><i class="fas fa-vault"></i></div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card" style="border-bottom-color: var(--welfare-gold);">
+                <div class="summary-left">
+                    <p class="label">Pending Support</p>
+                    <h3 class="value" style="color: var(--welfare-gold);">{{ pending_loans.count }}</h3>
+                    <span class="text-warning small" style="font-size: 0.6rem;">Review required</span>
+                </div>
+                <div class="icon-box gold"><i class="fas fa-clock"></i></div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card" style="border-bottom-color: #0d6efd;">
+                <div class="summary-left">
+                    <p class="label">Total Members</p>
+                    <h3 class="value" style="color: #0d6efd;">{{ total_members }}</h3>
+                    <span class="text-primary small" style="font-size: 0.6rem;">Active accounts</span>
+                </div>
+                <div class="icon-box blue"><i class="fas fa-users"></i></div>
+            </div>
+        </div>
+
+        <div class="col-xl-3 col-md-6">
+            <div class="summary-card" style="border-bottom-color: var(--welfare-maroon);">
+                <div class="summary-left">
+                    <p class="label">Welfare Payouts</p>
+                    <h3 class="value" style="color: var(--welfare-maroon);">KES {{ total_interest_earned|floatformat:2 }}</h3>
+                    <span class="text-muted small" style="font-size: 0.6rem;">Completed Support</span>
+                </div>
+                <div class="icon-box maroon"><i class="fas fa-hand-holding-heart"></i></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PENDING SUPPORT ===== -->
+    <div class="content-card">
+        <div class="card-header-custom">
+            <h5><i class="bi bi-clock-history me-2"></i>Support Applications Awaiting Approval</h5>
+            <button class="btn btn-outline-welfare btn-sm">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Details</th>
+                        <th>Purpose</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Approval Flow</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_loans %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <small class="text-muted">ID: #{{ loan.id|stringformat:"05d" }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark fw-medium">{{ loan.purpose.name }}</span></td>
+                        <td><span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ loan.amount|floatformat:2 }}</span></td>
+                        <td>{{ loan.duration_months }} Months</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="progress-pill {% if loan.admin_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-badge"></i> Admin</span>
+                                <span class="progress-pill {% if loan.staff_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-check"></i> Staff</span>
+                                <span class="progress-pill {% if loan.treasurer_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-cash-coin"></i> Treasury</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_loan' loan.id %}" class="btn btn-welfare-success btn-sm">Approve</a>
+                            <a href="{% url 'reject_loan' loan.id %}" class="btn btn-welfare-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-4">
+                            <i class="bi bi-inbox display-1 text-muted d-block mb-2" style="color: #cbd5e0;"></i>
+                            <p class="text-muted" style="font-size: 0.9rem;">Queue is clear. No pending applications found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== QUICK SUPPORT ===== -->
+    <div class="content-card">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-bolt me-2" style="color: var(--welfare-gold);"></i>Quick Support Awaiting Approval</h5>
+            <button class="btn btn-outline-welfare btn-sm">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Details</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Approval Flow</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_xmas_loans %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <small class="text-muted">ID: #{{ loan.id|stringformat:"05d" }}</small>
+                        </td>
+                        <td><span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ loan.amount_requested|floatformat:2 }}</span></td>
+                        <td>{{ loan.duration_months }} Months</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="progress-pill {% if loan.admin_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-badge"></i> Admin</span>
+                                <span class="progress-pill {% if loan.staff_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-check"></i> Staff</span>
+                                <span class="progress-pill {% if loan.treasurer_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-cash-coin"></i> Treasury</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_xmas_loan' loan.id %}" class="btn btn-welfare-success btn-sm">Approve</a>
+                            <a href="{% url 'reject_xmas_loan' loan.id %}" class="btn btn-welfare-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <i class="bi bi-inbox display-1 text-muted d-block mb-2" style="color: #cbd5e0;"></i>
+                            <p class="text-muted" style="font-size: 0.9rem;">Queue is clear. No pending quick support found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== HOLIDAY REFUNDS ===== -->
+    <div class="content-card">
+        <div class="card-header-custom">
+            <h5><i class="fas fa-gift me-2" style="color: var(--welfare-gold);"></i>Holiday Refunds</h5>
+            <button class="btn btn-outline-welfare btn-sm">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Details</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Approval Flow</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_xmas_refunds %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <small class="text-muted">ID: #{{ loan.id|stringformat:"05d" }}</small>
+                        </td>
+                        <td><span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ loan.amount_requested|floatformat:2 }}</span></td>
+                        <td>{{ loan.duration_months }} Months</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="progress-pill {% if loan.admin_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-badge"></i> Admin</span>
+                                <span class="progress-pill {% if loan.staff_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-check"></i> Staff</span>
+                                <span class="progress-pill {% if loan.treasurer_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-cash-coin"></i> Treasury</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_xmas_refund' loan.id %}" class="btn btn-welfare-success btn-sm">Approve</a>
+                            <a href="{% url 'reject_xmas_refund' loan.id %}" class="btn btn-welfare-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4">
+                            <i class="bi bi-inbox display-1 text-muted d-block mb-2" style="color: #cbd5e0;"></i>
+                            <p class="text-muted" style="font-size: 0.9rem;">No pending holiday refunds found.</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== SHARE REFUND QUEUE ===== -->
+    <div class="content-card">
+        <div class="card-header-custom">
+            <div>
+                <h5><i class="fas fa-coins me-2" style="color: var(--welfare-gold);"></i>Capital Share Refund Queue</h5>
+                <p class="text-muted small mb-0" style="font-size: 0.7rem;">Equity withdrawals awaiting 90-day maturity</p>
+            </div>
+            <div class="dropdown">
+                <button class="btn btn-outline-welfare btn-sm" data-bs-toggle="dropdown">
+                    Filter Flow <i class="fas fa-chevron-down ms-1"></i>
+                </button>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Detail</th>
+                        <th>Net Withdrawal</th>
+                        <th>Effective Date</th>
+                        <th>Approval Flow</th>
+                        <th class="text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for refund in pending_shares_refunds %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ refund.member.user.get_full_name }}</div>
+                            <div class="text-muted small" style="font-size: 0.7rem;">PF: {{ refund.member.membership_number }}</div>
+                        </td>
+                        <td class="fw-800" style="color: var(--welfare-dark-green);">KES {{ refund.net_amount|floatformat:2 }}</td>
+                        <td>{{ refund.effective_date|date:"d M Y" }}</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="badge {% if refund.staff_approved %}bg-success{% else %}bg-light text-muted border{% endif %}" style="background: {% if refund.staff_approved %}var(--welfare-dark-green){% endif %} !important; color: {% if refund.staff_approved %}var(--welfare-gold){% endif %} !important; font-size: 0.6rem;">STAFF</span>
+                                <span class="badge {% if refund.treasurer_approved %}bg-success{% else %}bg-light text-muted border{% endif %}" style="background: {% if refund.treasurer_approved %}var(--welfare-dark-green){% endif %} !important; color: {% if refund.treasurer_approved %}var(--welfare-gold){% endif %} !important; font-size: 0.6rem;">TREAS</span>
+                                <span class="badge {% if refund.admin_approved %}bg-success{% else %}bg-light text-muted border{% endif %}" style="background: {% if refund.admin_approved %}var(--welfare-dark-green){% endif %} !important; color: {% if refund.admin_approved %}var(--welfare-gold){% endif %} !important; font-size: 0.6rem;">ADMIN</span>
+                            </div>
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{% url 'approve_share_refund' refund.id %}" class="btn btn-welfare-success btn-sm px-3">Authorize</a>
+                                <button class="btn btn-welfare-danger btn-sm"><i class="fas fa-times"></i></button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-4 text-muted" style="font-size: 0.85rem;">No pending share refunds in the current cycle.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== MEMBER DIRECTORY ===== -->
+    <div class="content-card mt-4">
+        <div class="card-header-custom">
+            <h5 class="fw-700 mb-0" style="color: var(--welfare-dark-green);"><i class="fas fa-users me-2" style="color: var(--welfare-gold);"></i>Member Directory</h5>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline-welfare btn-sm">Export Ledger</button>
+                <a href="{% url 'add_member' %}" class="btn btn-welfare btn-sm">
+                    <i class="fas fa-user-plus me-2"></i> Register New Member
+                </a>
+            </div>
+        </div>
+        <div class="table-responsive">
+            <table class="table table-hover align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Personal Info</th>
+                        <th>PF Number</th>
+                        <th>ID / Passport</th>
+                        <th>Join Date</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for member in all_members %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="bg-light rounded p-2 me-3 text-muted" style="background: rgba(0,77,38,0.04) !important;"><i class="fas fa-id-card" style="color: var(--welfare-dark-green);"></i></div>
+                                <div>
+                                    <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ member.user.get_full_name }}</div>
+                                    <div class="small text-muted" style="font-size: 0.7rem;">{{ member.phone_number }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td><span class="badge bg-navy">{{ member.pf_number }}</span></td>
+                        <td>{{ member.id_number }}</td>
+                        <td class="small" style="font-size: 0.7rem;">{{ member.user.date_joined|date:"M Y" }}</td>
+                        <td class="text-center align-middle">
+                            <div class="dropdown">
+                                <button class="btn btn-light btn-sm rounded-circle shadow-sm" 
+                                        style="width: 30px; height: 30px; padding: 0; border: 2px solid #e9edf2;" 
+                                        data-bs-toggle="dropdown" 
+                                        aria-expanded="false">
+                                    <i class="fas fa-ellipsis-v text-muted" style="font-size: 0.8rem;"></i>
+                                </button>
+
+                                <ul class="dropdown-menu dropdown-menu-end border-0 shadow-lg mt-2 small">
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'edit_user_role' member.user_id %}">
+                                            <i class="fas fa-user-tag me-2" style="color: var(--welfare-gold); width: 18px;"></i> Change Role
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'update_user' member.user.id %}">
+                                            <i class="fas fa-user-edit me-2" style="color: var(--welfare-gold); width: 18px;"></i> Modify Account
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'member_loan_details_view' member.user.id %}">
+                                            <i class="fas fa-history me-2" style="color: #0d6efd; width: 18px;"></i> Support Details
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'migrate_single_member_loan' member.user.id %}">
+                                            <i class="fas fa-file-invoice me-2" style="color: var(--welfare-dark-green); width: 18px;"></i> Update Support
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item py-2" href="{% url 'migrate_xmas_loan' member.user.id %}">
+                                            <i class="fas fa-gift me-2" style="color: var(--welfare-gold); width: 18px;"></i> Migrate Holiday
+                                        </a>
+                                    </li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <a class="dropdown-item py-2 text-danger" href="{% url 'delete_member' member.user.id %}">
+                                            <i class="fas fa-user-slash me-2" style="width: 18px;"></i> Suspend Member
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="card-footer-custom d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <p class="text-muted mb-0" style="font-size: 0.7rem;">Total of <strong style="color: var(--welfare-dark-green);">{{ total_members }}</strong> active records found</p>
+            <nav class="mt-2 mt-sm-0">
+                <ul class="pagination pagination-sm mb-0">
+                    <li class="page-item disabled"><a class="page-link" href="#"><i class="fas fa-chevron-left"></i></a></li>
+                    <li class="page-item active"><a class="page-link" href="#">1</a></li>
+                    <li class="page-item"><a class="page-link" href="#">2</a></li>
+                    <li class="page-item"><a class="page-link" href="#">3</a></li>
+                    <li class="page-item"><a class="page-link" href="#"><i class="fas fa-chevron-right"></i></a></li>
+                </ul>
+            </nav>
+        </div>
+    </div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    // ===== SIDEBAR LOGIC =====
+    function toggleSidebar() {
+        document.getElementById('sidebar').classList.toggle('active');
+        document.getElementById('sidebar-overlay').classList.toggle('show');
+    }
+
+    const collapseBtn = document.getElementById('collapse-btn');
+    if (collapseBtn) {
+        collapseBtn.addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('collapsed');
+            document.getElementById('top-nav').classList.toggle('full-width');
+            document.getElementById('main-content').classList.toggle('full-width');
+        });
+    }
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992) {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            if (sidebar && !sidebar.contains(event.target) && !event.target.closest('.top-navbar')) {
+                sidebar.classList.remove('active');
+                overlay.classList.remove('show');
+            }
+        }
+    });
+
+    // ===== SEARCH FUNCTIONALITY =====
+    const memberSearch = document.getElementById('memberSearch');
+    if (memberSearch) {
+        memberSearch.addEventListener('keyup', function() {
+            let filter = this.value.toLowerCase();
+            let rows = document.querySelectorAll('.table tbody tr');
+
+            rows.forEach(row => {
+                let name = row.querySelector('td:nth-child(1)')?.textContent.toLowerCase() || "";
+                let pf = row.querySelector('td:nth-child(2)')?.textContent.toLowerCase() || "";
+                let id = row.querySelector('td:nth-child(3)')?.textContent.toLowerCase() || "";
+
+                if (name.includes(filter) || pf.includes(filter) || id.includes(filter)) {
+                    row.style.display = ""; 
+                } else {
+                    row.style.display = "none"; 
+                }
+            });
+        });
+    }
+
+    // ===== SWEETALERT MESSAGES =====
+    document.addEventListener('DOMContentLoaded', function() {
+        {% if messages %}
+            {% for message in messages %}
+                Swal.fire({
+                    icon: "{% if message.tags == 'error' %}error{% elif message.tags == 'success' %}success{% else %}info{% endif %}",
+                    title: "{{ message.tags|capfirst }}",
+                    text: "{{ message }}",
+                    confirmButtonColor: "#004d26",
+                    timer: 4000
+                });
+            {% endfor %}
+        {% endif %}
+    });
+</script>
+</body>
+</html>

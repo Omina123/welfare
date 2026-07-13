@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- ===== SEO META TAGS ===== -->
+    <title>Apply for Support – ELDOPOLY WELFARE</title>
+    <meta name="description" content="Apply for welfare support at ELDOPOLY WELFARE. Get financial assistance, emergency support, and community development funding in Eldoret, Kenya.">
+    <meta name="keywords" content="ELDOPOLY WELFARE apply support, welfare assistance, financial support, emergency aid, community funding, Eldoret">
+    <meta name="robots" content="index, follow">
+    <meta name="author" content="ELDOPOLY WELFARE">
+    <link rel="canonical" href="https://www.eldopolywelfare.co.ke/apply-support/">
+
+    <!-- ===== FAVICON ===== -->
+    <link rel="icon" type="image/x-icon" href="/static/img/favicon.ico">
+    <link rel="apple-touch-icon" href="/static/img/apple-touch-icon.png">
+
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        :root {
+            --welfare-dark-green: #004d26;
+            --welfare-maroon: #800000;
+            --welfare-gold: #ffcc00;
+            --welfare-light-bg: #f5f0eb;
+            --welfare-white: #ffffff;
+            --welfare-shadow: 0 8px 30px rgba(0, 77, 38, 0.12);
+            --welfare-radius: 16px;
+            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --sidebar-width: 280px;
+        }
+
+        body, html { 
+            height: 100%; 
+            margin: 0; 
+            background: var(--welfare-light-bg);
+            font-family: 'Inter', sans-serif; 
+            color: #2D3748;
+        }
+
+        .wrapper { display: flex; min-height: 100vh; width: 100%; }
+
+        /* ===== SIDEBAR ===== */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+            flex-shrink: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 1050;
+            box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-brand {
+            padding: 1.75rem 1.5rem;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            text-align: center;
+        }
+
+        .sidebar-brand h3 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+            letter-spacing: 2px;
+            margin: 0;
+        }
+
+        .sidebar-brand small {
+            color: rgba(255,255,255,0.4);
+            font-size: 0.6rem;
+            letter-spacing: 2px;
+        }
+
+        .sidebar a {
+            padding: 12px 24px;
+            color: rgba(255,255,255,0.6);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-weight: 500;
+            transition: 0.2s ease;
+            margin: 4px 12px;
+            border-radius: 12px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255, 204, 0, 0.1);
+            color: var(--welfare-gold);
+            border-left: 3px solid var(--welfare-gold);
+        }
+
+        .sidebar .btn-gold {
+            background: var(--welfare-gold);
+            color: var(--welfare-dark-green);
+            font-weight: 700;
+            border: none;
+        }
+        .sidebar .btn-gold:hover {
+            background: #f5d742;
+            color: var(--welfare-dark-green);
+        }
+
+        .sidebar hr {
+            border-color: rgba(255,255,255,0.06);
+            margin: 1rem 12px;
+        }
+
+        /* ===== MAIN CONTAINER ===== */
+        .main-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+            overflow-x: hidden;
+        }
+
+        .scrollable-content {
+            flex-grow: 1;
+            padding: 1.5rem;
+        }
+
+        /* ===== MOBILE HEADER ===== */
+        .mobile-header {
+            display: none;
+            background: linear-gradient(135deg, var(--welfare-dark-green), var(--welfare-maroon));
+            color: white;
+            padding: 15px 20px;
+            align-items: center;
+            justify-content: space-between;
+            position: sticky;
+            top: 0;
+            z-index: 1040;
+            border-bottom: 3px solid var(--welfare-gold);
+        }
+
+        .mobile-header h4 {
+            color: var(--welfare-gold);
+            font-weight: 800;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 992px) {
+            .sidebar { position: fixed; left: -280px; height: 100vh; top: 0; }
+            .sidebar.active { left: 0; }
+            .mobile-header { display: flex; }
+            .main-container { margin-left: 0; }
+        }
+
+        /* ===== CARDS ===== */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 204, 0, 0.15);
+            border-radius: 24px;
+            padding: 28px;
+            box-shadow: var(--welfare-shadow);
+            transition: all var(--transition);
+        }
+
+        .glass-card:hover {
+            box-shadow: 0 12px 40px rgba(0, 77, 38, 0.12);
+        }
+
+        /* ===== SUPPORT POWER BANNER ===== */
+        .support-power-banner {
+            background: linear-gradient(135deg, var(--welfare-dark-green) 0%, #1a4a2a 50%, var(--welfare-maroon) 100%);
+            border-radius: 20px;
+            padding: 28px;
+            color: white;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 204, 0, 0.15);
+        }
+
+        .support-power-banner .progress {
+            height: 8px;
+            background: rgba(255,255,255,0.12);
+            border-radius: 10px;
+        }
+
+        .support-power-banner .progress-bar {
+            background: var(--welfare-gold) !important;
+        }
+
+        /* ===== FORM ELEMENTS ===== */
+        .form-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--welfare-dark-green);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .form-control, .form-select {
+            border: 2px solid #e8ecf0;
+            border-radius: 12px;
+            padding: 12px 16px;
+            background: #fafbfc;
+            font-weight: 600;
+            color: var(--welfare-dark-green);
+            transition: all var(--transition);
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus, .form-select:focus {
+            border-color: var(--welfare-gold);
+            box-shadow: 0 0 0 4px rgba(255, 204, 0, 0.15);
+            background: #fff;
+        }
+
+        .form-control::placeholder {
+            color: #a0aec0;
+            font-weight: 400;
+        }
+
+        /* ===== CUSTOM SLIDER ===== */
+        .custom-slider {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            border-radius: 10px;
+            background: #e2e8f0;
+            outline: none;
+            margin: 12px 0 8px;
+            transition: background var(--transition);
+        }
+
+        .custom-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            background: var(--welfare-dark-green);
+            cursor: pointer;
+            border: 3px solid var(--welfare-gold);
+            box-shadow: 0 0 12px rgba(0, 77, 38, 0.2);
+            transition: all var(--transition);
+        }
+
+        .custom-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.1);
+        }
+
+        /* ===== DURATION BADGE ===== */
+        .duration-badge {
+            font-size: 0.7rem;
+            padding: 4px 14px;
+            border-radius: 50px;
+            margin-top: 6px;
+            display: inline-block;
+            font-weight: 600;
+            background: rgba(128, 0, 0, 0.08);
+            color: var(--welfare-maroon);
+            border: 1px solid rgba(128, 0, 0, 0.15);
+        }
+
+        /* ===== BREAKDOWN BOX ===== */
+        .breakdown-box {
+            background: rgba(0, 77, 38, 0.04);
+            border: 2px solid rgba(255, 204, 0, 0.2);
+            border-radius: 16px;
+            padding: 20px 24px;
+        }
+
+        .breakdown-box .total-value {
+            color: var(--welfare-maroon);
+            font-weight: 800;
+            font-size: 1.5rem;
+        }
+
+        /* ===== BUTTONS ===== */
+        .btn-eldo {
+            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            color: var(--welfare-white);
+            font-weight: 700;
+            border-radius: 14px;
+            padding: 16px 28px;
+            border: none;
+            transition: all var(--transition);
+            font-size: 1rem;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-eldo:hover {
+            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
+            color: var(--welfare-gold);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.3);
+        }
+
+        .btn-eldo:disabled {
+            background: #cbd5e0;
+            color: white;
+            cursor: not-allowed;
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+        /* ===== TOAST ===== */
+        #toast-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            pointer-events: none;
+        }
+
+        .sms-popup {
+            pointer-events: auto;
+            background: #ffffff;
+            border-left: 6px solid var(--welfare-gold);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+            border-radius: 12px;
+            padding: 15px 20px;
+            margin-bottom: 12px;
+            min-width: 320px;
+            max-width: 400px;
+            animation: smsSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sms-popup.border-success { border-left-color: var(--welfare-dark-green); }
+        .sms-popup.border-danger { border-left-color: var(--welfare-maroon); }
+
+        @keyframes smsSlide {
+            from { transform: translateX(120%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* ===== ALERTS ===== */
+        .alert-welfare {
+            border-left: 4px solid var(--welfare-gold);
+            border-radius: 12px;
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-width: 576px) {
+            .glass-card { padding: 18px; }
+            .support-power-banner { padding: 20px; }
+            .breakdown-box { padding: 16px; }
+            .support-power-banner h2 { font-size: 1.3rem; }
+            .sms-popup { min-width: 280px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ===== MOBILE HEADER ===== -->
+    <div class="mobile-header">
+        <div class="d-flex align-items-center">
+            <h4 class="fw-bold m-0"><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h4>
+        </div>
+        <button class="btn text-white fs-3 p-0" id="menuToggle"><i class="bi bi-list"></i></button>
+    </div>
+
+    <!-- ===== WRAPPER ===== -->
+    <div class="wrapper">
+
+        <!-- ===== SIDEBAR ===== -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-brand">
+                <h3><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h3>
+                <small>WELFARE PORTAL v2.0</small>
+            </div>
+
+            {% if request.user.user_type != '4' %}
+            <div class="px-3 mb-3">
+                {% if 'admin' in request.path or 'management' in request.path %}
+                    <a href="{% url 'member_dashboard' %}" class="btn btn-sm w-100 btn-gold fw-bold py-2 shadow-sm">
+                        <i class="fas fa-user me-2"></i> My Member View
+                    </a>
+                {% else %}
+                    <a href="{% url 'management_index' %}" class="btn btn-sm w-100 btn-gold fw-bold py-2 shadow-sm">
+                        <i class="fas fa-user-shield me-2"></i> Management Hub
+                    </a>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            <nav class="mt-2">
+                <a href="{% url 'member_dashboard' %}"><i class="fas fa-th-large"></i> Dashboard</a>
+                <a href="{% url 'member_profile' %}"><i class="fas fa-user"></i> My Profile</a>
+                <a href="{% url 'deposit_savings' %}"><i class="fas fa-piggy-bank"></i> Welfare Savings</a>
+                <a href="{% url 'purchase_shares' %}"><i class="fas fa-chart-pie"></i> Shares</a>
+                <a href="{% url 'apply_loan' %}" class="active"><i class="fas fa-file-invoice-dollar"></i> Apply Support</a>
+                <a href="{% url 'pay_loan' %}"><i class="fas fa-hand-holding-usd"></i> Repay Support</a>
+                <a href="{% url 'my_loans' %}"><i class="fas fa-exchange-alt"></i> My Support</a>
+                <a href="{% url 'member_individual_report' %}"><i class="fas fa-file-alt"></i> My Ledger</a>
+                <hr>
+                <a href="{% url 'Logout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </nav>
+        </aside>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <div class="main-container">
+            <main class="scrollable-content">
+                <div class="container-fluid">
+                    <div class="col-xl-8 col-lg-10 mx-auto">
+
+                        <!-- ===== TOAST CONTAINER ===== -->
+                        <div id="toast-container"></div>
+
+                        <!-- ===== MESSAGES ===== -->
+                        {% if messages %}
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm rounded-4 mb-4 alert-welfare" role="alert">
+                                    <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill text-success{% else %}bi-exclamation-triangle-fill text-warning{% endif %} me-2"></i>
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        <!-- ===== SUPPORT POWER BANNER ===== -->
+                        <div class="support-power-banner shadow-sm">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <p class="mb-1 opacity-75 small fw-bold text-uppercase">Total Support Power</p>
+                                    <h2 class="fw-bold m-0">KES {{ global_cap|floatformat:2 }}</h2>
+                                </div>
+                                <div class="text-end">
+                                    <p class="mb-1 opacity-75 small fw-bold text-uppercase">Currently Available</p>
+                                    <h4 class="fw-bold m-0" style="color: var(--welfare-gold);">KES {{ loan_limit|floatformat:2 }}</h4>
+                                </div>
+                            </div>
+                            <div class="progress">
+                                <div class="progress-bar" role="progressbar" style="width:{% widthratio loan_limit global_cap 100 %}%"></div>
+                            </div>
+                        </div>
+
+                        <!-- ===== TOP-UP SECTION ===== -->
+                        {% if active_loan %}
+                        <div class="glass-card mb-4 border border-warning">
+                            <h5 class="fw-bold mb-3" style="color: var(--welfare-dark-green);">
+                                <i class="fas fa-arrow-up me-2" style="color: var(--welfare-gold);"></i>Top-Up Existing Support
+                            </h5>
+                            <p class="text-muted small">You have an active support request. You may request a top-up.</p>
+                            <button type="button" class="btn btn-eldo w-100 mb-3" id="toggleTopUp">
+                                <i class="bi bi-plus-circle me-2"></i> Request Support Top-Up
+                            </button>
+                            <div id="topUpBox" style="display:none;">
+                                <div class="alert alert-info border-0" style="background: rgba(0, 77, 38, 0.05); border-left: 4px solid var(--welfare-gold);">
+                                    Remaining Balance: <strong>KES {{ current_balance|floatformat:2 }}</strong>
+                                </div>
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" name="is_top_up" value="on" id="topUpCheck" style="border-color: var(--welfare-dark-green);">
+                                    <label class="form-check-label fw-bold" for="topUpCheck" style="color: var(--welfare-dark-green);">
+                                        Enable Top-Up
+                                    </label>
+                                </div>
+                                <small class="text-muted d-block mt-2">Top-up will be added to your existing balance.</small>
+                            </div>
+                        </div>
+                        {% endif %}
+
+                        <!-- ===== APPLICATION FORM ===== -->
+                        <div class="glass-card mb-5">
+                            <form method="POST" id="loanForm">
+                                {% csrf_token %}
+
+                                <!-- Support Type -->
+                                <div class="row">
+                                    <div class="col-md-12 mb-4">
+                                        <label class="form-label"><i class="bi bi-tag me-2" style="color: var(--welfare-gold);"></i>Support Type</label>
+                                        <select name="purpose" id="id_purpose" class="form-select" required>
+                                            <option value="normal">Standard Support</option>
+                                            <option value="school fees">Education Support</option>
+                                            <option value="emergency">Emergency Support</option>
+                                            <option value="personal">Personal Support</option>
+                                        </select>
+                                        <small class="text-muted d-block mt-1">All support types have a maximum of <strong>24 months</strong> with <strong>0% interest</strong>.</small>
+                                    </div>
+
+                                    <!-- Amount -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label"><i class="bi bi-cash-stack me-2" style="color: var(--welfare-gold);"></i>Requested Amount</label>
+                                        <input type="range" class="custom-slider" id="amount_range" min="0" max="{{ loan_limit }}" step="500" value="0">
+                                        <input type="number" name="amount" step="0.01" class="form-control" required id="id_amount" max="{{ loan_limit }}" placeholder="Enter amount">
+                                    </div>
+
+                                    <!-- Duration -->
+                                    <div class="col-md-6 mb-4">
+                                        <label class="form-label"><i class="bi bi-calendar-event me-2" style="color: var(--welfare-gold);"></i>Duration</label>
+                                        <input type="range" class="custom-slider" id="month_range" min="1" max="24" step="1" value="12">
+                                        <select name="duration_months" class="form-select" id="id_duration_months"></select>
+                                        <div id="duration-warning" class="duration-badge">
+                                            Max: 24 Months
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ===== WELFARE INFO BOX ===== -->
+                                <div class="alert alert-info border-0" style="background: rgba(0, 77, 38, 0.04); border-left: 4px solid var(--welfare-gold); border-radius: 12px; padding: 15px 20px;">
+                                    <div class="d-flex align-items-start">
+                                        <i class="bi bi-info-circle fs-5 me-3" style="color: var(--welfare-gold);"></i>
+                                        <div>
+                                            <strong style="color: var(--welfare-dark-green);">WELFARE SUPPORT TERMS</strong>
+                                            <ul class="mb-0 mt-1 text-muted" style="font-size: 0.85rem; padding-left: 18px;">
+                                                <li>✅ No guarantors required</li>
+                                                <li>✅ 0% interest on all support</li>
+                                                <li>✅ No insurance fees</li>
+                                                <li>✅ Max duration: 24 months</li>
+                                                <li>✅ Automatic approval after validation</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- ===== FINANCIAL SUMMARY ===== -->
+                                <div class="breakdown-box mb-4">
+                                    <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--welfare-dark-green);">
+                                        <i class="bi bi-calculator me-2" style="color: var(--welfare-gold);"></i>Financial Summary
+                                    </h6>
+
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Interest Rate</span>
+                                        <span class="badge" style="background: var(--welfare-gold); color: var(--welfare-dark-green); font-weight: 700;">0%</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Interest Amount</span>
+                                        <span class="fw-bold" style="color: var(--welfare-dark-green);">KES 0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Insurance Fee</span>
+                                        <span class="fw-bold" style="color: var(--welfare-maroon);">KES 0.00</span>
+                                    </div>
+                                    <div class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Monthly Installment</span>
+                                        <span id="p-monthly" class="fw-bold" style="color: var(--welfare-dark-green);">KES 0.00</span>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between align-items-center pt-3 mt-2 border-top" style="border-color: rgba(255, 204, 0, 0.15) !important;">
+                                        <span class="fw-bold" style="color: var(--welfare-dark-green);">Total Repayment</span>
+                                        <span id="p-total" class="fw-bold fs-4 total-value">KES 0.00</span>
+                                    </div>
+                                </div>
+
+                                <!-- ===== SUBMIT ===== -->
+                                <button type="submit" class="btn btn-eldo w-100 shadow-lg py-3" id="submitBtn">
+                                    <i class="bi bi-send-fill me-2"></i> Submit Application
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- ===== SCRIPTS ===== -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+    $(document).ready(function() {
+        // ===== 1. MOBILE SIDEBAR TOGGLE =====
+        $('#menuToggle').click(function() {
+            $('#sidebar').toggleClass('active');
+        });
+
+        // Close sidebar on outside click
+        $(document).click(function(e) {
+            if ($(window).width() < 992) {
+                if (!$('#sidebar').is(e.target) && !$('#sidebar').has(e.target).length && !$('#menuToggle').is(e.target)) {
+                    $('#sidebar').removeClass('active');
+                }
+            }
+        });
+
+        // ===== 2. DATA FROM BACKEND =====
+        const loanLimit = parseFloat("{{ loan_limit|default:'0' }}");
+        const isContract = "{{ profile.employment_status }}" === "CONTRACT";
+
+        let contractMaxMonths = 24;
+        {% if profile.employment_status == 'CONTRACT' and profile.contract_expiry %}
+            const expiryDate = new Date("{{ profile.contract_expiry|date:'Y-m-d' }}");
+            const today = new Date();
+            expiryDate.setMonth(expiryDate.getMonth() - 2);
+            const diffTime = Math.abs(expiryDate - today);
+            contractMaxMonths = Math.floor(diffTime / (1000 * 60 * 60 * 24 * 30.44));
+            if (contractMaxMonths < 1) contractMaxMonths = 1;
+        {% endif %}
+
+        const $amtRange = $('#amount_range');
+        const $amtInput = $('#id_amount');
+        const $monRange = $('#month_range');
+        const $monInput = $('#id_duration_months');
+        const $durationWarning = $('#duration-warning');
+
+        // ===== 3. POPULATE DURATION (Max 24 Months) =====
+        function rebuildDurationOptions() {
+            const finalMaxMonths = Math.min(24, contractMaxMonths);
+            const currentVal = $monInput.val() || 1;
+
+            $monInput.empty();
+            for (let i = 1; i <= finalMaxMonths; i++) {
+                $monInput.append(`<option value="${i}">${i} Months</option>`);
+            }
+
+            $monRange.attr('max', finalMaxMonths);
+            const newVal = currentVal > finalMaxMonths ? finalMaxMonths : currentVal;
+            $monInput.val(newVal);
+            $monRange.val(newVal);
+
+            let warningText = `Max: ${finalMaxMonths} Months`;
+            if (isContract && finalMaxMonths === contractMaxMonths) {
+                warningText += " (Contract Limited)";
+            }
+            $durationWarning.text(warningText);
+
+            updateCalculations();
+        }
+
+        rebuildDurationOptions();
+
+        // ===== 4. SYNC CONTROLS =====
+        $amtRange.on('input', function() {
+            $amtInput.val($(this).val());
+            updateCalculations();
+        });
+
+        $amtInput.on('input', function() {
+            let val = parseFloat($(this).val()) || 0;
+            if (val > loanLimit) val = loanLimit;
+            $(this).val(val);
+            $amtRange.val(val);
+            updateCalculations();
+        });
+
+        $monRange.on('input', function() {
+            $monInput.val($(this).val());
+            updateCalculations();
+        });
+
+        $monInput.on('change', function() {
+            $monRange.val($(this).val());
+            updateCalculations();
+        });
+
+        // ===== 5. CALCULATIONS (No Interest, No Insurance) =====
+        function updateCalculations() {
+            const principal = parseFloat($amtInput.val()) || 0;
+            const months = parseInt($monInput.val()) || 0;
+
+            // WELFARE: No interest, no insurance
+            const totalDebt = principal;
+            const monthlyInstallment = months > 0 ? principal / months : 0;
+
+            $('#p-rate-badge').text("0%");
+            $('#p-interest').text("KES 0.00");
+            $('#p-insurance').text("KES 0.00");
+            $('#p-monthly').text("KES " + monthlyInstallment.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            $('#p-total').text("KES " + totalDebt.toLocaleString(undefined, {minimumFractionDigits: 2}));
+        }
+
+        // ===== 6. TOAST NOTIFICATIONS =====
+        function showSMSPopup(message, type = "success") {
+            const container = document.getElementById("toast-container");
+            if (!container) return;
+
+            const popup = document.createElement("div");
+            const borderColor = type === 'danger' ? 'var(--welfare-maroon)' : 'var(--welfare-dark-green)';
+            popup.style.cssText = `
+                background: #ffffff;
+                border-left: 6px solid ${borderColor};
+                box-shadow: 0 10px 30px rgba(0,0,0,0.12);
+                border-radius: 12px;
+                padding: 15px 20px;
+                margin-bottom: 12px;
+                min-width: 320px;
+                max-width: 400px;
+                animation: smsSlide 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                pointer-events: auto;
+            `;
+
+            popup.innerHTML = `
+                <div class="d-flex align-items-center w-100">
+                    <i class="fas ${type === 'danger' ? 'fa-exclamation-circle' : 'fa-check-circle'} fs-4 me-3" style="color: ${borderColor};"></i>
+                    <div class="flex-grow-1">
+                        <strong class="d-block small text-uppercase text-muted" style="letter-spacing: 1.5px; font-size: 0.65rem;">ELDOPOLY WELFARE</strong>
+                        <span class="fw-bold text-dark" style="font-size: 0.9rem;">${message}</span>
+                    </div>
+                    <button type="button" class="btn-close ms-2" style="font-size: 0.7rem;" aria-label="Close" onclick="this.closest('.sms-popup').remove()"></button>
+                </div>
+            `;
+
+            container.appendChild(popup);
+
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.style.transform = "translateX(120%)";
+                    popup.style.opacity = "0";
+                    setTimeout(() => popup.remove(), 400);
+                }
+            }, 15000);
+        }
+
+        // ===== 7. DJANGO MESSAGES AS TOASTS =====
+        {% if messages %}
+            {% for message in messages %}
+                showSMSPopup("{{ message|escapejs }}", "{% if message.tags == 'error' %}danger{% else %}success{% endif %}");
+            {% endfor %}
+        {% endif %}
+    });
+    </script>
+</body>
+</html>

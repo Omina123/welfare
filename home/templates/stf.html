@@ -1,0 +1,636 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Staff Portal | ELDOPOLY WELFARE</title>
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+:root {
+    --welfare-dark-green: #004d26;
+    --welfare-maroon: #800000;
+    --welfare-gold: #ffcc00;
+    --welfare-light-bg: #f5f0eb;
+    --welfare-white: #ffffff;
+    --sidebar-width: 280px;
+    --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
+}
+
+body { background: var(--welfare-light-bg); font-family: 'Inter', sans-serif; color: #2c3e50; margin: 0; }
+
+/* ===== SIDEBAR ===== */
+.admin-sidebar {
+    width: var(--sidebar-width);
+    height: 100vh;
+    position: fixed;
+    top: 0; left: 0;
+    background: linear-gradient(180deg, var(--welfare-dark-green) 0%, #1a3a2a 60%, var(--welfare-maroon) 100%);
+    color: white;
+    z-index: 1000;
+    box-shadow: 4px 0 15px rgba(0,0,0,0.15);
+    transition: all 0.3s ease;
+    overflow-y: auto;
+}
+.admin-sidebar::-webkit-scrollbar { width: 6px; }
+.admin-sidebar::-webkit-scrollbar-thumb { background: rgba(255, 204, 0, 0.2); border-radius: 3px; }
+
+.brand-section { padding: 2rem 1.5rem; background: rgba(0,0,0,0.15); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06); }
+
+.brand-section h4 {
+    color: var(--welfare-gold);
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+.brand-section small {
+    color: rgba(255,255,255,0.4);
+    font-size: 0.6rem;
+    letter-spacing: 2px;
+}
+
+.nav-link-side {
+    color: rgba(255,255,255,0.7);
+    padding: 12px 25px;
+    text-decoration: none;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    font-size: 0.9rem;
+    border-radius: 8px;
+    margin: 4px 15px;
+    border-left: 3px solid transparent;
+}
+.nav-link-side i { font-size: 1.1rem; width: 30px; }
+
+.nav-link-side:hover, .nav-link-side.active {
+    background: rgba(255, 204, 0, 0.08);
+    color: var(--welfare-gold);
+    border-left-color: var(--welfare-gold);
+}
+.nav-link-side.active {
+    background: rgba(255, 204, 0, 0.12);
+    color: var(--welfare-gold);
+    font-weight: 600;
+    border-left-color: var(--welfare-gold);
+}
+
+.nav-link-side .badge {
+    background: var(--welfare-gold) !important;
+    color: var(--welfare-dark-green) !important;
+}
+
+/* ===== SIDEBAR TOGGLE ===== */
+#sidebarToggle { display: none; }
+@media (max-width: 992px) {
+    .admin-sidebar { left: -280px; }
+    .admin-sidebar.show { left: 0; }
+    #sidebarToggle { display: block; position: fixed; top: 15px; left: 15px; z-index: 1100; background: var(--welfare-dark-green); border: none; color: var(--welfare-gold); padding: 8px 14px; border-radius: 8px; }
+}
+
+/* ===== TOP NAVBAR ===== */
+.top-navbar {
+    margin-left: var(--sidebar-width);
+    background: var(--welfare-white);
+    padding: 1rem 2rem;
+    border-bottom: 2px solid rgba(255, 204, 0, 0.08);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: margin-left 0.3s;
+    box-shadow: var(--welfare-shadow);
+}
+@media (max-width: 992px) { .top-navbar { margin-left: 0; padding: 1rem; } }
+
+.top-navbar h5 {
+    color: var(--welfare-dark-green);
+    font-weight: 800;
+}
+
+.top-navbar .text-muted {
+    color: var(--welfare-maroon) !important;
+}
+
+/* ===== CONTENT WRAPPER ===== */
+.content-wrapper { margin-left: var(--sidebar-width); padding: 2rem; transition: margin-left 0.3s; }
+@media (max-width: 992px) { .content-wrapper { margin-left: 0; padding: 1rem; } }
+
+/* ===== SUMMARY CARDS ===== */
+.summary-card { border: none; border-radius: 16px; padding: 1.5rem; transition: all 0.3s; background: var(--welfare-white); box-shadow: var(--welfare-shadow); border: 1px solid rgba(255, 204, 0, 0.06); }
+.summary-card:hover { transform: translateY(-5px); border-color: var(--welfare-gold); }
+
+.card-icon { width: 56px; height: 56px; background: rgba(0, 77, 38, 0.06); color: var(--welfare-dark-green); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+.card-icon.gold { background: rgba(255, 204, 0, 0.1); color: var(--welfare-gold); }
+.card-icon.maroon { background: rgba(128, 0, 0, 0.06); color: var(--welfare-maroon); }
+.card-icon.blue { background: rgba(13, 110, 253, 0.06); color: #0d6efd; }
+
+.summary-card h6 { color: #94a3b8; font-weight: 600; }
+.summary-card h4 { color: var(--welfare-dark-green); font-weight: 800; }
+
+/* ===== DATA TABLE CARD ===== */
+.data-table-card { border: none; border-radius: 16px; overflow: hidden; background: var(--welfare-white); box-shadow: var(--welfare-shadow); border: 1px solid rgba(255, 204, 0, 0.06); margin-bottom: 2rem; }
+.data-table-card .card-header-custom { background: var(--welfare-white); padding: 1.25rem 1.5rem; border-bottom: 1px solid rgba(255, 204, 0, 0.06); }
+.data-table-card .card-header-custom h5 { color: var(--welfare-dark-green); font-weight: 800; }
+.data-table-card .card-header-custom h5 i { color: var(--welfare-gold); }
+
+.table thead th { background: rgba(0, 77, 38, 0.03); text-transform: uppercase; font-size: 0.7rem; letter-spacing: 1px; font-weight: 800; color: var(--welfare-dark-green); padding: 1rem; border-bottom: 2px solid rgba(255, 204, 0, 0.06); }
+.table tbody td { padding: 1rem; border-bottom: 1px solid rgba(255, 204, 0, 0.04); vertical-align: middle; }
+.table tbody tr:hover { background: rgba(255, 204, 0, 0.02); }
+
+/* ===== ACTION BUTTONS ===== */
+.btn-action { width: 36px; height: 36px; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; transition: 0.2s; border: none; }
+
+.btn-success {
+    background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-success:hover {
+    background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon)) !important;
+    color: var(--welfare-gold) !important;
+    transform: translateY(-2px);
+}
+
+.btn-danger {
+    background: var(--welfare-maroon) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-danger:hover {
+    background: #4a0000 !important;
+    transform: translateY(-2px);
+}
+
+.btn-outline-danger {
+    border: 2px solid var(--welfare-maroon) !important;
+    color: var(--welfare-maroon) !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-outline-danger:hover {
+    background: var(--welfare-maroon) !important;
+    color: white !important;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-primary:hover {
+    background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon)) !important;
+    color: var(--welfare-gold) !important;
+    transform: translateY(-2px);
+}
+
+.btn-dark {
+    background: var(--welfare-maroon) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+.btn-dark:hover {
+    background: #4a0000 !important;
+    color: var(--welfare-gold) !important;
+}
+
+/* ===== PROGRESS PILLS ===== */
+.progress-pill { padding: 4px 12px; border-radius: 20px; font-size: 0.65rem; font-weight: 700; display: inline-flex; align-items: center; gap: 5px; text-transform: uppercase; letter-spacing: 0.3px; }
+.pill-done { background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); }
+.pill-wait { background: rgba(255, 204, 0, 0.1); color: #856404; }
+
+/* ===== BADGES ===== */
+.badge.bg-light { background: rgba(0, 77, 38, 0.04) !important; color: var(--welfare-dark-green) !important; border: 1px solid rgba(255, 204, 0, 0.06); }
+
+.badge.bg-navy { background: var(--welfare-dark-green) !important; color: var(--welfare-gold) !important; }
+
+/* ===== ALERTS ===== */
+.alert-success {
+    background: rgba(0, 77, 38, 0.05);
+    border: 1px solid rgba(0, 77, 38, 0.1);
+    border-left: 4px solid var(--welfare-dark-green);
+    border-radius: 12px;
+    color: var(--welfare-dark-green);
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state i { color: #cbd5e0; }
+
+/* ===== MODAL ===== */
+.modal-content {
+    border: none;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+}
+.modal-header h6 { color: var(--welfare-dark-green); font-weight: 800; }
+.modal .text-success { color: var(--welfare-dark-green) !important; }
+.modal .text-danger { color: var(--welfare-maroon) !important; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 576px) {
+    .content-wrapper { padding: 0.75rem; }
+    .summary-card { padding: 1rem; }
+    .summary-card h4 { font-size: 1.1rem; }
+    .card-icon { width: 44px; height: 44px; font-size: 1.2rem; }
+    .table { font-size: 0.8rem; }
+    .table thead th { font-size: 0.6rem; padding: 0.75rem; }
+    .table tbody td { padding: 0.75rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== SIDEBAR TOGGLE ===== -->
+<button id="sidebarToggle"><i class="bi bi-list"></i> Menu</button>
+
+<!-- ===== SIDEBAR ===== -->
+<div class="admin-sidebar" id="adminSidebar">
+    <div class="brand-section mb-3">
+        <h4 class="fw-bold mb-0"><i class="fas fa-hands-helping me-2"></i>ELDOPOLY</h4>
+        <small class="text-uppercase fw-semibold">Staff Welfare Office</small>
+    </div>
+    
+    <nav class="nav flex-column">
+        <a class="nav-link-side active" href="{% url 'staff_dashboard' %}"><i class="bi bi-grid-1x2-fill"></i> Dashboard</a>
+        <a class="nav-link-side" href="{% url 'pending_loans' %}"><i class="bi bi-file-earmark-medical"></i> Pending Reviews
+            <span class="badge rounded-pill ms-auto">{{ pending_loans.count }}</span>
+        </a>
+        <div class="px-4 py-2 mt-3 small text-white-50 text-uppercase fw-bold" style="font-size: 0.65rem;">Management</div>
+        <a href="{% url 'all_savings' %}" class="nav-link-side"><i class="bi bi-wallet2"></i> Members Savings</a>
+        <a href="{% url 'approved_loans' %}" class="nav-link-side"><i class="bi bi-check-circle"></i> Approved Support</a>
+        <a href="{% url 'rejected_loans' %}" class="nav-link-side"><i class="bi bi-x-circle"></i> Rejected Support</a>
+        <a href="{% url 'Completed_loans' %}" class="nav-link-side"><i class="bi bi-flag"></i> Completed Support</a>
+        <a href="{% url 'member_dashboard' %}" class="nav-link-side"><i class="bi bi-gear"></i> Visit Members Site</a>
+        <hr class="mx-4 opacity-10">
+        <a href="{% url 'member_dashboard' %}" class="nav-link-side"><i class="bi bi-arrow-left-right"></i> Member Site</a>
+        <a class="nav-link-side text-danger" href="{% url 'Logout' %}"><i class="bi bi-box-arrow-left"></i> Logout</a>
+    </nav>
+</div>
+
+<!-- ===== MESSAGES ===== -->
+{% if messages %}
+    {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} py-2 px-3 mb-0 me-3 small shadow-sm" style="position: fixed; top: 75px; right: 20px; z-index: 9999; border-radius: 12px;">
+            <i class="bi {% if message.tags == 'success' %}bi-check-circle-fill{% else %}bi-exclamation-triangle-fill{% endif %} me-2"></i>
+            {{ message }}
+        </div>
+    {% endfor %}
+{% endif %}
+
+<!-- ===== TOP NAVBAR ===== -->
+<div class="top-navbar">
+    <div class="d-flex align-items-center">
+        <i class="bi bi-shield-check fs-4 me-2" style="color: var(--welfare-gold);"></i>
+        <h5 class="fw-bold mb-0">Support Processing Desk</h5>
+    </div>
+    <div class="d-flex align-items-center">
+        <div class="text-end me-3">
+            <div class="fw-bold small" style="color: var(--welfare-dark-green);">{{ user.get_full_name|default:user.username }}</div>
+            <div class="text-muted" style="font-size: 0.7rem;">Welfare Officer</div>
+        </div>
+        <img src="https://ui-avatars.com/api/?name={{ user.username }}&background=004d26&color=ffcc00" class="rounded-circle" width="40" alt="avatar">
+    </div>
+</div>
+
+<!-- ===== CONTENT WRAPPER ===== -->
+<div class="content-wrapper">
+
+    <!-- ===== SUMMARY CARDS ===== -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="summary-card d-flex align-items-center">
+                <div class="card-icon"><i class="bi bi-people"></i></div>
+                <div class="ms-3">
+                    <h6 class="text-muted small mb-1">Total Members</h6>
+                    <h4 class="fw-bold mb-0">{{ total_members }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card d-flex align-items-center">
+                <div class="card-icon gold"><i class="bi bi-pen"></i></div>
+                <div class="ms-3">
+                    <h6 class="text-muted small mb-1">Pending My Signature</h6>
+                    <h4 class="fw-bold mb-0" style="color: var(--welfare-gold);">{{ pending_loans.count }}</h4>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="summary-card d-flex align-items-center">
+                <div class="card-icon maroon"><i class="bi bi-bank"></i></div>
+                <div class="ms-3">
+                    <h6 class="text-muted small mb-1">Total Savings Pool</h6>
+                    <h4 class="fw-bold mb-0" style="color: var(--welfare-maroon);">KES {{ total_savings_pool|floatformat:2 }}</h4>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== PENDING SUPPORT TABLE ===== -->
+    <div class="data-table-card">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2"></i>Applications Awaiting Approval</h5>
+            <button class="btn btn-sm btn-light border text-muted px-3 rounded-pill" style="border-color: #e9edf2 !important;">View All</button>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Details</th>
+                        <th>Purpose</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Approval Flow</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_loans %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <small class="text-muted">ID: #{{ loan.id|stringformat:"05d" }}</small>
+                        </td>
+                        <td><span class="badge bg-light text-dark fw-medium">{{ loan.purpose.name }}</span></td>
+                        <td><span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ loan.amount|floatformat:2 }}</span></td>
+                        <td>{{ loan.duration_months }} Months</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="progress-pill {% if loan.admin_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-badge"></i> Admin</span>
+                                <span class="progress-pill {% if loan.staff_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-check"></i> Staff</span>
+                                <span class="progress-pill {% if loan.treasurer_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-cash-coin"></i> Treasury</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_loan' loan.id %}" class="btn btn-success btn-sm">Approve</a>
+                            <a href="{% url 'reject_loan' loan.id %}" class="btn btn-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="6" class="text-center py-5">
+                            <div class="py-4">
+                                <i class="bi bi-inbox display-1" style="color: #cbd5e0;"></i>
+                                <p class="text-muted mt-3">Queue is clear. No pending applications found.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== PENDING HOLIDAY SUPPORT ===== -->
+    <div class="data-table-card">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="fas fa-gift me-2" style="color: var(--welfare-maroon);"></i>Pending Holiday Support</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member</th>
+                        <th>Amount (KES)</th>
+                        <th>Savings (50% Rule)</th>
+                        <th>Interest (5%)</th>
+                        <th class="text-center">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_xmas_loans %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name }}</div>
+                            <small class="text-muted">#{{ loan.member.membership_number }}</small>
+                        </td>
+                        <td class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.amount_requested|floatformat:2 }}</td>
+                        <td>
+                            <span class="badge bg-light text-dark">
+                                Savings: {{ loan.member.total_savings }}
+                            </span>
+                        </td>
+                        <td>{{ loan.interest_rate|default:5 }}%</td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_xmas_loan' loan.id %}" class="btn btn-success btn-sm rounded-pill px-3">
+                                <i class="fas fa-check"></i> Approve
+                            </a>
+                            <a href="{% url 'reject_xmas_loan' loan.id %}" class="btn btn-outline-danger btn-sm rounded-pill px-3">
+                                <i class="fas fa-times"></i> Reject
+                            </a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-4 text-muted small">No pending holiday support requests.</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== HOLIDAY REFUNDS ===== -->
+    <div class="data-table-card">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <h5 class="fw-bold mb-0"><i class="bi bi-clock-history me-2" style="color: var(--welfare-gold);"></i>Holiday Refunds</h5>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle mb-0">
+                <thead>
+                    <tr>
+                        <th class="ps-4">Member Details</th>
+                        <th>Amount</th>
+                        <th>Duration</th>
+                        <th>Approval Flow</th>
+                        <th class="text-center">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for loan in pending_xmas_refunds %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ loan.member.user.get_full_name|default:loan.member.user.username }}</div>
+                            <small class="text-muted">ID: #{{ loan.id|stringformat:"05d" }}</small>
+                        </td>
+                        <td><span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ loan.amount_requested|floatformat:2 }}</span></td>
+                        <td>{{ loan.duration_months }} Months</td>
+                        <td>
+                            <div class="d-flex gap-1">
+                                <span class="progress-pill {% if loan.admin_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-badge"></i> Admin</span>
+                                <span class="progress-pill {% if loan.staff_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-person-check"></i> Staff</span>
+                                <span class="progress-pill {% if loan.treasurer_approved %}pill-done{% else %}pill-wait{% endif %}"><i class="bi bi-cash-coin"></i> Treasury</span>
+                            </div>
+                        </td>
+                        <td class="text-center">
+                            <a href="{% url 'approve_xmas_refund' loan.id %}" class="btn btn-success btn-sm">Approve</a>
+                            <a href="{% url 'reject_xmas_refund' loan.id %}" class="btn btn-danger btn-sm">Reject</a>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5">
+                            <div class="py-4">
+                                <i class="bi bi-inbox display-1" style="color: #cbd5e0;"></i>
+                                <p class="text-muted mt-3">Queue is clear. No pending holiday refunds.</p>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ===== SHARE REFUND QUEUE ===== -->
+    <div class="data-table-card">
+        <div class="card-header-custom d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="fw-800 mb-0" style="color: var(--welfare-dark-green);"><i class="bi bi-safe2 me-2" style="color: var(--welfare-gold);"></i>Capital Share Refund Queue</h5>
+                <p class="text-muted small">Equity Withdrawals (90-day cycle)</p>
+            </div>
+            <span class="badge rounded-pill px-3 py-2" style="background: var(--welfare-dark-green); color: var(--welfare-gold);">{{ pending_shares_refunds.count }} REQUESTS</span>
+        </div>
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th>Member</th>
+                        <th>Net Payout</th>
+                        <th>Effective Date</th>
+                        <th>Status</th>
+                        <th class="text-end">Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for refund in pending_shares_refunds %}
+                    <tr>
+                        <td>
+                            <div class="fw-bold" style="color: var(--welfare-dark-green);">{{ refund.member.user.get_full_name }}</div>
+                            <div class="text-muted small">ID: {{ refund.member.membership_number }}</div>
+                        </td>
+                        <td class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ refund.net_amount|floatformat:2 }}</td>
+                        <td>
+                            <span class="{% if refund.effective_date <= today %}text-success fw-bold{% else %}text-warning{% endif %}" style="color: var(--welfare-dark-green) !important;">
+                                {{ refund.effective_date|date:"d M Y" }}
+                            </span>
+                        </td>
+                        <td>
+                            {% if refund.status == 'pending' %}
+                                <span class="badge bg-light text-dark border">Pending</span>
+                            {% elif refund.status == 'partially_approved' %}
+                                <span class="badge" style="background: rgba(255, 204, 0, 0.12); color: #856404; border: 1px solid rgba(255, 204, 0, 0.15);">In Review</span>
+                            {% elif refund.status == 'approved' %}
+                                <span class="badge" style="background: rgba(0, 77, 38, 0.08); color: var(--welfare-dark-green); border: 1px solid rgba(0, 77, 38, 0.06);">Ready</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end">
+                            <div class="btn-group shadow-sm rounded-3">
+                                {% if request.user.user_type == '2' and not refund.staff_approved %}
+                                    <a href="{% url 'approve_share_refund' refund.id %}" class="btn btn-success btn-sm px-3">Verify</a>
+                                {% elif request.user.user_type == '3' %}
+                                    {% if not refund.treasurer_approved and refund.staff_approved %}
+                                        <a href="{% url 'approve_share_refund' refund.id %}" class="btn btn-success btn-sm px-3">Approve</a>
+                                    {% elif refund.admin_approved and refund.status != 'disbursed' %}
+                                        <button class="btn btn-primary btn-sm px-3" data-bs-toggle="modal" data-bs-target="#disburseShare{{ refund.id }}">Pay</button>
+                                    {% endif %}
+                                {% elif request.user.user_type == '1' and refund.treasurer_approved and not refund.admin_approved %}
+                                    <a href="{% url 'approve_share_refund' refund.id %}" class="btn btn-dark btn-sm px-3">Sign-off</a>
+                                {% endif %}
+                                <a href="{% url 'reject_share_refund' refund.id %}" class="btn btn-outline-danger btn-sm px-2"><i class="bi bi-x-lg"></i></a>
+                            </div>
+
+                            <!-- ===== DISBURSEMENT MODAL ===== -->
+                            <div class="modal fade" id="disburseShare{{ refund.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog modal-dialog-centered">
+                                    <div class="modal-content border-0 shadow-lg rounded-4 text-start">
+                                        <div class="modal-header border-0 pb-0">
+                                            <h6 class="fw-800 mb-0" style="color: var(--welfare-dark-green);">Confirm Disbursement</h6>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                        </div>
+                                        <div class="modal-body py-4">
+                                            <p class="text-muted small mb-4">Payout for <strong style="color: var(--welfare-dark-green);">{{ refund.member.user.get_full_name }}</strong>. This reduces their capital shares ledger.</p>
+                                            <div class="p-3 rounded-3" style="background: rgba(0, 77, 38, 0.03); border: 1px solid rgba(255, 204, 0, 0.06);">
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted small">Gross Request</span>
+                                                    <span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ refund.amount_requested|floatformat:2 }}</span>
+                                                </div>
+                                                <div class="d-flex justify-content-between mb-2">
+                                                    <span class="text-muted small">Processing Fee</span>
+                                                    <span class="text-danger">- KES 1,000.00</span>
+                                                </div>
+                                                <hr style="border-color: rgba(255, 204, 0, 0.06);">
+                                                <div class="d-flex justify-content-between fw-800">
+                                                    <span style="color: var(--welfare-dark-green);">NET TOTAL</span>
+                                                    <span class="text-success" style="color: var(--welfare-dark-green) !important;">KES {{ refund.net_amount|floatformat:2 }}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer border-0 pt-0">
+                                            <button type="button" class="btn btn-light rounded-pill px-4" data-bs-dismiss="modal">Cancel</button>
+                                            <a href="{% url 'disburse_share_refund' refund.id %}" class="btn btn-primary rounded-pill px-4 shadow">Pay Now</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center py-5 text-muted small">No share refund requests.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // ===== SIDEBAR TOGGLE =====
+    const sidebar = document.getElementById('adminSidebar');
+    const toggle = document.getElementById('sidebarToggle');
+    
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            sidebar.classList.toggle('show');
+        });
+    }
+
+    // Close sidebar on outside click (mobile)
+    document.addEventListener('click', function(event) {
+        if (window.innerWidth <= 992) {
+            if (sidebar && !sidebar.contains(event.target) && toggle && !toggle.contains(event.target)) {
+                sidebar.classList.remove('show');
+            }
+        }
+    });
+
+    // Close sidebar on Escape key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape' && sidebar.classList.contains('show')) {
+            sidebar.classList.remove('show');
+        }
+    });
+
+    // ===== AUTO-DISMISS ALERTS =====
+    setTimeout(function() {
+        const alerts = document.querySelectorAll('.alert');
+        alerts.forEach(alert => {
+            alert.style.transition = 'opacity 0.5s ease';
+            alert.style.opacity = '0';
+            setTimeout(() => alert.remove(), 500);
+        });
+    }, 5000);
+</script>
+</body>
+</html>
