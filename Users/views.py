@@ -265,7 +265,7 @@ def edit_salary(request, user_id):
                         loan.save()
                     else:
                         # Pass to guarantor approval
-                        loan.status = 'pending_guarantors'
+                        loan.status = 'pending'
                         loan.save()
 
                 # 4. MARK HR NOTIFICATIONS AS READ
