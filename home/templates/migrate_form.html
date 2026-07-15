@@ -71,16 +71,16 @@
 
                                 <div class="col-md-12 mt-4">
                                     <div class="p-3 rounded-4 bg-light-subtle border">
-                                        <p class="small text-muted mb-3"><i class="fas fa-info-circle me-1"></i> System will estimate Interest and Insurance below:</p>
+                                        <p class="small text-muted mb-3"><i class="fas fa-info-circle me-1"></i> Welfare loans are interest‑free. Enter manual values only for legacy data.</p>
                                         <div class="row g-3">
                                             <div class="col-md-6">
-                                                <label class="form-label text-danger small fw-bold">INTEREST (KES)</label>
-                                                <input type="number" step="0.01" name="interest" id="interest" class="form-control border-2" placeholder="0.00">
-                                                <small class="text-muted" id="rate_info">Rate: 0%</small>
+                                                <label class="form-label text-danger small fw-bold">INTEREST (KES) – override</label>
+                                                <input type="number" step="0.01" name="interest" id="interest" class="form-control border-2" placeholder="0.00" value="0.00">
+                                                <small class="text-muted" id="rate_info">System rate: 0%</small>
                                             </div>
                                             <div class="col-md-6">
-                                                <label class="form-label text-danger small fw-bold">INSURANCE (KES)</label>
-                                                <input type="number" step="0.01" name="insurance" id="insurance" class="form-control border-2" placeholder="0.00">
+                                                <label class="form-label text-danger small fw-bold">INSURANCE (KES) – override</label>
+                                                <input type="number" step="0.01" name="insurance" id="insurance" class="form-control border-2" placeholder="0.00" value="0.00">
                                             </div>
                                         </div>
                                     </div>
@@ -106,7 +106,7 @@
 
                             <div class="audit-box p-3 rounded-4 mb-4 border bg-light">
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted small">Global Cap:</span>
+                                    <span class="text-muted small">Total Capital Shares:</span>
                                     <span class="fw-bold">KES {{ global_cap|floatformat:2 }}</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
@@ -119,12 +119,12 @@
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between mb-3">
-                                    <span class="text-muted small">New Limit After:</span>
+                                    <span class="text-muted small">New Limit After Migration:</span>
                                     <span class="fw-bold text-primary" id="new_limit_display">KES {{ available_limit|floatformat:2 }}</span>
                                 </div>
 
                                 <div class="d-flex justify-content-between mb-2">
-                                    <span class="text-muted small">Total Debt:</span>
+                                    <span class="text-muted small">Total Debt (principal + interest + insurance):</span>
                                     <span class="fw-bold text-dark" id="total_debt_display">KES 0.00</span>
                                 </div>
                                 <div class="d-flex justify-content-between mb-2">
@@ -133,7 +133,7 @@
                                 </div>
                                 <hr>
                                 <div class="d-flex justify-content-between align-items-center">
-                                    <span class="text-dark fw-bold">System Balance:</span>
+                                    <span class="text-dark fw-bold">Remaining Balance:</span>
                                     <span class="text-primary fs-3 fw-bold" id="balance_display">KES 0.00</span>
                                 </div>
                             </div>
@@ -176,40 +176,24 @@
             const months = parseInt($('#duration').val()) || 0;
             const paid = parseFloat($('#paid').val()) || 0;
 
-            // 1. Calculate Rates
-            let rate = 0;
-            let rateText = "0%";
-            if (months > 0) {
-                if (months <= 12) { rate = 0.091; rateText = "9.1%"; }
-                else if (months <= 24) { rate = 0.175; rateText = "17.5%"; }
-                else if (months <= 36) { rate = 0.259; rateText = "25.9%"; }
-                else { rate = 0.349; rateText = "34.9%"; }
-            }
-
-            const calculatedInterest = principal * rate;
-            const calculatedInsurance = months > 0 ? ((5.03 * months + 3.03) * principal) / 6000 : 0;
-
-            if (principal > 0) {
-                $('#interest').val(calculatedInterest.toFixed(2));
-                $('#insurance').val(calculatedInsurance.toFixed(2));
-                $('#rate_info').text("System Rate: " + rateText);
-            }
-
-            // 2. Totals & Balance
+            // Welfare loans have 0% interest and no insurance in the system.
+            // We keep the manual override fields but set default to 0.
             const interest = parseFloat($('#interest').val()) || 0;
             const insurance = parseFloat($('#insurance').val()) || 0;
             
+            $('#rate_info').text("System rate: 0% (manual override allowed)");
+
             const totalDebt = principal + interest + insurance;
             const balance = totalDebt - paid;
             const newLimit = availableLimit - principal;
 
-            // 3. Update Audit Display
+            // Update Audit Display
             $('#total_debt_display').text("KES " + totalDebt.toLocaleString(undefined, {minimumFractionDigits: 2}));
             $('#paid_display').text("- KES " + paid.toLocaleString(undefined, {minimumFractionDigits: 2}));
             $('#balance_display').text("KES " + balance.toLocaleString(undefined, {minimumFractionDigits: 2}));
             $('#new_limit_display').text("KES " + newLimit.toLocaleString(undefined, {minimumFractionDigits: 2}));
 
-            // 4. Validation UI
+            // Validation UI
             if (newLimit < 0) {
                 $('#new_limit_display').addClass('text-danger').removeClass('text-primary');
             } else {

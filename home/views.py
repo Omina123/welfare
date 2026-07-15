@@ -5420,234 +5420,6 @@ def to_decimal(value):
         return Decimal(str(value))
     except:
         return Decimal('0.00')
-
-from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib import messages
-from django.db import transaction
-from decimal import Decimal
-from datetime import datetime
-from dateutil.relativedelta import relativedelta
-from .models import Profile, Loan, LoanRepaymentSchedule, LoanRepayment, Transaction
-
-def to_decimal(value):
-    try:
-        return Decimal(str(value))
-    except (ValueError, TypeError):
-        return Decimal('0.00')
-
-@login_required
-@role_required(allowed_roles=['1', '2', '3'])  # Admin,
-
-
-
-def migrate_single_member_loan(request, member_id):
-    profile = get_object_or_404(Profile, id=member_id)
-
-    total_shares = (
-        CapitalShare.objects.filter(member=profile)
-        .aggregate(total=Sum('amount'))['total']
-        or Decimal('0.00')
-    )
-
-    account = getattr(profile, 'member_account', None)
-
-    global_cap = total_shares * Decimal('3.5')
-
-    other_exposure = (
-        Loan.objects.filter(member=profile)
-        .aggregate(total=Sum('amount'))['total']
-        or Decimal('0.00')
-    )
-
-    available_limit = global_cap - other_exposure
-
-    if request.method == "POST":
-
-        principal = Decimal(
-            request.POST.get('principal', '0') or '0'
-        )
-
-        interest = Decimal(
-            request.POST.get('interest', '0') or '0'
-        )
-
-        insurance = Decimal(
-            request.POST.get('insurance', '0') or '0'
-        )
-
-        paid_on_paper = Decimal(
-            request.POST.get('paid_on_paper', '0') or '0'
-        )
-
-        purpose = request.POST.get(
-            'purpose',
-            'normal'
-        )
-
-        duration = int(
-            request.POST.get(
-                'duration_months',
-                12
-            )
-        )
-
-        actual_start_date = request.POST.get(
-            'start_date'
-        )
-
-        try:
-
-            with transaction.atomic():
-
-                start_date = datetime.strptime(
-                    actual_start_date,
-                    "%Y-%m-%d"
-                ).date()
-
-                # Prevent exceeding loan limit
-                if principal > available_limit:
-
-                    messages.error(
-                        request,
-                        f"Loan amount exceeds available limit of KES {available_limit:,.2f}"
-                    )
-
-                    return redirect(request.path)
-
-                # Create migrated loan
-                loan = Loan.objects.create(
-                    member=profile,
-                    amount=principal,
-                    interest=interest,
-                    insurance=insurance,
-                    duration_months=duration,
-                    purpose=purpose,
-                    is_legacy=True,
-                    status='disbursed',
-                    is_disbursed=True,
-                    staff_approved=True,
-                    treasurer_approved=True,
-                    admin_approved=True,
-                    application_date=start_date,
-                    disbursed_at=start_date
-                )
-
-                # Calculate repayment schedule
-                total_payable = (
-                    principal +
-                    interest +
-                    insurance
-                )
-
-                monthly_amount = (
-                    total_payable / duration
-                ).quantize(
-                    Decimal('0.01')
-                )
-
-                schedules = []
-
-                for i in range(duration):
-
-                    due_date = (
-                        start_date +
-                        relativedelta(months=i + 1)
-                    )
-
-                    schedule = LoanRepaymentSchedule.objects.create(
-                        loan=loan,
-                        installment_number=i + 1,
-                        due_date=due_date,
-                        amount_due=monthly_amount,
-                        # amount_paid=Decimal('0.00'),
-                        is_paid=False
-                    )
-
-                    schedules.append(schedule)
-
-                # Record already-paid amounts
-                if paid_on_paper > 0:
-
-                    LoanRepayment.objects.create(
-                        loan=loan,
-                        member=profile,
-                        # amount_paid=paid_on_paper,
-                        reference=f"MIGRATION-PAY-{loan.id}",
-                        payment_date=datetime.now().date()
-                    )
-
-                    remaining_credit = paid_on_paper
-
-                    for schedule in schedules:
-
-                        if remaining_credit <= 0:
-                            break
-
-                        if remaining_credit >= schedule.amount_due:
-
-                            remaining_credit -= schedule.amount_due
-
-                            schedule.amount_paid = schedule.amount_due
-                            schedule.is_paid = True
-                            schedule.save()
-
-                        else:
-
-                            schedule.amount_paid = remaining_credit
-                            schedule.save()
-
-                            remaining_credit = Decimal('0.00')
-
-                # Update member account loan limit
-                if account:
-
-                    total_exposure = (
-                        Loan.objects.filter(member=profile)
-                        .aggregate(total=Sum('amount'))['total']
-                        or Decimal('0.00')
-                    )
-
-                    account.loan_limit = max(
-                        Decimal('0.00'),
-                        global_cap - total_exposure
-                    )
-
-                    account.save()
-
-                else:
-                    print(
-                        f"WARNING: No MemberAccount found for "
-                        f"{profile.user.get_full_name()}"
-                    )
-
-            messages.success(
-                request,
-                f"Migration successful for {profile.user.get_full_name()}."
-            )
-
-            return redirect('admin_dashboard')
-
-        except Exception as e:
-
-            messages.error(
-                request,
-                f"Migration Error: {str(e)}"
-            )
-
-            return redirect(request.path)
-
-    context = {
-        'member': profile,
-        'available_limit': available_limit,
-        'other_exposure': other_exposure,
-        'global_cap': global_cap,
-    }
-
-    return render(
-        request,
-        'migrate_form.html',
-        context
-    )
 from decimal import Decimal
 from datetime import datetime
 from django.db import transaction
@@ -5655,38 +5427,191 @@ from django.db.models import Sum
 from django.shortcuts import render, get_object_or_404, redirect
 from django.contrib import messages
 from dateutil.relativedelta import relativedelta
+from .models import (
+    Profile, Loan, LoanRepaymentSchedule, LoanRepayment,
+    XmasLoan, CapitalShare, MonthlyContribution
+)
 
-@transaction.atomic
-def migrate_xmas_loan(request, member_id):
+# ===================================================================
+# MIGRATION FOR REGULAR (WELFARE) LOANS
+# ===================================================================
+@login_required
+@role_required(allowed_roles=['1'])  # Admin only
+def migrate_single_member_loan(request, member_id):
     profile = get_object_or_404(Profile, id=member_id)
 
-    # 1. Eligibility Calculations (10% of Capital Shares)
-    total_shares = CapitalShare.objects.filter(member=profile).aggregate(
+    # 1️⃣ Total savings from CapitalShare (this is the global cap for welfare loans)
+    total_savings = CapitalShare.objects.filter(member=profile).aggregate(
+        Sum('amount')
+    )['amount__sum'] or Decimal('0.00')
+    global_cap = total_savings  # No multiplier for welfare
+
+    # 2️⃣ Other exposure (all existing loans except the one being migrated)
+    other_exposure = Loan.objects.filter(member=profile, status__in=['disbursed']).aggregate(
         Sum('amount')
     )['amount__sum'] or Decimal('0.00')
     
-    max_limit = total_shares * Decimal('0.10')
-    current_xmas_exposure = XmasLoan.objects.filter(member=profile).aggregate(
-        Sum('amount_requested')
-    )['amount_requested__sum'] or Decimal('0.00')
-    
+
+    available_limit = global_cap - other_exposure
+    if available_limit < 0:
+        available_limit = Decimal('0.00')
+
+    if request.method == "POST":
+        principal = Decimal(request.POST.get('principal', '0') or '0')
+        interest = Decimal(request.POST.get('interest', '0') or '0')
+        insurance = Decimal(request.POST.get('insurance', '0') or '0')
+        paid_on_paper = Decimal(request.POST.get('paid_on_paper', '0') or '0')
+        purpose = request.POST.get('purpose', 'normal')
+        duration = int(request.POST.get('duration_months', 12))
+        actual_start_date = request.POST.get('start_date')
+
+        try:
+            start_date = datetime.strptime(actual_start_date, "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid start date format.")
+            return redirect(request.path)
+
+        # ❌ Enforce loan limit
+        if principal > available_limit:
+            messages.error(
+                request,
+                f"Principal exceeds available limit of KES {available_limit:,.2f}"
+            )
+            return redirect(request.path)
+
+        with transaction.atomic():
+            # Create the loan as disbursed (legacy data)
+            loan = Loan.objects.create(
+                member=profile,
+                amount=principal,
+                interest=interest,
+                insurance=insurance,
+                duration_months=duration,
+                purpose=purpose,
+                is_legacy=True,               # Mark as migrated
+                status='disbursed',
+                is_disbursed=True,
+                staff_approved=True,
+                treasurer_approved=True,
+                admin_approved=True,
+                application_date=start_date,
+                disbursed_at=start_date
+            )
+
+            # 🔄 Generate repayment schedule (same as apply_loan logic)
+            total_payable = principal + interest + insurance
+            monthly_amount = (total_payable / duration).quantize(Decimal('0.01'))
+            schedules = []
+
+            for i in range(duration):
+                due_date = start_date + relativedelta(months=i + 1)
+                schedule = LoanRepaymentSchedule.objects.create(
+                    loan=loan,
+                    installment_number=i + 1,
+                    due_date=due_date,
+                    amount_due=monthly_amount,
+                    is_paid=False
+                )
+                schedules.append(schedule)
+
+            # 💰 Handle pre‑paid amounts (paid_on_paper)
+            if paid_on_paper > 0:
+                repayment = LoanRepayment.objects.create(
+                    loan=loan,
+                    member=profile,
+                    amount_paid=paid_on_paper,
+                    reference=f"MIGRATION-PAY-{loan.id}",
+                    payment_date=datetime.now().date()
+                )
+
+                remaining = paid_on_paper
+                for schedule in schedules:
+                    if remaining <= 0:
+                        break
+                    if remaining >= schedule.amount_due:
+                        remaining -= schedule.amount_due
+                        schedule.amount_paid = schedule.amount_due
+                        schedule.is_paid = True
+                    else:
+                        schedule.amount_paid = remaining
+                        remaining = Decimal('0.00')
+                    schedule.save()
+
+            # (Optional) Update member account loan limit if you have one
+
+        messages.success(
+            request,
+            f"Migration successful for {profile.user.get_full_name()}."
+        )
+        return redirect('admin_dashboard')
+
+    context = {
+        'member': profile,
+        'available_limit': available_limit,
+        'other_exposure': other_exposure,
+        'global_cap': global_cap,
+    }
+    return render(request, 'migrate_form.html', context)
+
+
+# ===================================================================
+# MIGRATION FOR XMAS (HOLIDAY) LOANS
+# ===================================================================
+@login_required
+@role_required(allowed_roles=['1'])  # Admin only
+def migrate_xmas_loan(request, member_id):
+    profile = get_object_or_404(Profile, id=member_id)
+
+    # Total shares from MonthlyContribution (cap = 3.5 × shares)
+    total_shares = MonthlyContribution.objects.filter(member=profile).aggregate(
+        Sum('amount')
+    )['amount__sum'] or Decimal('0.00')
+    max_limit = total_shares * Decimal('3.5')
+
+    # Existing Xmas exposure – exclude finalized loans
+    current_xmas_exposure = XmasLoan.objects.filter(member=profile).exclude(
+        status__in=['rejected', 'cleared']
+    ).aggregate(Sum('amount_requested'))['amount_requested__sum'] or Decimal('0.00')
+
     available_limit = max_limit - current_xmas_exposure
+    if available_limit < 0:
+        available_limit = Decimal('0.00')
 
     if request.method == "POST":
         principal = Decimal(request.POST.get('amount', '0') or '0')
         interest = Decimal(request.POST.get('interest', '0') or '0')
         paid_on_paper = Decimal(request.POST.get('paid_on_paper', '0') or '0')
+        duration = int(request.POST.get('duration', 12))
         actual_start_date = request.POST.get('start_date')
+
+        # Validate duration (12–24 months, as per apply_xmas_loan)
+        if duration < 12 or duration > 24:
+            messages.error(request, "Repayment period must be between 12 and 24 months.")
+            return redirect(request.path)
 
         try:
             start_date = datetime.strptime(actual_start_date, "%Y-%m-%d").date()
+        except (ValueError, TypeError):
+            messages.error(request, "Invalid start date format.")
+            return redirect(request.path)
 
-            # 2. CREATE THE XMAS LOAN
+        # Enforce loan limit
+        if principal > available_limit:
+            messages.error(
+                request,
+                f"Amount exceeds available limit of KES {available_limit:,.2f}"
+            )
+            return redirect(request.path)
+
+        with transaction.atomic():
+            # Create the Xmas loan as disbursed
             xmas_loan = XmasLoan.objects.create(
                 member=profile,
                 amount_requested=principal,
                 is_legacy=True,
                 manual_interest_amount=interest,
+                repayment_period=duration,
+                installments=duration,
                 status='disbursed',
                 is_disbursed=True,
                 staff_approved=True,
@@ -5696,77 +5621,62 @@ def migrate_xmas_loan(request, member_id):
                 approval_date=datetime.now()
             )
 
-            # 3. CREATE THE SCHEDULE (Using your specific field names)
+            # Generate repayment schedule for the selected duration
             total_payable = principal + interest
-            monthly_total = (total_payable / Decimal('3')).quantize(Decimal('0.01'))
-            monthly_principal = (principal / Decimal('3')).quantize(Decimal('0.01'))
-            monthly_interest = (interest / Decimal('3')).quantize(Decimal('0.01'))
-            
+            monthly_amount = (total_payable / duration).quantize(Decimal('0.01'))
+
             schedules = []
-            for i in range(3):
+            for i in range(duration):
                 due_date = start_date + relativedelta(months=i + 1)
-                s = LoanRepaymentSchedule.objects.create(
+                schedule = LoanRepaymentSchedule.objects.create(
                     xmas_loan=xmas_loan,
                     installment_number=i + 1,
                     due_date=due_date,
-                    principal_amount=monthly_principal,
-                    interest_amount=monthly_interest,
-                    amount_due=monthly_total,
+                    amount_due=monthly_amount,   # Only amount_due, no principal/interest split
                     is_paid=False,
                     is_xmas=True
                 )
-                schedules.append(s)
+                schedules.append(schedule)
 
-            # 4. APPLY HISTORICAL PAYMENTS (Defensive Logic)
+            # Handle pre‑paid amounts
             if paid_on_paper > 0:
-                repayment = LoanRepayment(
+                LoanRepayment.objects.create(
+                    xmas_loan=xmas_loan,
                     member=profile,
                     amount_paid=paid_on_paper,
                     reference=f"XMAS-MIG-{xmas_loan.id}",
-                    is_xmas=True
+                    is_xmas=True,
+                    payment_date=datetime.now().date()
                 )
-                
-                # Check if the 'xmas_loan' field exists before assigning
-                if hasattr(repayment, 'xmas_loan'):
-                    setattr(repayment, 'xmas_loan', xmas_loan)
-                
-                repayment.save()
 
-                # 5. UPDATE THE SCHEDULE (Knock-down Logic)
                 remaining = paid_on_paper
-                for s in schedules:
-                    if remaining <= 0: 
+                for schedule in schedules:
+                    if remaining <= 0:
                         break
-                    
-                    if remaining >= s.amount_due:
-                        # Full installment covered
-                        remaining -= s.amount_due
-                        s.is_paid = True
-                        s.date_paid = datetime.now()
+                    if remaining >= schedule.amount_due:
+                        remaining -= schedule.amount_due
+                        schedule.amount_paid = schedule.amount_due
+                        schedule.is_paid = True
                     else:
-                        # Partial coverage (since schedule lacks 'amount_paid' field, 
-                        # we keep is_paid=False but you could update principal/interest here)
-                        remaining = 0
-                    
-                    s.save()
+                        schedule.amount_paid = remaining
+                        remaining = Decimal('0.00')
+                    schedule.save()
 
-            messages.success(request, f"Migration successful for {profile.user.get_full_name()}.")
-            return redirect('admin_dashboard')
+        messages.success(
+            request,
+            f"Xmas migration successful for {profile.user.get_full_name()}."
+        )
+        return redirect('admin_dashboard')
 
-        except Exception as e:
-            messages.error(request, f"Migration Error: {str(e)}")
-            return redirect(request.path)
-
+    # Pass duration choices (12–24) to the template
     context = {
         'member': profile,
         'max_limit': max_limit,
         'current_exposure': current_xmas_exposure,
         'available_limit': available_limit,
+        'duration_choices': range(12, 25),  # 12 to 24 inclusive
     }
     return render(request, 'migrate_xmas_form.html', context)
-# views.py
-
-@login_required
 # views.py
 
 @login_required
@@ -6131,6 +6041,7 @@ from django.utils import timezone
 from decimal import Decimal
 from .models import Profile, BereavementAnnouncement, BereavementPayment
 
+
 @login_required
 def bereavement_admin_create(request):
     """Admin view to create bereavement announcements with start month/year control"""
@@ -6166,7 +6077,14 @@ def bereavement_admin_create(request):
             start_month = int(start_month)
             start_year = int(start_year)
 
-            # Validate numbers
+            # ============================================================
+            # NEW: Enforce exact welfare contribution amount (KES 100,000)
+            # ============================================================
+            FIXED_AMOUNT = Decimal('100000.00')
+            if total_amount != FIXED_AMOUNT:
+                messages.error(request, f"Total amount must be exactly KES {FIXED_AMOUNT:,.2f}.")
+                return redirect('bereavement_admin_create')
+
             if total_amount <= 0 or repayment_months <= 0:
                 messages.error(request, "Amount and months must be positive.")
                 return redirect('bereavement_admin_create')
@@ -6435,6 +6353,7 @@ def bereavement_collection_report(request):
     }
     return render(request, 'bereavement_collection_report.html', context)
 @login_required
+@login_required
 def retirement_admin_create(request):
     """Admin view to create retirement announcements with monthly recovery"""
     if request.user.user_type not in ['1', '2', '3'] and not request.user.is_superuser:
@@ -6464,6 +6383,14 @@ def retirement_admin_create(request):
             start_month = int(start_month)
             start_year = int(start_year)
             retirement_date = datetime.strptime(retirement_date, '%Y-%m-%d').date()
+
+            # ============================================================
+            # NEW: Enforce exact welfare contribution amount (KES 100,000)
+            # ============================================================
+            FIXED_AMOUNT = Decimal('100000.00')
+            if total_amount != FIXED_AMOUNT:
+                messages.error(request, f"Total amount must be exactly KES {FIXED_AMOUNT:,.2f}.")
+                return redirect('retirement_admin_create')
 
             if total_amount <= 0 or repayment_months <= 0:
                 messages.error(request, "Amount and months must be positive.")

@@ -4,134 +4,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Create Retirement Announcement | ELDOPOLY WELFARE</title>
+    <title>Retirement Announcement | ELDOPOLY WELFARE</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
-            --welfare-dark-green: #004d26;
-            --welfare-maroon: #800000;
-            --welfare-gold: #ffcc00;
-            --welfare-light-bg: #f5f0eb;
-            --welfare-white: #ffffff;
-            --welfare-shadow: 0 4px 15px rgba(0, 77, 38, 0.06);
-            --welfare-radius: 16px;
-            --transition: 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+            --primary: #004d26;
+            --primary-light: #1a5a3a;
+            --accent: #ffcc00;
+            --maroon: #800000;
+            --bg-light: #f5f0eb;
+            --white: #ffffff;
+            --shadow: 0 2px 12px rgba(0, 77, 38, 0.06);
+            --radius: 12px;
+            --transition: 0.25s ease;
         }
 
-        body { 
-            background: var(--welfare-light-bg); 
-            font-family: 'Inter', sans-serif; 
+        body {
+            background: var(--bg-light);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
         }
 
-        .main-content { padding: 30px; }
+        .main-content {
+            padding: 20px 25px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
+        /* ----- Card & Form ----- */
         .form-card {
-            background: var(--welfare-white);
-            border-radius: var(--welfare-radius);
-            box-shadow: var(--welfare-shadow);
-            padding: 2rem;
-            border: 1px solid rgba(255, 204, 0, 0.06);
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 1.5rem 1.8rem;
+            border: 1px solid rgba(255, 204, 0, 0.08);
         }
 
         .form-card .form-label {
             font-weight: 600;
-            color: var(--welfare-dark-green);
-            font-size: 0.85rem;
+            color: var(--primary);
+            font-size: 0.8rem;
+            margin-bottom: 0.2rem;
         }
 
-        .form-card .form-control, .form-card .form-select {
-            border: 2px solid #e9edf2;
-            border-radius: 10px;
-            padding: 10px 15px;
-            font-size: 0.95rem;
+        .form-card .form-control,
+        .form-card .form-select {
+            border: 1.5px solid #e9edf2;
+            border-radius: 8px;
+            padding: 0.45rem 0.75rem;
+            font-size: 0.9rem;
             transition: all var(--transition);
+            background: #fafcff;
         }
 
-        .form-card .form-control:focus, .form-card .form-select:focus {
-            border-color: var(--welfare-gold);
-            box-shadow: 0 0 0 0.2rem rgba(255, 204, 0, 0.15);
+        .form-card .form-control:focus,
+        .form-card .form-select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 0.15rem rgba(255, 204, 0, 0.15);
+        }
+
+        .form-card .form-control:disabled {
+            background: #eef2f6;
+            cursor: not-allowed;
         }
 
         .btn-create {
-            background: linear-gradient(135deg, var(--welfare-dark-green), #1a5a3a);
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
             color: white;
             border: none;
-            border-radius: 10px;
-            padding: 12px 30px;
+            border-radius: 8px;
+            padding: 0.55rem 1.8rem;
             font-weight: 700;
-            font-size: 1rem;
+            font-size: 0.9rem;
             transition: all var(--transition);
             width: 100%;
         }
 
         .btn-create:hover {
-            background: linear-gradient(135deg, #1a4a2a, var(--welfare-maroon));
-            color: var(--welfare-gold);
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0, 77, 38, 0.2);
-        }
-
-        .btn-danger-sm {
-            background: var(--welfare-maroon);
-            color: white;
-            border: none;
-            border-radius: 6px;
-            padding: 4px 12px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: all var(--transition);
-        }
-
-        .btn-danger-sm:hover {
-            background: #4a0000;
+            background: linear-gradient(135deg, #1a4a2a, var(--maroon));
+            color: var(--accent);
             transform: translateY(-1px);
+            box-shadow: 0 4px 16px rgba(0, 77, 38, 0.15);
         }
 
-        .announcement-card {
-            background: var(--welfare-white);
-            border-radius: var(--welfare-radius);
-            border-left: 5px solid var(--welfare-dark-green);
-            box-shadow: var(--welfare-shadow);
-            padding: 1.25rem 1.5rem;
-            margin-bottom: 1rem;
+        .btn-outline-secondary-sm {
+            border: 1.5px solid #ced4da;
+            border-radius: 8px;
+            padding: 0.3rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: #495057;
+            background: transparent;
             transition: all var(--transition);
         }
 
-        .announcement-card:hover {
-            transform: translateX(4px);
-            box-shadow: 0 8px 25px rgba(0, 77, 38, 0.08);
+        .btn-outline-secondary-sm:hover {
+            background: #e9ecef;
+            border-color: #adb5bd;
         }
 
-        .announcement-card .retiree-name {
-            font-weight: 700;
-            color: var(--welfare-dark-green);
-            font-size: 1.1rem;
-        }
-
-        .announcement-card .retirement-badge {
-            background: var(--welfare-dark-green);
+        .badge-amount {
+            background: var(--primary);
             color: white;
-            padding: 0.25rem 0.8rem;
+            padding: 0.2rem 0.8rem;
             border-radius: 50px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-
-        .announcement-card .amount-badge {
-            background: var(--welfare-dark-green);
-            color: white;
-            padding: 0.3rem 1rem;
-            border-radius: 50px;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             font-weight: 700;
         }
 
-        .announcement-card .info-badge {
+        .badge-maroon {
+            background: var(--maroon);
+            color: white;
+            padding: 0.2rem 0.8rem;
+            border-radius: 50px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .badge-light-info {
             background: #e9edf2;
             color: #333;
             padding: 0.2rem 0.8rem;
@@ -142,85 +135,119 @@
 
         .preview-box {
             background: #f8f5f0;
-            border-radius: 10px;
-            padding: 1rem;
-            border: 2px dashed var(--welfare-gold);
-            margin-top: 1rem;
-        }
-
-        .preview-box .preview-text {
-            font-size: 1rem;
-            color: var(--welfare-dark-green);
+            border-radius: 8px;
+            padding: 0.8rem 1rem;
+            border: 2px dashed var(--accent);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .preview-box .preview-text strong {
-            color: var(--welfare-maroon);
+            color: var(--maroon);
         }
 
         .help-text {
-            font-size: 0.8rem;
+            font-size: 0.7rem;
             color: #6c757d;
-            margin-top: 0.25rem;
+            margin-top: 0.15rem;
         }
 
-        .period-badge {
-            background: var(--welfare-dark-green);
-            color: white;
-            padding: 0.2rem 1rem;
+        /* Announcement Cards */
+        .announcement-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow);
+            padding: 1rem 1.2rem;
+            margin-bottom: 0.8rem;
+            transition: all var(--transition);
+        }
+
+        .announcement-card:hover {
+            transform: translateX(4px);
+            box-shadow: 0 4px 18px rgba(0, 77, 38, 0.08);
+        }
+
+        .announcement-card .retiree-name {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1rem;
+        }
+
+        .announcement-card .info-badge {
+            background: #e9edf2;
+            color: #333;
+            padding: 0.15rem 0.6rem;
             border-radius: 50px;
-            font-size: 0.75rem;
+            font-size: 0.65rem;
             font-weight: 600;
-            display: inline-block;
         }
 
+        .btn-danger-sm {
+            background: var(--maroon);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.15rem 0.6rem;
+            font-size: 0.65rem;
+            font-weight: 600;
+            transition: all var(--transition);
+        }
+
+        .btn-danger-sm:hover {
+            background: #4a0000;
+            transform: translateY(-1px);
+        }
+
+        /* Responsive */
         @media (max-width: 576px) {
             .main-content { padding: 15px; }
-            .form-card { padding: 1.25rem; }
+            .form-card { padding: 1.2rem; }
         }
     </style>
 </head>
 <body>
 
 <div class="main-content">
-    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4 gap-3">
+
+    <!-- ===== HEADER ===== -->
+    <div class="d-flex flex-wrap justify-content-between align-items-center mb-3 gap-2">
         <div>
-            <h2 class="fw-bold" style="color: var(--welfare-dark-green);">
-                <i class="fas fa-user-clock me-2" style="color: var(--welfare-gold);"></i>Retirement Announcements
-            </h2>
-            <p class="text-muted">Create announcements for members retiring – recovery from all members over a set period</p>
+            <h4 class="fw-bold mb-0" style="color: var(--primary);">
+                <i class="fas fa-user-clock me-2" style="color: var(--accent);"></i>Retirement Announcements
+            </h4>
+            <p class="text-muted small mb-0">Create and manage retirement announcements (fixed amount: KES 100,000)</p>
         </div>
-        <a href="{% url 'treasurer_dashboard' %}" class="btn btn-outline-secondary">
-            <i class="fas fa-arrow-left me-2"></i> Back to Dashboard
+        <a href="{% url 'admin_dashboard' %}" class="btn-outline-secondary-sm">
+            <i class="fas fa-arrow-left me-1"></i> Dashboard
         </a>
     </div>
 
     <!-- ===== MESSAGES ===== -->
     {% if messages %}
         {% for message in messages %}
-            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm mb-3" role="alert" style="border-radius: 12px;">
+            <div class="alert alert-{{ message.tags }} alert-dismissible fade show shadow-sm py-2 px-3 mb-2" role="alert" style="border-radius: 8px; font-size: 0.85rem;">
                 <i class="fas {% if message.tags == 'success' %}fa-check-circle{% else %}fa-exclamation-circle{% endif %} me-2"></i>
                 {{ message }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="btn-close py-1" data-bs-dismiss="alert"></button>
             </div>
         {% endfor %}
     {% endif %}
 
     <!-- ===== CREATE FORM ===== -->
-    <div class="form-card mb-4">
-        <h5 class="fw-bold mb-3" style="color: var(--welfare-dark-green);">
-            <i class="fas fa-plus-circle me-2" style="color: var(--welfare-gold);"></i>
-            Create New Retirement Announcement
-        </h5>
-        
+    <div class="form-card mb-3">
+        <h6 class="fw-bold mb-2" style="color: var(--primary);">
+            <i class="fas fa-plus-circle me-2" style="color: var(--accent);"></i> New Retirement Announcement
+        </h6>
+
         <form method="POST" id="retirementForm">
             {% csrf_token %}
-            
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">
-                        <i class="fas fa-user me-1" style="color: var(--welfare-gold);"></i>
-                        Retiring Member
-                    </label>
+
+            <div class="row g-2">
+
+                <!-- Retiring Member -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-user me-1" style="color: var(--accent);"></i> Member</label>
                     <select name="member_id" class="form-select" required>
                         <option value="">Select a member...</option>
                         {% for member in members %}
@@ -229,82 +256,68 @@
                     </select>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">
-                        <i class="fas fa-calendar-alt me-1" style="color: var(--welfare-gold);"></i>
-                        Retirement Date
-                    </label>
+                <!-- Retirement Date -->
+                <div class="col-md-6">
+                    <label class="form-label"><i class="fas fa-calendar-alt me-1" style="color: var(--accent);"></i> Retirement Date</label>
                     <input type="date" name="retirement_date" class="form-control" required>
                 </div>
 
-                <div class="col-md-6 mb-3">
-                    <label class="form-label">
-                        <i class="fas fa-coins me-1" style="color: var(--welfare-gold);"></i>
-                        Total Target Amount (KES)
-                    </label>
+                <!-- Total Amount (fixed) -->
+                <div class="col-md-3">
+                    <label class="form-label"><i class="fas fa-coins me-1" style="color: var(--accent);"></i> Total Amount (KES)</label>
                     <input type="number" name="total_target_amount" id="totalAmount" class="form-control" 
-                           placeholder="e.g. 100000" min="1" step="0.01" required>
-                    <div class="help-text">Total amount to be raised for the retiree.</div>
+                           value="100000" min="100000" max="100000" step="1" required disabled>
+                    <input type="hidden" name="total_target_amount" value="100000">
+                    <div class="help-text">Fixed welfare amount</div>
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">
-                        <i class="fas fa-calendar-alt me-1" style="color: var(--welfare-gold);"></i>
-                        Start Month / Year
-                    </label>
-                    <div class="row g-2">
-                        <div class="col-6">
-                            <select name="start_month" class="form-select" id="startMonth" required>
-                                {% for m in month_choices %}
-                                    <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>
-                                        {{ m }}
-                                    </option>
-                                {% endfor %}
-                            </select>
-                        </div>
-                        <div class="col-6">
-                            <input type="number" name="start_year" id="startYear" class="form-control" 
-                                   value="{{ current_year }}" min="2000" required>
-                        </div>
+                <!-- Start Month/Year -->
+                <div class="col-md-3">
+                    <label class="form-label"><i class="fas fa-calendar-alt me-1" style="color: var(--accent);"></i> Start Month / Year</label>
+                    <div class="d-flex gap-1">
+                        <select name="start_month" class="form-select" id="startMonth" style="width: 45%;" required>
+                            {% for m in month_choices %}
+                                <option value="{{ m }}" {% if m == current_month %}selected{% endif %}>{{ m }}</option>
+                            {% endfor %}
+                        </select>
+                        <input type="number" name="start_year" id="startYear" class="form-control" 
+                               value="{{ current_year }}" min="2000" style="width: 55%;" required>
                     </div>
-                    <div class="help-text">First month of repayment.</div>
+                    <div class="help-text">First month of repayment</div>
                 </div>
 
-                <div class="col-md-4 mb-3">
-                    <label class="form-label">
-                        <i class="fas fa-clock me-1" style="color: var(--welfare-gold);"></i>
-                        Repayment Period (Months)
-                    </label>
+                <!-- Repayment Period -->
+                <div class="col-md-3">
+                    <label class="form-label"><i class="fas fa-clock me-1" style="color: var(--accent);"></i> Period (months)</label>
                     <input type="number" name="repayment_months" id="repaymentMonths" class="form-control" 
                            placeholder="e.g. 6" min="1" required>
-                    <div class="help-text">Number of monthly instalments.</div>
+                    <div class="help-text">Number of monthly instalments</div>
                 </div>
 
-                <div class="col-md-4 mb-3 d-flex align-items-end">
-                    <div class="w-100" id="periodPreview" style="background: #f8f5f0; border-radius: 10px; padding: 10px 15px; border: 1px solid #e9edf2;">
-                        <span class="text-muted small">Repayment period will be shown here.</span>
+                <!-- Period Preview (visual) -->
+                <div class="col-md-3 d-flex align-items-end">
+                    <div id="periodPreview" class="w-100" style="background: #f8f5f0; border-radius: 8px; padding: 0.4rem 0.8rem; border: 1px solid #e9edf2; font-size: 0.8rem;">
+                        <span class="text-muted">Repayment period</span>
                     </div>
                 </div>
-            </div>
+
+            </div><!-- /row -->
 
             <!-- Live Preview -->
-            <div class="preview-box" id="previewBox" data-active-count="{{ active_members_count }}">
-                <div class="d-flex align-items-center gap-2 mb-2">
-                    <i class="fas fa-eye" style="color: var(--welfare-gold);"></i>
-                    <span class="fw-bold small" style="color: var(--welfare-dark-green);">Preview & Monthly Calculation</span>
+            <div class="preview-box mt-2" id="previewBox" data-active-count="{{ active_members_count }}">
+                <div class="d-flex align-items-center gap-2">
+                    <i class="fas fa-eye" style="color: var(--accent);"></i>
+                    <span class="fw-bold small" style="color: var(--primary);">Preview</span>
+                    <span class="text-muted small" id="previewText">Fill in all fields to see details.</span>
                 </div>
-                <div class="preview-text" id="previewText">
-                    <span class="text-muted">Fill in all fields to see the preview and estimated monthly payment per member.</span>
-                </div>
-                <div id="monthlyCalc" class="mt-2" style="font-weight: 600; color: var(--welfare-dark-green); display: none;">
+                <div id="monthlyCalc" class="mt-1" style="font-weight: 600; color: var(--primary); display: none;">
                     <i class="fas fa-calculator me-1"></i>
-                    Each member will pay approximately 
-                    <span id="monthlyAmountDisplay" style="color: var(--welfare-maroon);">KES 0.00</span> 
-                    per month for <span id="monthsDisplay">0</span> month(s).
+                    Each member pays <span id="monthlyAmountDisplay" style="color: var(--maroon);">KES 0.00</span> 
+                    monthly for <span id="monthsDisplay">0</span> month(s).
                 </div>
             </div>
 
-            <button type="submit" class="btn-create mt-3">
+            <button type="submit" class="btn-create mt-2">
                 <i class="fas fa-paper-plane me-2"></i> Create Announcement
             </button>
         </form>
@@ -312,48 +325,42 @@
 
     <!-- ===== ACTIVE ANNOUNCEMENTS ===== -->
     {% if announcements %}
-        <h5 class="fw-bold mb-3" style="color: var(--welfare-dark-green);">
-            <i class="fas fa-bullhorn me-2"></i>
-            Active Retirement Announcements ({{ announcements|length }})
-        </h5>
+        <h6 class="fw-bold mb-2" style="color: var(--primary);">
+            <i class="fas fa-bullhorn me-2"></i> Active Announcements ({{ announcements|length }})
+        </h6>
 
         {% for announcement in announcements %}
         <div class="announcement-card">
             <div class="d-flex flex-wrap justify-content-between align-items-start gap-2">
-                <div class="flex-grow-1">
-                    <div class="d-flex flex-wrap align-items-center gap-2 mb-2">
+                <div>
+                    <div class="d-flex flex-wrap align-items-center gap-2 mb-1">
                         <span class="retiree-name">{{ announcement.member.user.get_full_name|default:announcement.member.user.username }}</span>
-                        <span class="retirement-badge">Retiring</span>
+                        <span class="badge-amount">Retiring</span>
                         <span class="text-muted small">
                             <i class="fas fa-clock me-1"></i>{{ announcement.created_at|timesince }} ago
                         </span>
                     </div>
-                    
-                    <p class="mb-2" style="font-size: 1rem;">
-                        <i class="fas fa-calendar-check me-2" style="color: var(--welfare-dark-green);"></i>
-                        <span style="font-weight: 600;">Retirement Date:</span> {{ announcement.retirement_date|date:"d M, Y" }}
+                    <p class="mb-1 small">
+                        <i class="fas fa-calendar-check me-1" style="color: var(--primary);"></i>
+                        <strong>Retirement Date:</strong> {{ announcement.retirement_date|date:"d M, Y" }}
                     </p>
-                    
-                    <div class="d-flex flex-wrap align-items-center gap-3 mt-1">
-                        <span class="amount-badge">
+                    <div class="d-flex flex-wrap align-items-center gap-2">
+                        <span class="badge-amount">
                             <i class="fas fa-hand-holding-heart me-1"></i>
                             Target: KES {{ announcement.total_target_amount|floatformat:2 }}
                         </span>
-                        <span class="info-badge">
-                            <i class="fas fa-users me-1"></i>
-                            {{ announcement.active_members_count }} members
+                        <span class="badge-light-info">
+                            <i class="fas fa-users me-1"></i>{{ announcement.active_members_count }}
                         </span>
-                        <span class="info-badge">
-                            <i class="fas fa-clock me-1"></i>
-                            {{ announcement.repayment_months }} months
+                        <span class="badge-light-info">
+                            <i class="fas fa-clock me-1"></i>{{ announcement.repayment_months }} mo
                         </span>
-                        <span class="amount-badge" style="background: var(--welfare-maroon);">
-                            <i class="fas fa-coins me-1"></i>
-                            Monthly: KES {{ announcement.monthly_amount_per_member|floatformat:2 }}
+                        <span class="badge-maroon">
+                            <i class="fas fa-coins me-1"></i>KES {{ announcement.monthly_amount_per_member|floatformat:2 }}/mo
                         </span>
                         {% with end_month=announcement.start_month|add:announcement.repayment_months|add:-1 %}
                             {% with end_year=announcement.start_year %}
-                                <span class="period-badge">
+                                <span class="badge-light-info">
                                     <i class="fas fa-calendar-alt me-1"></i>
                                     {{ announcement.start_month }}/{{ announcement.start_year }} – 
                                     {% if end_month > 12 %}{{ end_month|add:"-12" }}/{{ end_year|add:"1" }}{% else %}{{ end_month }}/{{ end_year }}{% endif %}
@@ -365,12 +372,11 @@
                         </span>
                     </div>
                 </div>
-                
-                <div class="d-flex gap-2">
+                <div>
                     <form method="POST" action="{% url 'retirement_admin_delete' announcement.id %}" style="display: inline;">
                         {% csrf_token %}
                         <button type="submit" class="btn-danger-sm" 
-                                onclick="return confirm('Clear this announcement? It will no longer be visible to members.')">
+                                onclick="return confirm('Clear this announcement?')">
                             <i class="fas fa-times me-1"></i> Clear
                         </button>
                     </form>
@@ -379,13 +385,13 @@
         </div>
         {% endfor %}
     {% else %}
-        <div class="text-center py-5 bg-white rounded-3 shadow-sm">
-            <i class="fas fa-inbox fa-3x text-muted mb-3" style="opacity: 0.3;"></i>
-            <h6 class="text-muted">No active retirement announcements</h6>
-            <p class="text-muted small">Create one using the form above.</p>
+        <div class="text-center py-4 bg-white rounded-3 shadow-sm">
+            <i class="fas fa-inbox fa-2x text-muted mb-2" style="opacity: 0.3;"></i>
+            <p class="text-muted small mb-0">No active retirement announcements</p>
         </div>
     {% endif %}
-</div>
+
+</div><!-- /main-content -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 <script>
@@ -406,56 +412,41 @@
         const activeCount = parseInt(previewBox.dataset.activeCount) || 0;
 
         function updatePreview() {
-            const memberName = memberSelect.options[memberSelect.selectedIndex]?.text?.split(' (')[0] || '[Member Name]';
-            const retirementDate = retirementDateInput.value ? new Date(retirementDateInput.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Retirement Date]';
-            const totalAmount = parseFloat(totalAmountInput.value);
+            const memberName = memberSelect.options[memberSelect.selectedIndex]?.text?.split(' (')[0] || '[Member]';
+            const retirementDate = retirementDateInput.value ? new Date(retirementDateInput.value).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : '[Date]';
+            const totalAmount = 100000; // fixed
             const months = parseInt(repaymentMonthsInput.value);
             const startMonth = parseInt(startMonthSelect.value);
             const startYear = parseInt(startYearInput.value);
 
-            // Update repayment period preview
+            // Period preview
             if (!isNaN(startMonth) && !isNaN(startYear) && !isNaN(months) && months > 0) {
                 let endMonth = startMonth + months - 1;
                 let endYear = startYear;
-                while (endMonth > 12) {
-                    endMonth -= 12;
-                    endYear += 1;
-                }
+                while (endMonth > 12) { endMonth -= 12; endYear += 1; }
                 periodPreview.innerHTML = `
-                    <span class="text-muted small">📅 Repayment: 
-                        <strong>${startMonth}/${startYear}</strong> – 
-                        <strong>${endMonth}/${endYear}</strong> 
-                        (${months} months)
-                    </span>
+                    <span class="text-muted small">📅 ${startMonth}/${startYear} – ${endMonth}/${endYear} (${months} mo)</span>
                 `;
             } else {
-                periodPreview.innerHTML = `<span class="text-muted small">Fill in start and months to see period.</span>`;
+                periodPreview.innerHTML = `<span class="text-muted small">Period</span>`;
             }
 
-            // Basic preview
-            if (!memberSelect.value || !retirementDateInput.value || isNaN(totalAmount) || isNaN(months) || months <= 0) {
-                previewText.innerHTML = '<span class="text-muted">Fill in all fields to see the preview...</span>';
+            // Preview
+            if (!memberSelect.value || !retirementDateInput.value || isNaN(months) || months <= 0) {
+                previewText.textContent = 'Fill in all fields to see details.';
                 monthlyCalcDiv.style.display = 'none';
                 return;
             }
 
             previewText.innerHTML = `
-                <i class="fas fa-quote-left me-2" style="color: var(--welfare-gold);"></i>
-                <strong>${memberName}</strong> is retiring on 
-                <strong>${retirementDate}</strong>.
-                <br>
-                <span class="amount-badge mt-1" style="display: inline-block; font-size: 0.85rem;">
-                    <i class="fas fa-hand-holding-heart me-1"></i>
-                    Total Target: KES ${totalAmount.toFixed(2)}
-                </span>
-                <span class="info-badge ms-2" style="display: inline-block;">
-                    <i class="fas fa-clock me-1"></i>${months} months
-                </span>
+                <i class="fas fa-quote-left me-1" style="color: var(--accent);"></i>
+                <strong>${memberName}</strong> retiring on <strong>${retirementDate}</strong>.
+                <span class="badge-amount ms-1">KES 100,000</span>
             `;
 
-            // Calculate monthly amount
-            if (activeCount > 0 && !isNaN(totalAmount) && !isNaN(months) && months > 0) {
-                const monthly = (totalAmount / activeCount / months);
+            // Monthly calculation
+            if (activeCount > 0 && !isNaN(months) && months > 0) {
+                const monthly = 100000 / activeCount / months;
                 monthlyAmountDisplay.textContent = `KES ${monthly.toFixed(2)}`;
                 monthsDisplay.textContent = months;
                 monthlyCalcDiv.style.display = 'block';
@@ -464,21 +455,19 @@
             }
         }
 
-        // Attach event listeners
-        memberSelect.addEventListener('change', updatePreview);
-        retirementDateInput.addEventListener('change', updatePreview);
-        totalAmountInput.addEventListener('input', updatePreview);
-        repaymentMonthsInput.addEventListener('input', updatePreview);
-        startMonthSelect.addEventListener('change', updatePreview);
-        startYearInput.addEventListener('input', updatePreview);
+        // Events
+        [memberSelect, retirementDateInput, repaymentMonthsInput, startMonthSelect, startYearInput].forEach(el => {
+            el.addEventListener('change', updatePreview);
+            el.addEventListener('input', updatePreview);
+        });
 
-        // Initial call
+        // Initial
         updatePreview();
 
         // Auto-dismiss alerts
-        setTimeout(function() {
+        setTimeout(() => {
             document.querySelectorAll('.alert').forEach(alert => {
-                alert.style.transition = 'opacity 0.5s ease';
+                alert.style.transition = 'opacity 0.5s';
                 alert.style.opacity = '0';
                 setTimeout(() => alert.remove(), 500);
             });
@@ -486,15 +475,9 @@
 
         // Form validation
         form.addEventListener('submit', function(e) {
-            const total = parseFloat(totalAmountInput.value);
             const months = parseInt(repaymentMonthsInput.value);
             const startMonth = parseInt(startMonthSelect.value);
             const startYear = parseInt(startYearInput.value);
-            if (isNaN(total) || total <= 0) {
-                e.preventDefault();
-                alert('Please enter a valid total target amount (greater than 0).');
-                return;
-            }
             if (isNaN(months) || months <= 0) {
                 e.preventDefault();
                 alert('Please enter a valid repayment period (at least 1 month).');
@@ -502,12 +485,12 @@
             }
             if (isNaN(startMonth) || startMonth < 1 || startMonth > 12) {
                 e.preventDefault();
-                alert('Please select a valid start month (1-12).');
+                alert('Invalid start month (1-12).');
                 return;
             }
             if (isNaN(startYear) || startYear < 2000) {
                 e.preventDefault();
-                alert('Please enter a valid start year (2000 or later).');
+                alert('Invalid start year.');
                 return;
             }
         });
