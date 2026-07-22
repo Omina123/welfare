@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
+        /* ... (your existing styles remain unchanged) ... */
         :root {
             --welfare-dark-green: #004d26;
             --welfare-maroon: #800000;
@@ -483,7 +484,7 @@
 
                                     <!-- Amount -->
                                     <div class="col-md-6 mb-4">
-                                        <label class="form-label"><i class="bi bi-cash-stack me-2" style="color: var(--welfare-gold);"></i>Requested Amount</label>
+                                        <label class="form-label" id="amountLabel"><i class="bi bi-cash-stack me-2" style="color: var(--welfare-gold);"></i>Requested Amount</label>
                                         <input type="range" class="custom-slider" id="amount_range" min="0" max="{{ loan_limit }}" step="500" value="0">
                                         <input type="number" name="amount" step="0.01" class="form-control" required id="id_amount" max="{{ loan_limit }}" placeholder="Enter amount">
                                     </div>
@@ -521,6 +522,16 @@
                                     <h6 class="fw-bold mb-3 small text-uppercase" style="color: var(--welfare-dark-green);">
                                         <i class="bi bi-calculator me-2" style="color: var(--welfare-gold);"></i>Financial Summary
                                     </h6>
+
+                                    <!-- New line: show existing balance if top-up is enabled -->
+                                    <div id="existingBalanceRow" style="display:none;" class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Existing Balance</span>
+                                        <span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ current_balance|floatformat:2 }}</span>
+                                    </div>
+                                    <div id="topUpAmountRow" style="display:none;" class="d-flex justify-content-between mb-2 small">
+                                        <span class="text-muted">Top-Up Amount</span>
+                                        <span id="topUpAmountDisplay" class="fw-bold" style="color: var(--welfare-dark-green);">KES 0.00</span>
+                                    </div>
 
                                     <div class="d-flex justify-content-between mb-2 small">
                                         <span class="text-muted">Interest Rate</span>
@@ -580,6 +591,7 @@
 
         // ===== 2. DATA FROM BACKEND =====
         const loanLimit = parseFloat("{{ loan_limit|default:'0' }}");
+        const currentBalance = parseFloat("{{ current_balance|default:'0' }}");
         const isContract = "{{ profile.employment_status }}" === "CONTRACT";
 
         let contractMaxMonths = 24;
@@ -597,6 +609,11 @@
         const $monRange = $('#month_range');
         const $monInput = $('#id_duration_months');
         const $durationWarning = $('#duration-warning');
+        const $topUpCheck = $('#topUpCheck');
+        const $existingBalanceRow = $('#existingBalanceRow');
+        const $topUpAmountRow = $('#topUpAmountRow');
+        const $topUpAmountDisplay = $('#topUpAmountDisplay');
+        const $amountLabel = $('#amountLabel');
 
         // ===== 3. POPULATE DURATION (Max 24 Months) =====
         function rebuildDurationOptions() {
@@ -648,23 +665,44 @@
             updateCalculations();
         });
 
-        // ===== 5. CALCULATIONS (No Interest, No Insurance) =====
+        // ===== 5. TOP-UP TOGGLE =====
+        $topUpCheck.on('change', function() {
+            const isChecked = $(this).is(':checked');
+            if (isChecked) {
+                $existingBalanceRow.show();
+                $topUpAmountRow.show();
+                $amountLabel.html('<i class="bi bi-cash-stack me-2" style="color: var(--welfare-gold);"></i>Additional Amount');
+            } else {
+                $existingBalanceRow.hide();
+                $topUpAmountRow.hide();
+                $amountLabel.html('<i class="bi bi-cash-stack me-2" style="color: var(--welfare-gold);"></i>Requested Amount');
+            }
+            updateCalculations();
+        });
+
+        // ===== 6. CALCULATIONS (No Interest, No Insurance) =====
         function updateCalculations() {
-            const principal = parseFloat($amtInput.val()) || 0;
+            const enteredAmount = parseFloat($amtInput.val()) || 0;
             const months = parseInt($monInput.val()) || 0;
+            const isTopUp = $topUpCheck.is(':checked') && {{ active_loan|yesno:"true,false" }};
 
-            // WELFARE: No interest, no insurance
-            const totalDebt = principal;
-            const monthlyInstallment = months > 0 ? principal / months : 0;
+            // Total principal
+            let totalPrincipal = enteredAmount;
+            if (isTopUp) {
+                totalPrincipal = currentBalance + enteredAmount;
+                // Show the top-up amount separately
+                $topUpAmountDisplay.text('KES ' + enteredAmount.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            }
 
-            $('#p-rate-badge').text("0%");
-            $('#p-interest').text("KES 0.00");
-            $('#p-insurance').text("KES 0.00");
-            $('#p-monthly').text("KES " + monthlyInstallment.toLocaleString(undefined, {minimumFractionDigits: 2}));
-            $('#p-total').text("KES " + totalDebt.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            // Monthly installment
+            const monthlyInstallment = months > 0 ? totalPrincipal / months : 0;
+
+            // Update summary
+            $('#p-monthly').text('KES ' + monthlyInstallment.toLocaleString(undefined, {minimumFractionDigits: 2}));
+            $('#p-total').text('KES ' + totalPrincipal.toLocaleString(undefined, {minimumFractionDigits: 2}));
         }
 
-        // ===== 6. TOAST NOTIFICATIONS =====
+        // ===== 7. TOAST NOTIFICATIONS =====
         function showSMSPopup(message, type = "success") {
             const container = document.getElementById("toast-container");
             if (!container) return;
@@ -709,7 +747,7 @@
             }, 15000);
         }
 
-        // ===== 7. DJANGO MESSAGES AS TOASTS =====
+        // ===== 8. DJANGO MESSAGES AS TOASTS =====
         {% if messages %}
             {% for message in messages %}
                 showSMSPopup("{{ message|escapejs }}", "{% if message.tags == 'error' %}danger{% else %}success{% endif %}");

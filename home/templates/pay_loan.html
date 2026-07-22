@@ -146,6 +146,28 @@
         }
         .form-control-lg { font-size: 1rem; }
 
+        /* Disabled manual section styling */
+        .disabled-section {
+            opacity: 0.6;
+            pointer-events: none; /* Prevents any interaction */
+            user-select: none;
+        }
+        .disabled-section .btn {
+            pointer-events: none;
+        }
+        .disabled-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: #6c757d;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.8rem;
+            border-radius: 20px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
         /* ===== RESPONSIVE ===== */
         @media (max-width: 992px) {
             .mobile-nav { display: flex; }
@@ -353,7 +375,7 @@
                 <div class="card payment-card mb-4">
                     <div class="row g-0">
                         <!-- M-Pesa STK Gateway -->
-                        <div class="col-md-{% if request.user.user_type == '3' %}6{% else %}12{% endif %} p-4 p-md-5 bg-white">
+                        <div class="col-md-6 p-4 p-md-5 bg-white">
                             <div class="d-flex align-items-center mb-4">
                                 <img src="https://upload.wikimedia.org/wikipedia/commons/1/15/M-PESA_LOGO-01.svg" height="30" class="me-3" alt="M-pesa">
                                 <h5 class="fw-bold mb-0">STK Push Gateway</h5>
@@ -361,6 +383,8 @@
                             <form id="mpesaForm-{{ item.loan.id }}" action="{% url 'initiate_stk_push' %}" method="POST">
                                 {% csrf_token %}
                                 <input type="hidden" name="loan_id" value="{{ item.loan.id }}">
+                                <input type="hidden" name="payment_type" value="loan">
+                                <input type="hidden" name="member_id" value="{{ request.user.profile.id }}">
                                 <div class="mb-4">
                                     <label class="form-label small fw-bold">Amount to Pay (KES)</label>
                                     <input type="number" name="amount" class="form-control form-control-lg bg-light border-0" 
@@ -372,9 +396,10 @@
                             </form>
                         </div>
 
-                        <!-- Staff Manual Recording -->
+                        <!-- Staff Manual Recording – DISABLED (but visible) -->
                         {% if request.user.user_type == '3' %}
-                        <div class="col-md-6 p-4 p-md-5 bg-light border-top border-md-top-0">
+                        <div class="col-md-6 p-4 p-md-5 bg-light border-top border-md-top-0 position-relative disabled-section">
+                            <span class="disabled-badge"><i class="fas fa-ban me-1"></i>DISABLED</span>
                             <h5 class="fw-bold mb-3">Manual Record Office</h5>
                             <p class="small text-muted mb-4">Log physical cash payments or bank remittances directly to Support #{{ item.loan.id }}.</p>
                             <form id="manualForm-{{ item.loan.id }}" method="post">
@@ -386,10 +411,13 @@
                                         {{ field }}
                                     </div>
                                 {% endfor %}
-                                <button type="button" onclick="confirmManual('{{ item.loan.id }}')" class="btn btn-outline-dark w-100 mt-2">
-                                    Record Payment
+                                <button type="button" class="btn btn-outline-dark w-100 mt-2" disabled>
+                                    <i class="fas fa-lock me-2"></i> Record Payment (Disabled)
                                 </button>
                             </form>
+                            <div class="text-center mt-3">
+                                <small class="text-muted"><i class="fas fa-info-circle"></i> This feature is currently unavailable.</small>
+                            </div>
                         </div>
                         {% endif %}
                     </div>
@@ -466,23 +494,6 @@
                     confirmButtonColor: '#004d26'
                 });
                 form.submit();
-            }
-        });
-    }
-
-    // ===== CONFIRM MANUAL PAYMENT =====
-    function confirmManual(loanId) {
-        Swal.fire({
-            title: 'Payment Confirmation',
-            text: `Double-check reference codes and figures for Support #${loanId} before storing.`,
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#004d26',
-            cancelButtonColor: '#800000',
-            confirmButtonText: 'Yes, Record it'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                document.getElementById(`manualForm-${loanId}`).submit();
             }
         });
     }

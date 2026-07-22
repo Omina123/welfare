@@ -377,12 +377,12 @@
                 <div class="limit-badge">
                     <small><i class="fas fa-info-circle me-1" style="color: var(--welfare-gold);"></i> Maximum Eligible Amount</small>
                     <h2>KES {{ max_limit|floatformat:2 }}</h2>
-                    <small class="text-muted">(Capped at 3.5x of total share capital)</small>
+                    <small class="text-muted">(Capped at 1 of total share xmass contribution)</small>
 
                     {% if total_limit %}
                         <div class="mt-2 pt-2 border-top" style="border-color: rgba(255, 204, 0, 0.1) !important;">
                             <div class="d-flex justify-content-between px-2 small">
-                                <span class="text-muted">Total Share Cap:</span>
+                                <span class="text-muted">Total xmass Contribution:</span>
                                 <span class="fw-bold" style="color: var(--welfare-dark-green);">KES {{ total_limit|floatformat:2 }}</span>
                             </div>
                         </div>
@@ -429,23 +429,23 @@
                         <label class="form-label"><i class="fas fa-calendar-alt"></i> Repayment Period</label>
                         <select name="duration" id="duration" class="form-select" onchange="calculateLoan()" required>
                             <option value="">Select duration...</option>
+                            <option value="1">1 Month</option>
+                            <option value="2">2 Months</option>
+                            <option value="3">3 Months</option>
+                            <option value="4">4 Months</option>
+                            <option value="5">5 Months</option>
+                            <option value="6">6 Months</option>
+                            <option value="7">7 Months</option>
+                            <option value="8">8 Months</option>
+                            <option value="9">9 Months</option>
+                            <option value="10">10 Months</option>
+                            <option value="11">11 Months</option>
                             <option value="12">12 Months</option>
-                            <option value="13">13 Months</option>
-                            <option value="14">14 Months</option>
-                            <option value="15">15 Months</option>
-                            <option value="16">16 Months</option>
-                            <option value="17">17 Months</option>
-                            <option value="18">18 Months</option>
-                            <option value="19">19 Months</option>
-                            <option value="20">20 Months</option>
-                            <option value="21">21 Months</option>
-                            <option value="22">22 Months</option>
-                            <option value="23">23 Months</option>
-                            <option value="24">24 Months</option>
+                            
                         </select>
                         <div class="form-text small mt-1">
                             <i class="fas fa-info-circle me-1" style="color: var(--welfare-gold);"></i>
-                            Choose a repayment period between <strong>12 and 24 months</strong>
+                            Choose a repayment period between <strong>1 and 12 months</strong>
                         </div>
                     </div>
 
@@ -513,13 +513,13 @@
             let duration = parseInt(durationSelect.value);
 
             // Update duration display
-            if (duration && duration >= 12 && duration <= 24) {
+            if (duration && duration >= 1 && duration <= 12) {
                 durationDisplay.innerText = duration + ' Months';
             } else {
                 durationDisplay.innerText = '-- Months';
             }
 
-            if (!amount || amount <= 0 || !duration || duration < 12 || duration > 24) {
+            if (!amount || amount <= 0 || !duration || duration < 1 || duration > 12) {
                 totalDisplay.innerText = "KES 0.00";
                 monthlyDisplay.innerText = "KES 0.00";
                 return;

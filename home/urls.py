@@ -109,6 +109,9 @@ path('retirement/collection/report/', views.retirement_collection_report, name='
 path('bereavement-collection-report/', views.bereavement_collection_report, name='bereavement_collection_report'),
 path('retirement/create/admin/', views.retirement_admin_create, name='retirement_admin_create'),
 path('retirement_admin_delete/<int:announcement_id>/', views.retirement_admin_delete, name='retirement_admin_delete'),
-  path('pay-retirement-mpesa/', views.pay_retirement_mpesa, name='pay_retirement_mpesa'),  # <-- ADD THIS LINE
+  path('pay-retirement-mpesa/', views.pay_retirement_mpesa, name='pay_retirement_mpesa'),
+  # urls.py
+
+path('api/loan-details/<int:loan_id>/<str:loan_type>/', views.loan_details_json, name='loan_details_json'),# <-- ADD THIS LINE
     path('pay-retirement-mpesa/<int:announcement_id>/', views.pay_retirement_mpesa, name='pay_retirement_mpesa_announcement'),
     ]

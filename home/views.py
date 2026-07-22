@@ -917,7 +917,7 @@ def apply_xmas_loan(request):
     )['amount__sum'] or Decimal('0.00')
 
     # WELFARE: Max limit is 3.5x of total shares
-    total_limit = total_shares * Decimal('3.5')
+    total_limit = total_shares 
     
 
     # =====================================================
@@ -971,8 +971,8 @@ def apply_xmas_loan(request):
         if amount <= 0:
             messages.error(request, "Amount must be greater than zero.")
 
-        elif duration < 12 or duration > 24:
-            messages.error(request, "Repayment period must be between 12 and 24 months.")
+        elif duration < 1 or duration > 12:
+            messages.error(request, "Repayment period must be between 1 and 12 months.")
 
         elif amount > available_limit:
             messages.error(
@@ -1321,6 +1321,127 @@ def member_dashboard(request):
     }
 
     return render(request, 'r_dashboard.html', context)
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from .models import Loan, XmasLoan, LoanRepaymentSchedule, Guarantor
+from decimal import Decimal
+
+from django.http import JsonResponse
+from django.contrib.auth.decorators import login_required
+from decimal import Decimal
+from .models import Loan, XmasLoan, LoanRepayment, Guarantor, LoanRepaymentSchedule
+
+@login_required
+def loan_details_json(request, loan_id, loan_type):
+    profile = request.user.profile
+
+    if loan_type == 'normal':
+        try:
+            loan = Loan.objects.get(id=loan_id, member=profile)
+        except Loan.DoesNotExist:
+            return JsonResponse({'error': 'Loan not found'}, status=404)
+
+        schedules = LoanRepaymentSchedule.objects.filter(loan=loan, is_xmas=False).order_by('due_date')
+        guarantors = Guarantor.objects.filter(loan=loan)
+
+        # Total paid from repayments
+        total_paid = loan.total_paid if hasattr(loan, 'total_paid') else Decimal('0.00')
+        # Use the model's property if available
+        remaining = loan.get_remaining_balance()
+        # Get repayment records (not just schedule)
+        repayments = LoanRepayment.objects.filter(loan=loan).order_by('-payment_date')
+
+        data = {
+            'id': loan.id,
+            'purpose': loan.get_purpose_display(),   # human readable
+            'amount': float(loan.amount),
+            'interest_rate': float(loan.interest_rate),
+            'interest': float(loan.interest or 0),
+            'insurance': float(loan.insurance or 0),
+            'total_payable': float(loan.total_payable),
+            'duration_months': loan.duration_months,
+            'monthly_installment': float(loan.monthly_installment),
+            'total_paid': float(total_paid),
+            'remaining_balance': float(remaining),
+            'application_date': loan.application_date.strftime('%d %b %Y %H:%M'),
+            'approval_date': loan.approval_date.strftime('%d %b %Y %H:%M') if loan.approval_date else None,
+            'disbursed_at': loan.disbursed_at.strftime('%d %b %Y %H:%M') if loan.disbursed_at else None,
+            'status': loan.status,
+            'status_display': loan.get_status_display(),
+            'is_legacy': loan.is_legacy,
+            'legacy_balance': float(loan.legacy_balance) if loan.legacy_balance else 0,
+            'guarantors': [
+                {
+                    'name': g.guarantor.user.get_full_name() or g.guarantor.user.username,
+                    'amount': float(g.guaranteed_amount),
+                    'status': g.status
+                } for g in guarantors
+            ],
+            'schedules': [
+                {
+                    'installment': s.installment_number,
+                    'due_date': s.due_date.strftime('%d %b %Y'),
+                    'amount_due': float(s.amount_due),
+                    'is_paid': s.is_paid,
+                    'date_paid': s.date_paid.strftime('%d %b %Y') if s.date_paid else None
+                } for s in schedules
+            ],
+            'repayments': [
+                {
+                    'amount': float(r.amount_paid),
+                    'date': r.payment_date.strftime('%d %b %Y %H:%M'),
+                    'reference': r.reference or 'N/A'
+                } for r in repayments[:10]   # last 10 payments
+            ],
+        }
+        return JsonResponse(data)
+
+    elif loan_type == 'xmas':
+        try:
+            loan = XmasLoan.objects.get(id=loan_id, member=profile)
+        except XmasLoan.DoesNotExist:
+            return JsonResponse({'error': 'Loan not found'}, status=404)
+
+        schedules = LoanRepaymentSchedule.objects.filter(xmas_loan=loan, is_xmas=True).order_by('due_date')
+        repayments = LoanRepayment.objects.filter(xmas_loan=loan).order_by('-payment_date')
+
+        data = {
+            'id': loan.id,
+            'amount_requested': float(loan.amount_requested),
+            'interest_rate': float(loan.interest_rate),
+            'total_interest': float(loan.total_interest),
+            'total_payable': float(loan.total_payable),
+            'installments': loan.installments,
+            'monthly_installment': float(loan.monthly_installment),
+            'total_paid': float(loan.total_paid),
+            'remaining_balance': float(loan.remaining_balance),
+            'application_date': loan.application_date.strftime('%d %b %Y %H:%M'),
+            'approval_date': loan.approval_date.strftime('%d %b %Y %H:%M') if loan.approval_date else None,
+            'disbursement_date': loan.disbursement_date.strftime('%d %b %Y %H:%M') if loan.disbursement_date else None,
+            'status': loan.status,
+            'status_display': loan.get_status_display(),
+            'is_legacy': loan.is_legacy,
+            'manual_interest': float(loan.manual_interest_amount) if loan.manual_interest_amount else None,
+            'schedules': [
+                {
+                    'installment': s.installment_number,
+                    'due_date': s.due_date.strftime('%d %b %Y'),
+                    'amount_due': float(s.amount_due),
+                    'is_paid': s.is_paid,
+                    'date_paid': s.date_paid.strftime('%d %b %Y') if s.date_paid else None
+                } for s in schedules
+            ],
+            'repayments': [
+                {
+                    'amount': float(r.amount_paid),
+                    'date': r.payment_date.strftime('%d %b %Y %H:%M'),
+                    'reference': r.reference or 'N/A'
+                } for r in repayments[:10]
+            ],
+        }
+        return JsonResponse(data)
+
+    return JsonResponse({'error': 'Invalid loan type'}, status=400)
 # def respond_guarantor(request, guarantor_id, action):
 #     guarantor_req = get_object_or_404(
 #         Guarantor.objects.select_related('loan'),
@@ -1653,7 +1774,6 @@ def calculate_loan_risk(member_profile, requested_amount):
 @login_required
 @login_required
 def apply_loan(request):
-    
     profile = request.user.profile
 
     # =====================================================
@@ -1684,23 +1804,19 @@ def apply_loan(request):
         return redirect('member_dashboard')
 
     # =====================================================
-    # 3. ACTIVE LOAN CHECK
+    # 3. ACTIVE LOAN CHECK (only approved/disbursed, exclude replaced)
     # =====================================================
     active_loan = Loan.objects.filter(
         member=profile,
         status__in=['approved', 'disbursed']
-    ).first()
+    ).exclude(status='replaced').first()   # ← exclude replaced loans
 
     current_balance = Decimal('0.00')
-
     if active_loan:
-        try:
-            current_balance = Decimal(active_loan.get_remaining_balance())
-        except Exception:
-            current_balance = Decimal('0.00')
+        current_balance = Decimal(active_loan.get_remaining_balance())
 
     # =====================================================
-    # 4. TOTAL SAVINGS
+    # 4. TOTAL SAVINGS & BORROWING POWER
     # =====================================================
     total_savings = CapitalShare.objects.filter(
         member=profile
@@ -1708,65 +1824,52 @@ def apply_loan(request):
         Sum('amount')
     )['amount__sum'] or Decimal('0.00')
 
-    # =====================================================
-    # 5. BORROWING POWER
-    # =====================================================
-    global_cap = Decimal(total_savings) 
+    global_cap = Decimal(total_savings)   # borrowing power = total shares
 
     # =====================================================
-    # 6. OTHER EXPOSURE
+    # 5. OTHER EXPOSURE (pending loans)
     # =====================================================
     other_exposure = Loan.objects.filter(
         member=profile,
-        status__in=[
-            'pending_hr_update',
-            'pending'
-        ]
+        status__in=['pending_hr_update', 'pending']
     ).aggregate(
         Sum('amount')
     )['amount__sum'] or Decimal('0.00')
 
     # =====================================================
-    # 7. AVAILABLE LIMIT
+    # 6. AVAILABLE LIMIT
     # =====================================================
     available_limit = global_cap - current_balance - Decimal(other_exposure)
-
     if available_limit < 0:
         available_limit = Decimal('0.00')
 
     # =====================================================
-    # 8. POST REQUEST
+    # 7. POST REQUEST
     # =====================================================
     if request.method == 'POST':
-
         form = LoanApplicationForm(request.POST)
-
         if form.is_valid():
-
             loan = form.save(commit=False)
             loan.member = profile
 
-            duration = int(loan.duration_months)
-
-            # =================================================
-            # TOP-UP LOGIC
-            # =================================================
+            # ---- Check if top‑up is requested ----
             is_top_up = request.POST.get('is_top_up') == 'on'
 
-            remaining_balance = Decimal('0.00')
-
-            if active_loan:
-                try:
-                    remaining_balance = Decimal(active_loan.get_remaining_balance())
-                except Exception:
-                    remaining_balance = Decimal('0.00')
+            additional_amount = Decimal(loan.amount)   # the amount entered in the form
 
             if is_top_up and active_loan:
+                # ✅ TOP‑UP: total principal = remaining balance + new amount
+                total_principal = current_balance + additional_amount
+
                 loan.is_topup = True
                 loan.replaces_loan = active_loan
-                effective_amount = remaining_balance + Decimal(loan.amount)
+                loan.amount = total_principal           # set the combined principal
             else:
-                effective_amount = Decimal(loan.amount)
+                total_principal = additional_amount
+                loan.is_topup = False
+                loan.replaces_loan = None
+
+            duration = int(loan.duration_months)
 
             # =================================================
             # HR SALARY CHECK
@@ -1801,7 +1904,6 @@ def apply_loan(request):
             # CONTRACT CHECK
             # =================================================
             if profile.employment_status == 'CONTRACT':
-
                 if not profile.contract_expiry:
                     messages.error(request, "Contract expiry missing.")
                     return redirect('member_dashboard')
@@ -1817,7 +1919,7 @@ def apply_loan(request):
                     return redirect('member_dashboard')
 
             # =================================================
-            # DURATION RULES (UPDATED FOR WELFARE)
+            # DURATION RULES (max 24 months)
             # =================================================
             if duration > 24:
                 messages.error(
@@ -1827,12 +1929,10 @@ def apply_loan(request):
                 return redirect('member_dashboard')
 
             # =================================================
-            # 1/3 SALARY RULE
+            # 1/3 SALARY RULE (using total_principal)
             # =================================================
             gross = Decimal(profile.gross_salary or 0)
-            
-            monthly_installment = Decimal(loan.amount) / Decimal(duration) if duration > 0 else Decimal(0)
-
+            monthly_installment = total_principal / Decimal(duration) if duration > 0 else Decimal(0)
             minimum_net_allowed = gross / Decimal('3')
             max_allowed_deduction = gross - minimum_net_allowed
 
@@ -1849,9 +1949,9 @@ def apply_loan(request):
                 return redirect('member_dashboard')
 
             # =================================================
-            # LIMIT CHECK
+            # LIMIT CHECK (using total_principal)
             # =================================================
-            if effective_amount > available_limit:
+            if total_principal > available_limit:
                 messages.error(
                     request,
                     f"Loan limit exceeded. Available: {available_limit:,.2f}"
@@ -1863,21 +1963,21 @@ def apply_loan(request):
             # =================================================
             try:
                 with transaction.atomic():
-                    
-                    # ===== FIX: Set status to 'pending' NOT 'approved' =====
-                    # This allows the approval flow (Staff → Treasurer → Admin)
+                    # Set status to pending for approval flow
                     loan.status = 'pending'
-                    
-                    # WELFARE: No interest, no insurance
                     loan.interest = Decimal('0.00')
                     loan.insurance = Decimal('0.00')
-                    
-                    # Reset approval flags to ensure proper workflow
                     loan.admin_approved = False
                     loan.staff_approved = False
                     loan.treasurer_approved = False
-                    
+
                     loan.save()
+
+                    # ✅ If top‑up, close the old loan
+                    if loan.is_topup and loan.replaces_loan:
+                        old_loan = loan.replaces_loan
+                        old_loan.status = 'replaced'   # or 'completed'
+                        old_loan.save()
 
                 messages.success(
                     request,
@@ -1904,7 +2004,6 @@ def apply_loan(request):
         'form': form,
         'active_loan': active_loan,
     }
-    
     return render(request, 'apply_loan.html', context)
 
 def approve_xmas_loan(request, loan_id):
@@ -2120,7 +2219,7 @@ def pay_loan(request):
     # ===== WELFARE: Get ALL active loans for the member =====
     active_loans = Loan.objects.filter(
         member=profile,
-        status__in=['approved']
+        status__in=['disbursed']
     ).order_by('-id')
 
     # ===== WELFARE: Prepare a list of loan data for the UI =====
